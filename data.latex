@@ -1,0 +1,101 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{url}
+\usepackage[justification=centering]{caption}
+
+
+
+%\usepackage[a4paper, margin=3.0cm]{geometry}
+
+\usepackage{vmargin}
+% left top textwidth textheight headheight
+% headsep footheight footskip
+\setmargins{3.0cm}{2.5cm}{15.5 cm}{22cm}{0.5cm}{0cm}{1cm}{1cm}
+
+\begin{document}
+\section{Implicit Filtering}
+
+There are other methods for fitting without derivatives besides Brent's method and Parabolic Interpolation. One method that was investigated is known as the Implicit Filtering algorithm, which will only be briefly covered here\footnote{Interested readers are pointed towards \cite{nocedalnumerical, kelly2002filtering, kelley2011implicit}.}. The implicit filtering algorithm is designed for optimising problems where the objective function $f(\cdot$)  can  only be evaluated up to an arbitrary degree of accuracy and the exact value is unavailable. It is assumed that there is  parameter $h$ which controls the degree of the accuarcy - the lower $h,$ the lower the error. It is usually the case that getting a higher degree of accuaracy means a higher run time. If the objective function is an expectation being approximated using Monte Carlo methods for example, it would be reasonable to set $h = 1/\sqrt{N}$ where $N$ is the number of samples used so that the variance is proportional to $h.$ On the other hand if the expecation was being approximated by numerical integration, $h$ would be set to the step size. 
+
+Let $f(\mathbf{x};h)$ denote the result of approximately evauluating $f(\cdot)$ at $\mathbf{x}$ with precision level $h.$ To generate a search direction, Implicit Filtering uses a finite difference approximation $\nabla_h f(\mathbf{x})$ to the gradient $\nabla f(\mathbf{x})$ that depends on $h.$ The simplest such approximation is forward differencing, though other choices are available:
+
+\begin{equation}\label{eqn:forward_difference}
+  [\nabla_h f]_i  = \frac{f(\mathbf{x} + h\mathbf{e}_i;h) - f(\mathbf{x};h)}{h}
+\end{equation}
+
+The approximate gradient is used to define a search direction. The algorithm proceeds to conduct a line search along this direction until a point that achieves a sufficient reduction is found \footnote{More precisely, the  next point is required to satisfy a condition of the form $f(\mathbf{x}_{k + 1}) \leq f(\mathbf{x}_k) - c\mathbf{d}_{k}^\top[\nabla_h f(\mathbf{x}_k)],$ where $\mathbf{d}_k = \mathbf{x}_{k+1} - \mathbf{x}_k$ and  $0 < c < 1.$ Note that there  is no requirement to decrease the norm of the approximate gradient $\nabla_hf(x).$}. The sequence of approximate values returned by Implicit Filtering is monotone decreasing so that if $m < n$ then $f(\mathbf{x}_m ;h_1) \geq f(\mathbf{x}_n + ;h_2),$ where $h_1$ is the precision used with $\mathbf{x}_m$ and $h_2$ is the precision used with $\mathbf{x}_n.$ Note carefully however that since Implicit Filtering only ever approximately evaluates the objective function, it is not necessarily the case that $m < n$ implies $f(\mathbf{x}_m) \geq f(\mathbf{x}_n).$ 
+
+If such a point cannot be found, or or the the approximate gradient is $\mathcal{O}(h)$ then the  value of $h$ is shrunk so that $h \leftarrow \delta h$ with $0 < \delta < 1.$ The algorithm then proceeds again with a higher level of precision. 
+
+The algorithm terminates when the change in the value of the objective function produced by  reducing the value of $h$ and running again is within a chosen tolerance.
+
+There  are many disadvantages with Implicit Filtering compared to Brent's Method. First, it is much more complex to code, and is thus more difficult to maintain and debug\footnote{The R code used to fit the ODE (\ref{eqn:quasi_linear_oscillator}) came out at a little over 300 lines long. The code in the Data2LD package that performs optimisation is over 600 lines long. Code that uses Brent's Method tends to be much shorter.}. Second, it's slow. Third, the results of the fitting are sensitive to the value of the shrink factor $\delta$ choosen. Fourth, it can be necessary to impose a penalty term to ensure convergence.
+
+To test the implicit filtering method, the following quasi-linear fourth order ODE was fitted to the melanoma data\footnote{The version of Implicit Filtering used is actually a modified version of that described above. A Quasi-Newton algorithm was used instead of naive gradient descent to compute search directions, and central differences were used to estimate the gradient instead of forward differences as in (\ref{eqn:forward_difference}).}.
+
+\begin{equation} \label{eqn:quasi_linear_oscillator}
+   y^{(4)} = \mu^2[1 - \sin(\pi y'')^2]y''' - \omega^2 y''
+\end{equation}
+
+The objective function used is a penalised sum of squared errors of the form:
+
+\[
+   PENSSE(f(t), \omega, \mu) = \rho \sum[y_i  -f(t_i)]^2 + (1 - \rho) \int |f''(t)|^2 dt
+\]
+
+The value of $PENSSE$ is influenced by $\omega$ and $\mu$ because  $f(t)$ is required to be a solution of Equation \ref{eqn:quasi_linear_oscillator} with given values of $\omega$ and $\mu.$ The Implicit Filtering algorithm will not converge correctly without the penalty term as illustrated in Figure \ref{fig:implicit_filtering_no_penalty}.
+
+To compute $PENSSE,$ the package \verb|deSolve| was used to numerically solve (\ref{eqn:quasi_linear_oscillator}) with the appropriate values of $\omega$ and $\mu$ \cite{desolve}. The precision factor $h$ determines the stepsize used.
+
+ As can be seen in Table \ref{tab:run_times}, the algorithm takes a long time to run. It can be seen in both the table and Figure \ref{fig:implicit_filtering} that changing the value of $\delta$ can introduce qualitative changes in behaviour. The algorithm is much quicker for $\delta = 0.9,$ presumably because the algorithm is converging to a different fit than for the other cases. For the fastest case where $\delta = 0.9,$  200 values of the $PENSSE$ sequence are generated before the sequence converges to within a tolerance of  $10^{-4}.$ This statistic substantially underestimates the actual amount of work done since Implicit Filtering rejects many evaluations as being inadaquate in the course of its execuctio,n and more evaluations again are needed to compute the approximate gradients $\nabla_hf(\cdot).$ For case where  $\delta = 0.9, PENSSE$ is computed over $3700$ times with for various values of $h.$.
+
+\clearpage
+\begin{table}[htb]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+$\delta$ & Running Time (Seconds) & Running Time (Minutes) \\
+\hline
+0.7      &    1717.807 & 28.63 \\
+\hline
+0.8      &    1611.459 & 26.85 \\
+\hline
+0.9      &    1013.165 & 16.88 \\
+\hline
+\end{tabular}
+\caption{Time for Implicit Filtering to converge for various values of $\delta.$}
+\label{tab:run_times}
+\end{table}
+
+\begin{figure}
+\centering
+\subfloat[]{
+\includegraphics[height = 9cm]{implicit_filtering_0_7.pdf}
+}
+
+\subfloat[]{
+\includegraphics[height = 9cm]{implicit_filtering_0_9.pdf}
+}
+\caption{Fitting the ODE (\ref{eqn:quasi_linear_oscillator}) to the Melanoma data. The exact value of the shrink value $\delta$ effects the fit the implicit filtering algorithm converges to. For $\delta = 0.7,$ the fit in (a) resembles a straight line, but $\delta = 0.9$ results in a sinusodial plus linear trend as can be seen in (b).}
+\label{fig:implicit_filtering}
+\end{figure}
+\newpage
+
+\begin{figure}
+\centering
+\includegraphics[height=9cm]{implicit_filtering_no_penalty.pdf}
+\caption{Without a penalty term, Implicit Filtering fails to fit the ODE (\ref{eqn:quasi_linear_oscillator}) to the melanoma data.}
+\label{fig:implicit_filtering_no_penalty}
+\end{figure}
+
+\clearpage
+
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{ref} 
+\end{document}
+
+

@@ -1,0 +1,187 @@
+\documentclass[a4paper, 12pt]{report}
+
+\usepackage[margin=1in,footskip=0.25in]{geometry}
+\usepackage{amsmath}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[square,sort,comma,numbers]{natbib}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{url}
+\usepackage[justification=centering]{caption}
+
+%\usepackage[a4paper, margin=3.0cm]{geometry}
+
+\usepackage{vmargin}
+% left top textwidth textheight headheight
+% headsep footheight footskip
+\setmargins{3.0cm}{2.5cm}{15.5 cm}{22cm}{0.5cm}{1cm}{1cm}{1cm}
+
+\begin{document}
+
+\chapter{Hierarchial Estimationn and the  Parameter Cascade}
+
+First, a hierarchail parameter estimation method for PDEs is introduced. The Parameter Cascade is then introduced. Finally, a discussion on quasi-linear problems.
+
+\section{Hierarchial fitting of a Partial Differential Equation}
+
+A linear PDE that would be  analogous to the linear ODE used to model the Reflux data would be the Transport Equation:
+
+\[
+    \frac{\partial u(x,t)}{\partial t} + \beta \frac{\partial u(x,t)}{\partial x} = 0
+\]
+
+
+A general solution to the Transport Equation is given by:
+
+\[
+   u(x,t) = f(x - \beta t)
+\]
+
+The function $f(\cdot)$ is unspecified. The solution $u(x,t)$ is constant along the rays $x = \beta t + C.$ The solution is an animation of the shape $f(x)$ moving to the right at fixed speed $\beta.$
+
+The ODE $y'(t) + \beta y(t) = 0$ can be thought of as a simplifcation of the Transport Equation, where it is assumed that $u(x,t)$ only varies with time, and not with space. It is apparent that this PDE has a much richer solution structure than is the case for the ODE, which only has solutions of the form $Ae^{-\beta t}.$  Statistically speaking, fitting the Transport Equation to observed data is a semi-parametric problem because one of the parameters to be estimated is a function. The problem of fitting the Transport Equation is also a transformation model such as that used for the Box-Cox transformation, since the plot of $u(x,t)$ with respect to $x$ at a fixed time $t$ is a transformed version of $f(x),$ the curve at $t = 0.$
+
+If the parameter governing the transformation process - $\beta$ - is known, $f(\cdot)$ is  reasonably easy to estimate. Suppose there were $n$ observed values $y_i$ at time $t_i$ and location $x_i.$  It has already been established that the value observed at a point $x$ at time $t$ depends only on $x - \beta t.$ The function $f(\cdot)$ could thus be estimated by non-parametrically regressing the observed values at $y_i$ against $x_i - \beta t_i$
+
+What if $\beta$ were unknown? The above discussion suggests a hierarchial approach to estimation: for a given choice of $\beta,$ to fit an associated function $f(\cdot|\beta)$ using an appropriate non-parametric estimation method, and compute the associated least squares error. Let $H(\beta)$ be the  function that associates each $\beta$ with its sum of squared error:\footnote{In case the left hand side might be slightly unclear - for the $i$th observation, the associated function $f(\cdot|\beta)$ is evaluated at $x_i - \beta t_i.$}
+
+\[
+   H(\beta) = \sum_{i = 1}^n [y_i - f(x_i - \beta t_i |\beta)]^2
+\]
+
+
+
+The problem of minimising $H(\beta)$ is a non-linear least squares problem that is also a two level hierachial estimation problem. The  inner level consists of non-parametrically fitting a function to the set of points $\{(y_i, x_i -\beta_i)\}$ given $\beta.$ The associated sum of squared errors is then returned as $H(\beta)$. The outer level entails optimising the profiled objective function $H(\beta).$
+
+This is a broad fitting strategy where different statistical and optimisation approaches can be swapped in and out as needed. There are several ways to tackle the inner function - LOESS; Kernel Regression; Penalised Splines, etc. The least squares loss function could be replaced with another one as suits the problem. There are many methods for optimising $H(\beta)$ that might be attempted - subgradient methods  if $H(\beta)$ is convex, gradient descent, Gauss-Newton Method, derivative-free methods and so on.
+
+
+\section{The Two-Stage Parameter Cascade}
+
+
+Consider the following  penalised regression problem:
+
+\[
+   PENSSE(f, \theta) = \sum_{i = 1}^N (y_i - f(t_i))^2 + \lambda \int_0^1 |T_\theta f|^2 dt.
+\]
+
+Here $T_\theta$ is some differential operator, that is parameterised by an unknown $\theta$ that is to be estimated. 
+
+$T_\theta$ can be  an ordinary differntial operator or a partial differential operator; linear, quasi-linear, or nonlinear.
+
+There are two statistical objects to be estimated here: the parameter $\theta,$ and the function $f(t).$ 
+
+Ramsay and Cao propose the following hierarchial approach to estimation\cite{cao2007parameter}: Given a fixed value of $\theta,$ let $f(t|\theta)$ denote the function that minimises $PENSSE(f, \theta)$ For a given value of $\theta,$ it's associated mean square error is then  defined by:
+
+\[
+   SSE(\theta) = \sum_{i=1}^N[y_i - f(t_i|\theta)]^2
+\]
+
+By making $f(t)$ dependent on $\theta$, the fitting problem has been reduced to a  non-linear least squares problem.
+
+This leaves the issue of estimating the optimal value of $\theta$ - Ramsay and Cao propose the use of gradient descent.
+
+For a given value of $\theta,$ $f(t|\theta)$ is found. These two values together are then used to compute $MSE(\theta)$ and $\nabla MSE(\theta).$ Finally, a new value of $\theta$ is computed by perturbing $\theta$ in the direction of the gradient.This scheme is sketched out in Figure ~\ref{fig:twoStageParamSimplified}.
+
+It is assumed that $f(t)$ can be represented by a finite vector $\mathbf{c}$ associated with an appropriate basis. This leads to a pair of nested optimisation problems: the \emph{Inner Optimisation} involves finding the value of $\mathbf{c}$ that minimises the penalised least squares criterion given $\theta,$ and the \emph{Middle Optimisation} entails finding the  of value of $\theta$ that minimises $MSE(\theta).$ 
+
+There is thus a `cascade' of estimation problems, where the results of the lower level estimation problems feed back in to the higher level ones.
+
+Note that every time a new value of $\theta$ is introduced, the associated function $f(t|\theta)$ must be computed from scratch. The middle optimisation can thus generate many inner optimisation subproblems as the parameter space is explored, and these in turn could require multiple iterations to complete if no explicit formula for $\mathbf{c}$ given $\theta$ is available. 
+
+Figure \ref{fig:twoStageParamSimplified} is an idealised sketch of the Parameter Cascade as Ramsay and Cao would understand it. The main abstraction is that the step of computing $f(t|\theta)$ is presented as a single atomic and organic step, even though it could be a complex process in its own right. This risks masking some of the comptuational work that is happening. A more realistic  description is provided  in Figure ~\ref{fig:twoStageParam}. In this thesis, Parameter Cascade problems that cannot be differentiated easily or at all are considered.
+
+\begin{figure}
+   \centering
+   \includegraphics[width = 13cm]{/home/padraig/programming/R/latex/chapter_2/2_stage_parameter.pdf}
+   \caption{Two Stage Parameter Cascade (Simplified)}
+      \label{fig:twoStageParamSimplified}
+\end{figure}
+
+\begin{figure}
+   \centering
+   \includegraphics[width = 13cm]{/home/padraig/programming/R/latex/chapter_2/2_stage_parameter_full.pdf}
+   \caption{Schematic of the Two Stage Parameter Cascade With the Inner Optimisation Visible}
+\label{fig:twoStageParam}
+\end{figure}
+
+
+\section{The \texttt{Data2LD} Package}
+
+The Data2LD package is an R package intended to perform smoothing using the Paramter Cascade to fit linear differential operators with a forcing function, that is, ODEs of the form:
+
+\begin{equation}
+    \sum \beta_i(t)D^i f(t) = u(t)
+\end{equation}
+
+The $\beta_i(t)$ are paremeter functions for the linear differential opertor on the lefthand side, and $u(t)$ is a forcing function. 
+
+More generally, \texttt{Data2LD} can model a system of inhomogenous linear differntial equations:
+
+\begin{equation}\label{fig:ode_system}
+   \mathbf{y}(t)' + \mathbf{B}(t)\mathbf{y} = \mathbf{u}(t)
+\end{equation}
+
+Each element of $\mathbf{B}(t)$ is a time-varying linear parameter function of the the form $\beta_{ij}(t)$ and each element of $\mathbf{u}(t)$ denotes the forcing function applied to the $i$th equation.
+
+ \texttt{Data2LD} implements a two level parameter cascade. Not only can it smooth ODEs, but it find the associated parameters even if they are functions.
+
+\section{Fitting the Reflux Data with Data2LD}
+
+The Reflux data was previously modelled using a purely parametric apporach. It was found that this arequires a considerable amount of domain-specific knowledge, the functional model generally instead. It has the advantage of being  more broadly applicable since it doesn't take advantage of individual features of the specific differential equation at hand.
+
+The functional model asserts that 
+
+\[
+   y'(t) \approx -\beta y(t) + u(t)
+\]
+
+Where $y(\cdot)$ and $u(\cdot)$ are functions to be estimated, and $\beta$ is a single scalar parameter.
+
+It is assumed that $u(t)$ is a step function of the form
+
+\[
+   u(t) = a\mathbb{I}_{[0, t_0)}(t) + b\mathbb{I}_{[t_0, \infty)}(t)
+\]
+
+It is further assumed that $y(t)$ can be expanded as a linear combination of B-Splines. The knots are duplicated at $t_0$ so that the first derivative is discontinous. 
+
+This model was fitted using the Data2LD package, and the results are plotted in Figure \ref{fig:reflux_fda_fit}. It can be seen that the fit is quite similar to the parametric one presented in Figure \ref{fig:reflux_ode_fit} on page \pageref{fig:reflux_ode_fit}.
+
+\begin{figure}
+   \includegraphics[width=1\textwidth]{fda_plot.pdf}
+   \caption{Fitting the Reflux data using FDA.}
+   \label{fig:reflux_fda_fit}
+\end{figure}
+
+
+\section{Three Stage Parameter Cascade}
+
+Up to this point, the structural parameter $\lambda$ has been treated as fixed. But it is possible to extend the Parameter Cascade to estimate $\lambda.$
+
+It is necessary to introduce  an \emph{Outer Criterion} $F(\lambda)$ that determines how good a given choice of $\lambda$ is.
+
+A common choice of outer criterion is  Generalised Cross Validation\cite{cao2007parameter, ramsay2007parameter}. 
+
+Just as the problem of fitting a function $f(\cdot|\theta)$ can generate an optimisation subproblem, that of fitting a third level in the cascade can generate a series of subproblems to find the best parameter choice associated with a given value of $\lambda,$ which in turn generates a series of subproblems to find the fitted function as the parameter space is explored.
+
+Neither the \texttt{FDA} nor \texttt{Data2LD} packages  implement the three stage parameter cascade. The instead expect practioners to find the best choice of $\lambda$ by cycling through a set of predetermined values or even just employing manual adjustment.
+
+
+
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{ref} 
+
+\end{document}
+
+
+\newpage
+
+

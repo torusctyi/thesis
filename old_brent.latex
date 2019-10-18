@@ -1,0 +1,592 @@
+\documentclass{report}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{url}
+\usepackage[justification=centering]{caption}
+
+
+
+%\usepackage[a4paper, margin=3.0cm]{geometry}
+
+\usepackage{vmargin}
+% left top textwidth textheight headheight
+% headsep footheight footskip
+\setmargins{3.0cm}{2.5cm}{15.5 cm}{22cm}{0.5cm}{0cm}{1cm}{1cm}
+
+\begin{document}
+
+\chapter{Parameter Cascade and Derivative-Free Optimisation}
+
+\section{Quadratic Methods} \label{sec:quad_methods}
+
+A large class of numerical optimisation methods rely on constructing a quadratic approximation to objective function $f(\theta).$ Given an iterate $\theta_n$ and possibly some associated data, a quadratic approximation $m_n(\theta)$ to the objective function is constructed. The next iterate $\theta_{n+1}$ is then found by minimising $m_n(\theta).$ Constructing the approximate quadratic and then minimising it tends to be straightforward. If the next iterate $\theta_{n+1}(\theta)$ is unsatisfactory, a new quadratic model function $m_{n+1}(\theta)$ is minimised, producing a new iterate $\theta_{n+2}.$ Ideally, the $\theta_n$ will approach the optimal point and the sequenece of quadratic models will become increasingly accurate approximations so that the process can be repeated until convergence. \cite{nocedalnumerical}
+
+\subsection{Newton's Method}
+
+The Newton-Raphson Method is a well-known member of this class. Newton's method constructs the approximation using a second-order Taylor expansion around $\theta_n:$
+
+\[
+	f(\theta) \approx m_n(\theta) = f(\theta_n) + f'(\theta_n)(\theta - \theta_n) + \frac{1}{2}f''(\theta_n)(\theta - \theta_n)^2
+\]
+
+It is not difficult to show that the critical point of $m_n(\theta)$ is given by $\theta_{n+1} = \theta_n - f'(\theta)/f''(\theta),$ which is the usual Newton formula \cite{nocedalnumerical, isaacson2012analysis, lange2004optimization, lange2010numerical}.
+
+For a point close to $\theta_n,$ the difference between $f(\theta)$ and $m_n(\theta)$ is roughly equal to $[f'''(\theta_n)/3!](\theta-\theta_n)^3$ so long as $f(\theta)$ is sufficiently well behaved\cite{isaacson2012analysis}. This formula suggests that if $\theta_n$ is close to the optimal point $\theta^*$ so that $|\theta^* -\theta_n|$ is sufficiently small, then $|\theta_n - \theta^*|^3$ will be very small indeed and so the quadratic model will be a very accurate approximation of $f(\theta)$ around $\theta^*.$ As a result, $\theta_{n+1}$ will be quite close to $\theta^*.$ The next model $m_{n+1}(\theta)$ will thus be substantially better than $m_{n}(\theta)$ at approximating $f(\theta)$ around $\theta^*,$ and so $\theta_{n+2}$ will be much closer to $\theta^*$ than $\theta_{n+1}.$ Newton's method converges very rapidly so long as one is sufficiently close to $\theta^*$ to start with. In fact, it can be shown that  Newton's method exhibits \emph{quadratic convergence} subject to technical conditions. This means that $|\theta_{n+1} - \theta^*| \approx C|\theta_{n} - \theta^*|^2.$ For example, if the error in the first iterate is approximately $0.1$, the next iterate will have error on the order of $10^{-2}$, the next will have error on the order of $10^{-4},$ and so on \cite{nocedalnumerical, lange2010numerical}.
+
+
+Newton's method is a very effective estimation algorithm so long as the derivatives $f'(\theta)$ and $f''(\theta)$ can be computed, and so long as the initial starting value is not too far from the optimal value. Choosing a good initial value is thus very important. For maximum likelihood  estimation for example, a method of moments estimator or the median could be used  to provide an initial starting value. 
+
+\subsection{Secant Method}
+
+If the second derivative is difficult to calculate, one can approximate it with a difference quotient instead \cite{isaacson2012analysis, nocedalnumerical}\footnote{The Secant Method is denoted as the \emph{Method of False Position} in \cite{isaacson2012analysis}}:
+
+\begin{equation}\label{eqn:seq_finite_diff}
+	f''(\theta) \approx \frac{f'(\theta_n) - f'(\theta_{n-1})}{\theta_n - \theta_{n-1}}
+\end{equation}
+
+This leads to the quadratic approximation:
+
+\[
+	m_n(\theta) = f(\theta_n)  + f'(\theta_n)(\theta - \theta_n) + \frac{1}{2}\left(\frac{f'(\theta_n) - f'(\theta_{n-1})}{\theta_n - \theta_{n-1}}\right)(\theta - \theta_n)^2
+\]
+
+And the update formula:
+
+\begin{align*}
+	\theta_{n+1} &= \theta_{n} - \left[\frac{f'(\theta_n) - f'(\theta_{n-1})}{\theta_n - \theta_{n-1}}\right]^{-1}f'(\theta_n) \\
+	             &= \theta_{n} - \frac{f'(\theta_n)[\theta_n - \theta_{n-1}]}{f'(\theta_n) -f'(\theta_{n-1})}\\
+		     &= \frac{\theta_{n-1}f'(\theta_n) - \theta_nf'(\theta_{n-1})}{f'(\theta_n) - f'(\theta_{n-1})}
+\end{align*}
+
+The Secant Method is straightforward to implement, and only requires first derivatives. Relying on on $f(\theta_n), f'(\theta_n)$ and $f'(\theta_{n-1})$ instead of $f(\theta), f'(\theta_n)$ and $f''(\theta_n)$ has a drawback however. The Secant Method's model is less accurate because $\theta_{n-1}$ tends to be further from $\theta^*$ than $\theta_n$. More formally, the error for the model is roughly equal to $[f'''(\theta_n)/3!](\theta_n - \theta)^2(\theta_{n-1} - \theta).$ If the sequence is converging to $\theta^*,$ substituting in the $(\theta - \theta_{n-1})$ term inflates the error relative to Newton's Method and acts as a drag on convergence. It can be shown that the Secant Method only has a convergence rate of 1.618, but avoiding the cost of computing a second derivative on each step means that more iterations can be completed in a given period of time. The Secant Method is comparable with Newton's Method, and can be faster if computing the second derivative is difficult. 
+
+The Secant Method is a widely used method that provides a good trade-off between convergence speed and ease of implementation. R's \verb|optim| routine uses a multivariate generalisation of the Secant Method for gradient-based optimisation \cite{rlanguage}. Multivariate versions of the Secant Method for optimisation are usually referred to  as \emph{Quasi-Newton Methods} \cite{nocedalnumerical, lange2010numerical, lange2004optimization}.
+
+
+For multivariate problems, the second derivative is in the form of a matrix, so there is not enough information to construct a full approximation afresh on each iteration. Rather the approximate Hessian is partially updated using one of several approaches. No matter the exact approach, the approximate Hessians $\mathbf{B}_{n+1}$ are required to satisfy the multivariate secant condition\cite{nocedalnumerical, lange2010numerical, lange2004optimization}:
+
+\[
+   \nabla \mathbf{f}(\theta_{n+1}) - \nabla \mathbf{f}(\theta_{n}) = \mathbf{B}_{n+1}(\theta_{n+1} - \theta_n)
+\]
+
+
+This is a generalisation of Equation \ref{eqn:seq_finite_diff}. A further condition  generally imposed in the multivariate case is that the approximate Hessians must be positive-definite. This ensures that the approximate qudaratics don't have any saddle points or surfaces on which the second derivative is zero so that  a well defined search direction is guaranteed \cite{nocedalnumerical, lange2004optimization, lange2010numerical}.
+
+ R's \verb|optim| routine uses the BFGS method to compute the next approximate Hessian\cite{rlanguage}. BFGS uses the symmetric matrix $\mathbf{B}_{n+1}$ satisfying the secant condition such that the inverse $\mathbf{B}^{-1}_{n+1}$ minimises a weighted Frobenius distance o  between itself and the previous inverse $\mathbf{B}^{-1}_{n}.$ A low memory variant of BFGS known as L-BFGS is also available \cite{rlanguage, nocedalnumerical}.
+
+\subsection{Successive Parabolic Interpolation}
+
+Parabolic interpolation goes one step further than the Secant Method and dispenses with derivatives entirely,. It constructs a model function by interpolation through the points  $(\theta_n,f(\theta_n)),$ $(\theta_{n-1},f(\theta_{n-1})),$ and $(\theta_{n-2}, f(\theta_{n-2}))$\cite{nocedalnumerical,vandebogart2017method}.
+
+\begin{align*}
+	m_n(\theta) = &f(\theta_n)\frac{(\theta - \theta_{n-1})(\theta - \theta_{n-2})}{(\theta_n - \theta_{n-1})(\theta_n - \theta_{n-2})}\\
+		      &  \qquad + f(\theta_{n-1})\frac{(\theta - \theta_{n})(\theta - \theta_{n-2})}{(\theta_n - \theta_{n})(\theta_n - \theta_{n-2})} \\
+		      & \qquad + f(\theta_{n-2})\frac{(\theta - \theta_{n-1})(\theta - \theta_{n})}{(\theta_n - \theta_{n-1})(\theta_n - \theta_{n})}
+\end{align*}
+
+This model has a approximate error of $[f'''(\theta_n)/3!](\theta - \theta_n)(\theta - \theta_{n-1})(\theta - \theta_{n-2}).$ By relying on the past two iterates, the rate of convergence is slowed further. Parabolic interpolation has an order of convergence of 1.32.
+
+An issue with parabolic interpolation is providing enough initial points to seed the method\cite{nocedalnumerical}. This is more acute for multivariate problems in particular. One approach is to provide enough points at the start and run the alogorithm from there. Alternatively, one can start off with just enough points needed to estimate an ascent or descent direction and construct a linear approximation, and then run the optimisation routine using a sequence of  linear approximations until there enough points to construct a parabola. If one is using a linear approximation, one must impose a limit on the maximum distance that the routine  can travel on each iteration  since linear functions do not have a minimum or maximum and diverge off to infinity.
+
+\subsection{Discussion}
+
+All three approaches are governed by the same fundamental theory of approximating functions by polynomials. The only difference is the precise inputs used to construct an approximation. This means that if a problem is suitable for Newton's Method,  the other two methods will very likely perform well. If one applies parabolic interpolation to a sufficiently smooth objective function, then one is in a sense automatically employing Newton's Method even if one made no effort to investigate the differentiabilty of the objective function. 
+
+On the other hand, the methods all share the same fundamental handicap as well - the methods are not guaranteed to converge unless the starting point is close to the optimal value. The error terms in the quadratric approximations are all something like $(\theta-\theta_n)^3.$ If $|(\theta-\theta_n)|$ and any other error terms are small, the error in the approximation will be much smaller since it is proportional to the product of three such errors. If however the errors are  large, their product might be so large that the method fails to converge. 
+
+This is less academic than it might seem. Suppose one had a complicated likelihood function $L(\theta).$ Perhaps to evaluate the likelihood one must numerically integrate some kind of complex marginal distribution that depends on $\theta.$ Instead of attempting to find explicit formulae for  the score and information functions,  if one could produce a crude estimate $\hat{\theta}$ and crude estimate of the error $\hat{\sigma}_{\theta},$ then one could use successive parabolic interpolation with $\{\hat{\theta}, \hat{\theta} - 2\hat{\sigma}_{\theta},\hat{\theta} + 2\hat{\sigma}_\theta\}$ as a set of starting points. If $L(\theta)$ is in fact a well behaved smooth function, then parabolic interpolation will find the value of $\theta$ that maximises $L(\theta)$ fairly quickly. It is necessary to provide plausible starting values for $\theta$ because the quadratic model is only certain to be valid if one is already near the optimal value.
+
+\section{Bisection Methods}
+
+In contrast to the methods discussed above, bisection methods tend to be slow, but are guaranteed to ensure consistent and steady progress towards the optimal point provided the function is continuous and does not have more than one local minima or maxima. One starts with an interval $[a,b]$ and a third point $c.$ such that $f(c) < f(a)$ and $f(c) < f(b).$ A fourth point $d$ within the interval $[a,b]$ is selected, and $f(d)$ is computed. If $d$ is between $a$ and $c$, and $f(d) < f(a)$ and $f(d) < f(c),$ then $[a,c]$ becomes the new interval and $d$ becomes the new provisional minimum. If $f(c) < f(d),$ then the new interval becomes $[d,b],$ - $c$ remains the provisional minimum, but the interval has been narrowed. A similar approach applies if $d$ is between $c$ and $b.$
+
+It is entirely possible to perform strict bisection by to choosing $d$ to be the midpoint of $[a,b].$ The most common bisection method is known as Golden-Section Search, the point $d$ is chosen so that the width of the new interval is equal to that of the old one divided by 1.618.
+
+\section{Brent's Method}
+
+Brent's Method is a hybrid of successive parabolic interpolation and golden-section search. If parabolic interpolation is failing to provide a sufficiently rapid decrease in the objective function, a bisection step is performed. While the bisection steps might not produce as much progress as the parabolic steps, they are certain to produce a consistent rate of improvement no matter how close the algorithm is to the optimal point, while parabolic interpolation is only certain to work if one is already within a neighbourhood of the optimal point. Brent's method will also perform a bisection step if the interpolating parabola is ill-conditioned, or if a bisection step has not been performed recently.
+
+The hybrid method is robust as a result of the golden section steps, and the parabolic steps ensure it performs well when applied to smooth functions along with a decent starting value.
+
+\section{Estimation Of Parameters For A Standard Cauchy Distribution Using Brent's Method} \label{sec:cauchy_estimation}
+
+Given $n$ observations $x_1,\dots, x_n$ from an unknown  Cauchy distribution, the likelihood function is given by:
+
+\[
+	L(\mu, \sigma) = \prod_{i=1}^n\frac{1}{\pi\sigma\left[1 + \left(\frac{x - \mu}{\sigma}\right)^2\right]}
+\]
+
+Attempting to maximise this likelihood by the usual method entails solving a fairly complex system of rational equations in $\mu$ and $\sigma.$ Our purpose is to demonstrate that Brent's Method can tackle this problem without much difficulty.
+
+Brent's Method can only optimise a function in one dimension at a time, so it is necessary to attempt to optimise for $\mu$ and $\sigma$ separately. The profile log-likelihood of $\sigma$ is computed:
+
+\[
+	\ell(\sigma) = \sup_\mu \log(L(\mu, \sigma))
+\]
+
+R can find this value easily by optimising over $\mu$. The function $\ell(\sigma)$ can then be in turn optimised to find the optimal value of $\sigma.$ 
+
+One subtlety with optimising a Cauchy likelihood is that the likelihood function can have multiple local maxima since the likelihood function is the ratio of two multivariate polynomials in $\mu$ and $\sigma.$ To ensure that the algorithm was sufficiently close to the MLE, the median was used as an initial estimate of $\mu,$ and half the interquartile range was used as an initial estimate for $\sigma.$ Given these somewhat crude estimates $\tilde{\mu}$ and $\tilde{\sigma},$ the the standard error of the median $\sigma_{\tilde{\mu}}$ is approximately given by:
+
+\[ 
+\hat{\sigma}_{\tilde{\mu}} \approx \frac{1}{2f(\tilde{\mu}; \tilde{\mu}, \tilde{\sigma})\sqrt{n}}
+\]
+
+The values $\tilde{\mu} \pm 2\hat{\sigma}_{\tilde{\mu}}$ are then used to provide the initial lower and upper bounds for the optimiser. The aim is to  construct a confidence interval that is highly likely to contain the MLE for $\mu$ (rather than the actual true parameter), but isn't so wide that the interval is in danger of containing multiple local maxima for the likelihood.
+
+\subsection{Asymptotic Variance Estimation}
+
+Given the score function and the Fisher  information, it is possible in principle to compute an approximate confidence interval for $\sigma$ and $\mu.$ Instead of analytic methods, one can use finite differences to approximately compute the necessary derivatives. This was successful at producing a valid approximation for the profile likelihood (shown as a red dotted parabola in the plot below). 
+
+It is thus possible to compute a confidence interval using the Score test.  The test statistic $S(\sigma)^2/I(\sigma)$ could be accurately approximated using finite differences. One takes the value of $\sigma$ for which the test statistic is less than or equal to the appropriate critical value of from a chi-squared distribution. By inspecting the plot and then solving for $\sigma$, an approximate confidence interval for $\sigma$ could be computed, that  $\sigma$ lies in $(0, 2.20)$ with 95 percent confidence. 
+
+An important assumption underpinning such asymptotic confidence  intervals is that the two term quadratic Taylor expansion based on the score and information functions is valid over the range of interest. This is not the case here as can be seen in the spike in the score statistic on the left caused by the Fisher information changing sign at approximately $\sigma = 2.35$.  This indicates that the confidence interval might be wider than the range of for which a quadratic approximation around the MLE is valid, and should perhaps be treated with some scepticism.
+
+
+\begin{figure}
+\centering
+ \includegraphics[height=10cm]{profile.pdf}
+            \includegraphics[height=10cm]{contour.pdf}
+	    \caption{Profile log likelihood in $\sigma,$ and contour plot of the joint log likelihood. }
+\end{figure}
+
+
+\begin{figure}
+\centering
+	\includegraphics[height=10cm]{test.pdf}
+	\caption{Plot of profile score statistic.}
+\end{figure}
+
+\newpage
+
+\section{Robust ODE Parameter Estimation} \label{cauchy_ode}
+
+If observations of values from an ODE are subject to heavy-tailed noise, least squares regression becomes unsuitable. An obvious candidate is L1 regression, which attempts to minimise the sum of the absolute values of the residuals instead of the sum of the squared residuals. An important property of L1 regression is that median is naturally associated with this approach; the sample median of a set of numbers is the constant value that minimises the L1 error just as the sample mean is the constant value that minimises the least squares error. L1 regression can greatly complicate the process of estimation however, because the the function $|x|$ is not everywhere differentiable. This means that the usual gradient-based approaches to nonlinear regression should not be applied. Even methods that attempt to numerically approximate the derivatives are unsuitable.
+
+Brent's Method can tackle such problems however, being robust against non differentiabilty. For nonlinear L1 regression, the objective function tends to be piecewise smooth - between the ``kinks'', the function is differentiable and amenable to parabolic interpolation. Once the bisection steps have reached a neighbourhood of the optimal value, parabolic interpolation will find it fairly quickly.
+
+Consider for example, the ODE $y'' - \beta(1-y^2)y'  + y = 0.$ This ODE describes a quasi-linear oscillator and is representative of more advanced mathematical models. By definition, the  linear ODEs usually used in FDA cannot model systems where the parameters are dependent on position, they can only model situations where the parameters vary with time (and/or space in the case of a linear PDE). 
+
+Brent's Method can find the estimate for $\beta = -0.5$ subject to Cauchy distributed noise. 
+
+\begin{figure}
+\centering
+	\includegraphics[height=10cm]{cauchy_fit.pdf}
+	\includegraphics[height=10cm]{MAE.pdf}
+\end{figure}
+
+\newpage
+\section{Parameter Cascade Using Brent's Method} \label{brent_param}
+
+Recall that the Parameter Cascade has three levels. 
+
+First, the inner problem. There is a given functional $J(f; \theta, \lambda)$ that takes a function $f$ and associated parameters $\theta$ and $\lambda$ and returns a real number. Usually, the function $f$ is represented by a vector of coefficients with a given associated basis. The function $\hat{f}(t|\omega, \lambda)$ that optimises $J(\cdot; \theta, \lambda)$ is then found. Outside of toy cases, this problem cannot be solved analytically. The problem is nearly always solved numerically by restricting the space of functions to the span of some set of choosen basis functions and optimising over that.
+
+This in turn defines the middle problem, $H(\theta, \hat{f}(t|\omega, \lambda); \lambda ) = H(\theta; \lambda),$ which is usually defined as the least squares error associated with the optimal $f$ given $\theta$ and $\lambda:$
+
+\[
+ H(\theta; \lambda) = \sum [x_i -\hat{f}(t_i|\omega, \lambda)]^2
+\]
+
+As suggested in the previous section on fitting an ODE with Cauchy noise, the middle error might be another loss function besides least squares error such as the sum of absloute errors.
+As before, value of $\theta$ that optimises $H(\cdot)$ holding $\lambda$ constant, defined by $\hat{\theta}(\lambda),$ is computed.
+
+And finally, the outer problem attempts to determine the value of $\lambda$ that minimises the prediction error (generalisation error) by minimising another function $F(\lambda, \hat{\theta}(\lambda),\hat{f}(t|\omega, \lambda)) = F(\lambda).$ There are several plausible choices for $F(\cdot),$ one could use leave-one-out cross-validation, one could partition the data set into a training set and a validation one, and let $F(\lambda)$ be the associated error for the validation set, one could use Generalised Cross-Validation. This criterion is in turn optimised to find the optimal $\lambda.$
+
+Note that the three levels are somewhat isolated from  each other and only interact by  exchanging parameters downwards and optimal values upwards. The middle function $H(\cdot$) for example only requires the value of the optimal $f(\cdot)$ evaluated at the choosen points $t_i,$  and does not care about how these values were found or how $f(\cdot)$ is represented. 
+
+
+The inner problem consists of finding a function that minimises a certain criterion for a given set of parameters.  As previously discussed, the complexity of such problems can increase fairly rapidly and require a considerable degree of non-Statistical expert knowledge and often must be essentially developed from scratch if the differential penalty changes too much. It is thus desirable that the inner problem can be solved with already existing methods and tools such as the FDA package or Data2LD  to avoid the effort of having to develop one's own. Ideally, it should be possible for one to plug in existing code that can compute $H(\cdot)$ and the optimal function as required. 
+
+There is thus a considerable degree of potential modularity present in the Parameter Cascade that is not fully investigated in Ramsay and Cao's paper \cite{cao2007parameter}, and research that inherits that framework. The Parameter Cascade can be adapted to heavy tailed errors for example, by using appropriate loss functions for the various levels of the problem.
+
+Not only is it good research practice to have mostly independent components that can be tackled and verified seperately before being combined, it is also good practice from a software engineering perspective because the potential for complex interactions between different parts of code is reduced. This tends to save on debugging and testing requirements, which can be quite high when implenenting codes for FDA.
+
+The Data2LD package is fairly tightly coupled. Rather than use R's built-in routines to implement the Quasi-Newton alogrithm for example to optimise the associated middle problem, the authors wrote their own code. With Brent's method however, there is more seperation, which makes it very easy to build optimisation routines on top of other code. This substantially elides the cost and effort of tackling the inner problem and allows one to concentrate on the statistical questions such as fitting the model to data.
+
+\subsubsection{Melanoma Data}
+This derivative free optimisation strategy  was applied to fitting the melanoma dataset with a parameterised linear differential operator:
+
+\begin{equation} \label{eqn:param_operator}
+L_\omega = D^2 - \omega^2D^4.
+\end{equation}
+The inner problem consists of finding the function $f(t)$ that minimises a penalised regression problem of the form:
+
+
+\[
+PENSSE(f; \omega, \lambda) =   \sum (x_i - f(t_i))^2 + \lambda \int |L_\omega f(t)|^2 dt
+\]
+
+The penalty term measures the extent to which a function lies outside of the span of the  functions $\{1, t, \cos(\omega t), \sin(\omega t)\}.$ 
+
+
+The \verb|FDA| package has routines that can do the numerical work of fitting the data with differential penalty given in \eqref{eqn:param_operator} for  given choices of $\lambda$ and $\omega,$ and then report the associated mean square error.
+
+Using Brent's method, the function $H(\omega; \mathbf{x}, \lambda)$ can be optimised with respect to $\omega$ for a given fixed $\lambda.$ In turn, the outer objective function can be parameterised in terms of $\lambda$ and the associated optimal choice of $\omega.$ This defines an objective function that can be again optimised to find the optimal choice of $\lambda.$
+
+
+For $\omega,$ Figure \ref{fig:mela_omega} shows tht the  error is not particularly sensitive to small deviations from the optimal value even for fairly high values of $\lambda$. This suggests that the fitted curve will be adjusted to ensure no substantial increase in the error so long as $\omega$ isn't altered too much from the optimal value.
+
+Heuristcally speaking, a flat objective function in the neighbourhood of the optimal point as can be seen in Figure \ref{fig:mela_omega} increases the uncertainty in estimation because it is more difficult to argue that the optimal value is definitively better than adjacent ones. The loss function associated with a given fitting problem only approximates the 'true' loss function as the sample size goes to infinity.
+
+If $\lambda$ is set too low, the optimal value of $\omega$ is numerically indistinguishable from zero. This is the case when $\omega$ is optimised for  the value of $\lambda$ that minimises the GCV, Brent's method reports zero as the optimal value to within its default tolerance.
+
+
+For $\lambda,$ the curve has two critical points, with an asymptote as $\lambda$ tends to infinity.
+
+A huge advantage of this approach compared to Data2LD's use of quasi-Newton methods is that it allows for the use of more robust loss functions since no use at all is made of derivatives.
+
+Suppose one wanted to choose $\omega$ to minimise the Median Absolute Deviation - $\textrm{median}(|y_i - \hat{f}(t_i|\omega, \lambda)|)$ - instead of the least squares error. This loss function is choosen instead of the usual L1 error for the sake of demonstration because the L1 error might sometimes be tackled using a generalised version of gradient descent known as the subgradient method, while getting any kind of a derivative for MAD is difficult. It is quite simple, one just replaces the code that computes the least squares error with a few lines of R code that computes the MAD and run the optimisation routine again. It can be seen in Figures \ref{fig:mela_mad_omega} and \ref{fig:mela_l2_mad_omega} that the MAD gives similar results to the usual least squares criterion, which suggests that both estimators are mutually consistent with each other.
+
+
+\begin{figure} 
+\centering
+    \includegraphics[height=9cm]{mela_omega_plot.pdf}
+    \includegraphics[height=9cm]{mela_lambda_plot.pdf}
+    \caption{Plots of the middle and outer optimisation problems.}
+\label{fig:mela_omega}
+\end{figure}
+
+\begin{figure}
+\centering 
+    \includegraphics[height=9cm]{mela_omega_MAD_plot.pdf}
+    \caption{Plot of the middle optimisation problem with MAD used as a loss function}
+\label{fig:mela_mad_omega}
+\end{figure}
+
+\begin{figure}
+\centering
+    \includegraphics[height=10cm]{mela_l2_mad_plot.pdf}
+    \caption{Comparison of fits for MAD and SSE criteria for middle problem}
+ \label{fig:mela_l2_mad_omega}
+\end{figure}
+
+\newpage
+\section{L1 Estimation And the Parameter Cascade}
+
+In the previous chapter, Brent's method was introduced and was used to tackle cascade problems where the middle level uses as loss function which is difficult or to differentiate or simply has no well-defined derivative everywhere. It was remarked upon that Brent's method ensures that the different elements of the Parameter Cascade tend to be loosely coupled from each other.
+
+\subsection{L1 Estimation for the Inner Problem}
+
+Brent's method is designed to optimise  real-valued functions over a real interval. In Section \ref{sec:cauchy_estimation} it was extended to functions that take more than one real argument by optimising over each coordinate seperately. However, there is no guarantee that this approach will perform well, and it can even fail entirely for functions that have an exotic topography or multiple local optima arranged unusually\footnote{ Consider for example the problem of finding the minimum of  the function $f(x) = x \sin(x)$ over the interval $[0,13].$ It is easy to see that the minimum is not on the boundary points of the interval because $f(0) = 0, f(6) = -1.67,$ and $f(13) = 5.45.$ Brent's method fails to find the minimum. It claims the optimal value is given by $f(4.9) = -4.81$ though $f(11) = -10.99.$}. Even in the best case, optimising over each coordinate generates its own optimisation subproblem, which has the cumlative effect of increasing the running time of the alogrithm. Brent's method further requires the specification of a bounding box that contains the optimal  point since it uses bisection, and that is harder and harder to do as the number of dimensions increases. All of these considerations mean that Brent's Method is highly unsuitable for peforming L1 fitting over a space of functions which tend to have a large number of dimensions - by definition, there is one  dimension introduced for each basis function used. Likewise, the non-differentiability of the absloute value function means that other approaches that implicitly rely on differentiability such as parabolic interpolation are inadvisable.
+
+Instead a  different approach will be employed, a generalisation of the Iteratively Reweighted Least Squares algorithm for computing the (geometric) median of a set of items to which an L1 norm can be associated. We will start by describing IWLS can be used to compute the geometric median of a set of real numbers - this is the standard median. We will further show that this as an example of what is known as an MM alogrithm, and then proceed to straightforwardly extend this MM algorithm to produce a modified Penalised Sum of Squares problem that can be iteratively solved and reweighted to find the function that minimises the L1 norm. 
+
+\subsubsection{An MM Algorithm For Computing the Median}
+Suppose that given a set of numbers, one wished to find the number $x$ that minimised the L1 distance between them:
+
+\[
+   SAE(x) = \sum |x_i - x|
+\]
+
+The function $SAE(x)$ is not everywhere differentiable, which means that the usual derivative-based techniques such as gradient descent or Newton's method can't work. Instead an approach known as Majorise-Minimise or the MM Alogrithm  will be used\cite{hunter2004tutorial,lange2004optimization,lange2010numerical}.  For a given iterate $x_n$, a function $M(x|x_n)$ is required with the following properties:
+
+\begin{align*}
+     M(x|x_n)    &\geq SAE(x) \\
+     M(x_n| x_n) &= SAE(x_n)
+\end{align*}
+
+The function $M(x|x_n)$ is said to majorise $SAE(x).$ The next iterate $x_{n+1}$ is then found as the value of $x$ that minimises $M(x|x_n).$ Thus:
+
+\begin{align*}
+   SAE(x_{n+1}) &\leq M(x_{n+1}|x_n) \\
+                &\leq M(x_n| x_{n+1}) \\
+                &= SAE(x_n) \\
+\end{align*}
+
+If such a function $M(x|y)$ could be determined such that $M(x|y)$ would be straightforward to minimise,  it is then possible to easily produce a sequence of iterates $x_n$ such that $SAE(x_{n+1}) \leq SAE(x_n)$ for all $n.$ This pattern of monotone improvement in the objective function is similar to the EM Alogrithm. In fact, the EM algorithm is a special case of the MM algorithm\cite{wu2010mm} \footnote{When applied to maximisation problems, MM instead stands for Minorise-Maximise. This case is the same except the surrogate function is required to be less than or equal to the objective function and it is maximised on each iteration. Thus, each iteration drives the objective function upwards.}.
+
+The most important question associated with the MM alogrithm is the construction of the majorising function. Verifying a potential majoriser is usually straightforward, finding one in the first place is more difficult.The EM algorithm for example cleverly takes advantage of the probablistic structure of the problem and Jensen's inequality \footnote{The EM alogrithm is intended to maximise the log-likelihood and drives it upwards on each iteration, so it's an example of a Minorise-Maximise algorithm.}. The general MM algorithm does not tend to be so statistically motivated and tends to more generically exploit any convexivity, it thus tends to be more lightweight than the EM algorithm. For an L1 problem, the usual approach  is to employ the Arithmetic Mean-Geometric Mean inequality \cite{lange2007slides}. Only  the AM-GM inequality in its simplest form is required here, that the geometric mean of two numbers is less than or equal to  their arithemtic mean:
+
+\[
+    \sqrt{xy} \leq \frac{x + y}{2}
+\]
+
+It's worth noting that the AM-GM inequality is in fact a special case of Jensen's Inequality since the log function is concave:
+
+\begin{align*}
+    \log(\frac{x + y}{2}) &\geq \frac{\log{x}}{2} + \frac{\log{y}}{2} \\
+                                   &= \log{\sqrt{x}} + \log{\sqrt{y}}\\
+                                  &= \log{\sqrt{xy}}
+\end{align*}
+
+It is possible  to exploit the AM-GM inequality to majorise an L1 regression problem by a weighted L2  problem. One can represent the L1 norm as a geometric mean, which then allows for the L1 norm to majorised and seperated by  a weighted sum of squares. Given an interate $x_n,$ the AM-GM inequality implies that:
+
+\begin{align*}
+    |y - x| &= \sqrt{(y - x)^2} \\
+            &= \sqrt{\frac{(y-x)^2}{|y - x_n|}|y-x_n|} \\
+            &\leq \frac{1}{2}\left(\frac{(y-x)^2}{|y - x_n|} + |y-x_n|\right)
+\end{align*}
+
+This in turn implies that:
+
+\begin{align*}    
+     \sum |x_i - x| &\leq  \frac{1}{2}\sum\left(\frac{(x_i-x)^2}{|x_i - x_n|} + |x_i-x_n|\right) \\
+                   &=        \frac{1}{2}\sum\frac{(x_i-x)^2}{|x_i - x_n|} +  \frac{1}{2}\sum\left(|x_i-x_n|\right)
+\end{align*}
+
+The L1 problem is thus  majorised by a weighted least squares problem. The $\frac{1}{2}\sum|x_i-x_n|$ term is constant with respect to $x,$ so neglecting it makes no difference to the choice of $x$ that is optimal. Likewise, multiplying the weighted least squares problem by a positive constant doesn't change the optimal value either, so the $\frac{1}{2}$ term can be eliminated by multiplying by $2$.  The optimal value  $x_{n+1}$ can thus be found by minimising this weighted least squares score:
+
+\[ 
+   \sum \frac{(x_i-x)^2}{|x_i - x_n|}
+\]
+
+The alogrithm thus consists of finding the value of $x$ that minimises the least squares error inversely weighted by the residuals from the previous iteration. 
+
+\subsubsection{Penalised L1 Fitting} \label{sec:mm_l1_algorithm}
+For the case of penalised regression, the penalised sum of absolute errors is defined by:
+
+\[
+  PENSAE(f|\theta, \lambda) = \sum |x_i - f(t_i)| + \lambda \int |Tf|^2 dt
+\]
+
+Here $T$ is used instead of $L$ to  denote a differential operator that might not necessarily be linea \footnote{In some situations $T$ could even be an integral operator. This could easily be the case if the observed values were measured velocities of a vehichle, and the penalty was intended to impose constraints on quantities such as the distance travelled or fuel consumed}. As before, this can be majorised by a weighted sum of a residual-weighted penalised sum of squared errors, and a vestigal $\sum |x_i - f_n(t_i)|$  term that is only included for completeness and  can be safely ignored in the course of the actual optimisation.
+
+\begin{align} \label{eqn:wpensse}
+    PENSAE(f) &\leq \frac{1}{2}WPENSSE(f|f_n, \theta, 2\lambda) + \frac{1}{2} \left(\sum |x_i - f_n(t_i)| \right)\\
+              &= \frac{1}{2}\left( \sum \frac{[x_i - f(t_i)]^2}{|x_i - f_n(t_i)|} + 2 \lambda \int |Tf|^2 dt\right) +  \frac{1}{2} \left(\sum |x_i - f_n(t_i)|\right)
+\end{align}
+
+To find the function that minimises the penalised L1 error, one repeatedly finds the function that minimises $WPENSSE$ with the previous set of residuals used as inverse weights. This produces a sequence of fitted functions for which the penalised sum of absolute errors is montonically forced downwards. 
+
+\subsubsection{Discussion}
+
+Since the sequence of penalised errors is monontone decreasing but cannot be less than zero, the Monotone Convergence Theorem guarantees that a given generated sequence $PENSAE(f_n)$  will always converge to  a limit. There are two cavaets though. First, the sequence might converge to a different point depending on the starting values - there is no guarantee that the sequence will converge to the  lowest possible value of $PENSAE.$ Second, there is no guarantee that the underlying sequence of functions will converge, it might just oscillate between several points. For the sake of illustration - the sequence $-1, 1, -1, \dots$ does not converge but the sequence of absolute values $1,1,1, \dots$ does.
+
+
+This approach of associating the objective function with surrogate problem that is a more standard is employed in texts on the EM Algorithm. In the interductory chapter of MacLanan and Krishnan's graduate text, they discuss how a multinomial estimation problem can be transformed into a binomial problem with missing data by artificially splitting one of the cells; they then construct a simple iterative EM scheme which can then be repeatedly iterated to estimate parameters for the origina multinomial. They even remark that the the surrogate problems associated with EM alogrithms tend to be easy to solve using existing tools in the field \cite{mclachlan2007algorithm}. Likewise,  the L1 problem has been replaced  here with a  surrogate sequence of weighted L2 problems that can easily solved using the \verb|FDA| package and so actual code for implementing the L1 regression is brief.
+
+The literature on the  MM algorithm remarks that it is simple to implement and  good at tackling high dimesional penalised regression, though convergence can be slow \cite{wu2010mm}. These claims are borne out in this analysis.
+\newpage
+
+\subsubsection{Testing the Algorithm on the Melanoma Data}
+
+Since minimising $PENSAE$ is a  problem over many dimesions, plotting the objective function to  verify that the optimal function has been found isn't possibly. Instead the MM alogrithm described in Section \ref{sec:mm_l1_algorithm} will be tested by applying it to hte  melanoma data pertubred by random noise. Further, the covergence of the algorithm for the original melanoma dataset will be examined. 
+
+Figure \ref{fig:mela_l1_l2} compares the L1 and L2 fits to the melanoma data corrupted by Cauchy distributed noise. The value of $\omega$ is held fixed at the reasonable value of $0.3,$ which was chosen as being roughly the average of the two different estimates of $\omega$ from Figures \ref{fig:mela_omega} and \ref{fig:mela_mad_omega}. It is apparent from the Figure \ref{fig:mela_l1_l2} that the MM fit is robust against outliers, tends to ignore more deviant points, and even manages to remain similar to the original fit. The  least-squares fit tends to chase the heavy-tailed noise on the other hand. This is strong evidence that the curve that minimses $PENSAE$ has been found and that the method has been implemented correctly.
+
+Iterative estimation algorithms are examples of fixed point iteration methods. One starts with an intial value $\theta_0$ and each iterate  then is defined by $\theta_{n+1} = F(\theta_n)$ This defines a sequence $\{\theta_0, F(\theta_0), F(F(\theta_0)), \dots\}.$ Unless $F'(\theta^*) = 0,$ iterative methods converge linearly with $\theta_n - \theta^* \approx F'(\theta^*)(\theta_{n-1} - \theta^*).$ The EM Algorithm and Block Relaxation methods generally only achieve linear convergence and  thus tend to be sluggish compared to the Newton-Raphson method and variations.
+
+Figures \ref{fig:sae_plot} and \ref{fig:pensae_plot} plot the convergence of $SAE$ and $PENSAE$ over the course of the alogrithm. Figure \ref{fig:coef_plot} plots the convergence of the coefficient vectors $\mathbf{c}_n.$ Note that the PENSAE statistic doesn't quite actually converge monotonically as the theoretical analysis predicted. Instead, it fluctuates before settling down to the typical and expected pattern of languid monotone decline. Upon investigation, it was determined that over the first handful of iterations the range of the weights applied to the observations  on each iteration -computed using the residuals from the previous iteration -   grew very rapidly. By the fourth iteration, the lowest weight is equal to $1.48,$ and the highest was equal to $4.8 \times 10^6.$ It seems that this rapid and large change produces qualititative changes in behaviour before the algorithm manges to  `burn in'. It is likely that observations with low weights are being effectively censored after a few iterations due to roundoff error. Imposing a minimum threshold for the weights by adding a constant to all the residuals before proceeding to computing them smooths out this behaviour, but doesn't eliminate it entirely.
+
+\begin{figure}
+    \centering
+    \includegraphics[height=10cm]{mela_l1_l2_plot.pdf}
+    \caption{Comparison of L1 and L2 inner fits to Cauchy perturbed data with $\omega$ fixed at 0.3}
+\label{fig:mela_l1_l2}
+\end{figure}
+
+
+\begin{figure}
+\centering
+   \includegraphics[height=9cm]{/home/padraig/latex/mela_l1_convergence_plot.pdf}
+   \includegraphics[height=9cm]{/home/padraig/latex/mela_l1_convergence_log_plot.pdf}
+   \caption{Plot of values and log differences for SAE Statistic}
+   \label{fig:sae_plot}
+\end{figure}
+
+\begin{figure}
+\centering
+   \includegraphics[height=9cm]{mela_coef_convergence_plot.pdf}
+   \caption{Plot of log norm differences for coefficients. Note that they tend to settle on a line.}
+    \label{fig:coef_plot}
+\end{figure}
+
+\begin{figure}
+\centering
+   \includegraphics[height=9cm]{mela_pensae_plot.pdf}
+   \caption{Plot of PENSAE statistic as the algorithm proceeds.}
+   \label{fig:pensae_plot}
+\end{figure}
+\newpage
+\subsection{Acclerating The Rate of Convergence}
+
+The MM Alogrithm is very sluggish, and this is a well known weakness of both itself and the EM algorithm. The literature however suggested that this problem could be easily ameliorated in this particular case because of a special feature present. In practice one doesn't  want to fit the full model, but only wants to compute an associated summary statistic that determines how good a given choice of parameters is. It will often be the case that  only the value of $PENSSAE$ or $GCV$ or $SAE$  associated with a given choice of parameters is required as inputs to an optimisation routine, and it is not desireable to iterate until the full model converges if this effort can be avoided. 
+
+MacLanan and Krishnan discuss the situation where one only wants to compare the likelihoods between a restricted model and a full model. They suggest the use of sequence acceleration methods to rapidly extract the likelihoods \cite{mclachlan2007algorithm} instead of running the EM algorithm to completion since  the full models aren't needed. The literature on the MM algorithm claims that acceleration methods for the EM algorithm translate quite easily to the MM case \cite{wu2010mm}. On this basis, we explored whether this approach might be applied here.
+
+The textbook approach employed is known as Aitken Acceleration\cite{dempster1977maximum, mclachlan2007algorithm}. Suppose that there is a sequence $x_0, x_1, x_3, \dots$ converging to a limit $x^*$. Aitken's method makes the ansatz that $ x_{n+1} - x^* \approx C(x_n - x^*)$  for some constant $C$. Many iterative algorithms in statistics exhibit this pattern. For example, it can be seen from the log-plot in Figure \ref{fig:coef_plot} that for the sequence of fitted coefficient vectors $\mathbf{c}_n$ that $\|\mathbf{c}_{n+1} - \mathbf{c}_n\| \approx C|\mathbf{c}_{n} - \mathbf{c}_{n-1}\|$ as $n \rightarrow \infty.$
+
+This suggests the following equation:
+
+\[
+  \frac{x_{n+1} - x^*}{x_{n} - x^*} \approx \frac{x_{n} - x^*}{x_{n-1} - x^*}
+\]
+
+Solving for $x^*$ gives the accelerted sequence. 
+
+There is an equivalent definition that is easier to generalise \cite{isaacson2012analysis}. Consider a sequence defined by functional iteration so that $x_{n+1} = F(x_n)$ for some function $F(\cdot)$ Define the error sequence by $e_{n} = x_{n+1}- x_n = F(x_n) - x_n.$ The function $g(x) = F(x) - x$ returns the error associated with any value, and the limit of the sequence satisfies $g(x^*) = 0.$ Suppose one knew the inverse of $g(x),$ which will be denoted by $h(e).$ Then $x^*$ could be found by evaluating $f(0).$ The next best thing would be to use the values of the sequence to approximate $h(e),$ and then evaluate this approximate function at zero instead. The Aitken method approximates $h(e)$ by linear interpolation between $(e_n, x_n)$ and $(e_{n-1}, x_{n-1}),$ and then evaluates this approximation at $e = 0.$ 
+
+\newpage
+
+\subsubsection{Illustrative Example: Using Imputation to Fit an ANOVA Model With Missing Data}
+
+For illustrative purposes, we will make use of an example from chapter 2 of \cite{mclachlan2007algorithm}. The authors discuss fitting an ANOVA model to a factorial experiment where some of the values are missing. They proceed by using the fitted model to estimate the missing values; fitting the model again with the new imputed values; and using the new fitted values in turn to again update the estimates of missing values. The process is repeated until convergence. In the text, the authors do not work here with likelihood or any probablistic models and treat the question as purely a regression problem. This is similar to our L1 fitting problem.
+
+The authors' example was implemented againg in R.\footnote{The $SSE$ statistic here is different from the $RSS$ statistic presented in the text. The new code converges to the same estimates as in the original, so the example has been re-implemented correctly. It was not possible to determine what degrees of freedom  $RSS$ was associated with.}. For each iteration, the $SSE$ statistic was computed. This defines an associated sequence $\{SSE_1, SSE_2,\dots, SSE_n, \dots\}.$ Applying Aitken's method to this sequence produces a new sequence $\{ASSE_n\}.$ As can be seen in Figure \ref{fig:sse_error} and Table \ref{tab:sse_error}, the accelerated sequence converges far more quickly to the limit of the $\{SSE_i\}$ sequence than the original sequence.
+
+\subsubsection{Generalisations}
+
+Outside of more specialised texts, Statistics is generally content with Aitken's method and multivariate generalisations. Exploring more powerful methods can justified in two circumstances. The first is that if one is running the algorithm over and over again such that an increase in speed over many iterations means the effort invested is worth it. This might be the case for example if one  wanted to use the bootstrap to model the distribution of  an likelihood ratio statistic computed using the EM Algorithm as previously described. The second is if the sequence is difficult to accelerate. In this situation, it shall be seen that both conditions apply.
+
+
+
+
+As a field of study, sequence acceleration is closely related to time series analysis. A generic first order autoregressive model is given by:
+
+\[
+   x_{n+1} = f(x_n, n) +  \epsilon_n
+\]
+
+Consider the case where there are  both no random errors so that $\epsilon_n$ is always zero, and the sequence converges to a limit. Here, the problem of deterimining the long term value of the sequence from a set of observations is equivalent to that of accelerating the sequence. If the specific form of $f(x_n, n)$ is known, there can often be a specific acceleration method that can exactly extract the limit.  For  illustration, suppose there were a sequence of the following form, but the parameters $\beta_0$ and $\beta_1$ were unknown:
+
+\begin{equation} 
+  x_n = \beta_0 + \frac{\beta_1}{n} \label{eqn:rec_seq}
+\end{equation}
+
+As $n$ goes to infinity, $x_n$ converges to $\beta_0.$ It is not difficult to show that the limit $\beta_0$ can be found by applying  the following sequence transformation:
+
+\begin{equation}  
+   \begin{cases} 
+      \begin{aligned}
+       \hat{\beta}_{1,n} &= \frac{x_n - x_{n+1}}{\left(\frac{1}{n} - \frac{1}{n+1}\right)} \\
+       \tilde{x}_n &= x_n - \frac{\hat{\beta}_{1,n}}{n}
+     \end{aligned}
+  \end{cases} \label{eqn:rec_trans}
+\end{equation}
+
+If the transformation (\ref{eqn:rec_trans}) is applied to a sequence of values $x_1, x_2, \dots, x_n, \dots$ that is of form (\ref{eqn:rec_seq}), then the transformed sequence $\tilde{x}_1, \tilde{x}_2, \dots, \tilde{x}_n, \dots$ will have the property that $\tilde{x}_n = \beta_0$ for all $n.$ Likewise, the Aitken method is exact for sequences of the form $x_{n+1} = \beta_0 + \beta_1x_n,$ and so can be thought of as the deterministic analogue of an $AR(1)$ model.
+
+
+
+
+The process of acceleration isn't quite so neat in practice because sequences don't adhere perfectly to these simple forms. Instead, the best that can be realistically hoped for is that the  transformed sequence converges to the same limit as the original, but the rate of convergence is higher. For example, if transformation (\ref{eqn:rec_trans}) is applied to a sequence of the form $y_n = \beta_0 + \frac{\beta_1}{n} + \frac{\beta_2}{n^2},$ then the transformed sequence is now of the form $\tilde{y}_n = \beta_0 + \mathcal{O}(\frac{1}{n^2}),$ which converges to $\beta_0$ more quickly than the original sequence.\footnote{Doing the algebra, it can be seen that it is now the case that $\hat{\beta}_{1,n} =  \beta_1 + \beta_2 \left[\frac{2n + 1}{n(n+1)}\right],$ and so $\tilde{y}_n = \beta_0 +\beta_{2}\left[-\frac{2n + 1}{n^2(n+1)} + \frac{1}{n^2}\right] = \beta_0  + \beta_{2}\left[\frac{-n^3 - n^2  + n}{n^4(n+1)}\right] .$}
+
+
+Suppose a convergent  sequence is of the form $x_{n+1} = f(x_{n})$ with $f(\cdot)$ differentiable and $x^*$ is the limit. Using a first order Taylor expansion, it can be seen that   for sufficiently large $n,$ $x_{n+1} \approx  x^* +  f'(x^*)(x_n - x^*).$ In this case, Aitken acceleration has a decent chance of accelerating the sequence so long as it has 'burned in' sufficiently.
+
+One generalisation, proposed in \cite{isaacson2012analysis} is to use higher order polynomials to model the inverse error function $h(e).$ So $h(e)$ would be approximated by a quadratic through $(e_n, x_n), (e_{n-1}, x_{n-1})$ and $(e_{n-2}, x_{n-2}).$ Making $e$ the independent variable here instead of $x$ means the estimated limit can simply be found by evaluating the appproximating quadratic at $e = 0$ instead of having to find the correct root of a quadratic to compute each element of the accelerated sequnce.
+
+Another approach is to simply apply Aitken Acceleration to the sequence twice. 
+
+Both these approaches were attempted for the missing data model, and the results can be seen in Table \ref{tab:sse_error} and Figure \ref{fig:double_sse_error}. It can be seen that both methods improve convergence, though double Aitken acceleration is more effective (and easier to implement).
+
+One can take the process further. For the missing values linear model, these higher-order methods converge very rapidly and are prone numerically instability thereafter due to the error terms being so small, so  plotting or tabluating them was not worth the additional clutter. If the Aitken method is applied three times to the original sequence, the first entry yields the limit immediately and there is no need to go any further. Applying the quadratic method twice in a row produces a new sequence for which the first entry is within $10^{-12}$ of the limit.
+
+
+\paragraph{Other Approaches:} There are alternative approaches besides those described here. For example, the EM and MM alogrithms generate a sequence of coeffcient vectors $\{\mathbf{c}_0, \mathbf{c}_1, \dots, \mathbf{c}_n, \dots \}$ with $\mathbf{c}_{n+1} = \mathbf{F}(\mathbf{c}_n)$ for some function $\mathbf{F}(\cdot).$ In our particular situation, the  function $\mathbf{F}(\cdot)$ would denote the operator that  takes a coefficient vector and returns the coefficient vector that minimises the associated $WPENSSE$ problem (\ref{eqn:wpensse}). The limit of this sequence - should it exist - is a solution to the equation $\mathbf{c} = \mathbf{F}(\mathbf{c}).$ It is  proposed in the literature to use Newton or Quasi-Newton methods  such as those described in Section \ref{sec:quad_methods} to  numerically solve this fixed point equation \cite{chan2017acceleration, dempster1977maximum}. The idea is that such methods will find the fixed point more rapidly than simply iterating $\mathbf{F}(\cdot)$ until one gets sufficiently close to the limit. These methods have  the disadvantage of being more complex and time consuming to implement than the univariate acceleration methods.
+
+\begin{figure}
+\centering
+   \includegraphics[height=9cm]{anova_accel.pdf}
+   \caption{Log Errors for original sequnce of SSE values and the accelerated one}
+   \label{fig:sse_error}
+\end{figure}
+
+
+\begin{figure}
+\centering
+   \includegraphics[height=9cm]{anova_double_accel.pdf}
+   \caption{More sophisticated acceleration methods can provide a further boost to convergence. There are gaps in the plot -  many accelerated iterations have no valid log error  because R cannot numerically distinguish them from the final limit.}
+   \label{fig:double_sse_error}
+\end{figure}
+\newpage
+\begin{table}[]
+
+\caption{Iterations of the original sequence $SSE_n,$ the accelerated sequence $ASSE_n,$ the quadratically accelerated sequence $QASSE_n,$ and the doubly accelerated sequence $DASSE_n.$}
+
+\label{tab:sse_error}
+\centering
+\begin{tabular}{ccccc}
+     & $SSE_n$          & $ASSE_n$  & $QASSE_n$        & $DASSE_n$       \\
+\hline
+1     & 4949.6944444444 & 3203.8032711619 & 3203.7834325738 & 3203.7829457122 \\
+2     & 3575.1658950617 & 3203.7843303225 & 3203.7829788622 & 3203.7829457359 \\
+3     & 3282.7945625667 & 3203.7830400346 & 3203.7829479917 & 3203.7829457364 \\
+4     & 3220.5935028609 & 3203.7829521582 & 3203.7829458900 & 3203.7829457364 \\
+5     & 3207.3596279977 & 3203.7829461738 & 3203.7829457469 & 3203.7829457364 \\
+6     & 3204.5439391293 & 3203.7829457662 & 3203.7829457371 & 3203.7829457364 \\
+7     & 3203.9448588925 & 3203.7829457385 & 3203.7829457365 & 3203.7829457364 \\
+8     & 3203.8173952920 & 3203.7829457366 & 3203.7829457364 & 3203.7829457364 \\
+9     & 3203.7902754193 & 3203.7829457364 & 3203.7829457364 & 3203.7829457364 \\
+10    & 3203.7845052414 & 3203.7829457364 & 3203.7829457364 & 3203.7829457364 \\
+11    & 3203.7832775456 & 3203.7829457364 & 3203.7829457364 & 3203.7829457364 \\
+12    & 3203.7830163340 & 3203.7829457364 & 3203.7829457364 & 3203.7829457364 \\
+13    & 3203.7829607572 & 3203.7829457364 & 3203.7829457364 & 3203.7829457364 \\
+14    & 3203.7829489323 & 3203.7829457364 & 3203.7829457364 & 3203.7829457364 \\
+15    & 3203.7829464164 & 3203.7829457364 & 3203.7829457364 & 3203.7829457364 \\
+16    & 3203.7829458811 & 3203.7829457364 & 3203.7829457364 & 3203.7829457364 \\
+17    & 3203.7829457672 & 3203.7829457364 & 3203.7829457364 & 3203.7829457364 \\
+18    & 3203.7829457430 & 3203.7829457364 & 3203.7829457364 & 3203.7829457364 \\
+19    & 3203.7829457378 & 3203.7829457364 & 3203.7829457364 & 3203.7829457364 \\
+20    & 3203.7829457367 & 3203.7829457364 & 3203.7829457364 & 3203.7829457364 \\
+21    & 3203.7829457365 & 3203.7829457364 & 3203.7829457364 & 3203.7829457364 \\
+22    & 3203.7829457364 & 3203.7829457364 & 3203.7829457364 & 3203.7829457364 \\
+\hline
+$\infty$ & 3203.7829457364 & 3203.7829457364 &  3203.7829457364 & 3203.7829457364
+\end{tabular}
+\end{table}
+
+\newpage
+\clearpage
+\subsubsection{Accelerating the L1 Fitting Alogrithm}
+
+The L1 fitting algorithm is much more difficult to accelerate as can be seen in Figures \ref{fig:sae_accel} and \ref{fig:sae_multi_accel}. Even applying  advanced acceleration methods designed for slowly converging sequences fail. The $SAE$ sequence is apparently either numerically ill-behaved or of a form is unusual.
+
+To conclude, it is possible to save some time by acceleration, but the scope for doing so is limited and the process would have to be monitored carefully to ensure that numerical instability isn't causing trouble. This is quite mediocre compared to what the literature promises.
+
+
+\begin{figure}
+\centering
+   \includegraphics[height=9cm]{l1_accleration_plot.pdf}
+   \caption{Accelerating the SAE sequence generating by the L1 fitting alogrithm using Aitken's Method. The improvement in covergence is  mediocre.}
+\label{fig:sae_accel}
+\end{figure}
+
+\begin{figure}
+\centering
+   \includegraphics[height=9cm]{multi_accleration_plot.pdf}
+   \caption{Accelerating the SAE sequence using multiple methods. Aitken's method performs the best, despite it's lack of sophistication.}
+\label{fig:sae_multi_accel}
+\end{figure}
+\newpage
+\subsection{The Two Level Parameter Cascade with L1 Norm}
+
+
+The inner problem  of the parameter cascade is  a semiparametric least squares regression model. The fitted function is modeled as a weighted sum of a solution to the differential equation (parametric), and a non-parametric residual. The lambda term governs how big the residual is allowed to be relative to the the least squares error term
+
+If the usual least-squares error function is used, the inner problem will probably struggle with outliers and heavy tailed errors as is the case for any form of least-squares regression. 
+
+For high order differential operators like that used to model the melanoma data, there are so many degrees of freedom associated with the differential operator's solution set. The omega and lambda parameters don't strongly constrain the lower level of the cascade.  There is little capacity for the higher levels of the cascde to restrain the lowest level through altering the lambda and omega parameters. 
+
+Accordingly, the parameter cascade must use robust estimation at every level.
+
+In Section \ref{brent_param} we discussed how Brent's Method can be used to tackle the middle problem without derivatives and then used this approach to optimise a highly irregular loss function. In the previous subsection, we used the MM algorithm to optimise the inner problem with an L1 norm. 
+
+Combining the two methods, it is very straightforward to implement a two-level parameter cascade with L1 errors at both levels. 
+
+
+
+\begin{figure} 
+\centering
+    \includegraphics[height=9cm]{/home/padraig/latex/mela_omega_mae_profile.pdf}
+    \includegraphics[height=9cm]{/home/padraig/latex/mela_omega_mae_fit.pdf}
+    \caption{Fitting an L1 Parameter Cascade to the Melanoma Data}
+    \label{fig:mela_l1_cascade}
+\end{figure}
+
+\begin{figure}
+\centering
+ \includegraphics[height=9cm]{/home/padraig/latex/mela_l1_l2_cascade_plot.pdf}
+ \caption{L1 and L2 Parameter Cascades with the same perturbed data as in Figure \ref{fig:mela_l1_l2}. Compare the L1 curve in this plot with the one in Figure \ref{fig:mela_l1_cascade}.}
+\end{figure}
+\newpage
+
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{ref} 
+
+\end{document}
+

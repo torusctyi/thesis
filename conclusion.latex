@@ -1,0 +1,90 @@
+\documentclass[a4paper, 12pt]{report}
+
+\usepackage[margin=1in,footskip=0.25in]{geometry}
+\usepackage{amsmath}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[square,sort,comma,numbers]{natbib}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{url}
+\usepackage[justification=centering]{caption}
+
+%\usepackage[a4paper, margin=3.0cm]{geometry}
+
+\usepackage{vmargin}
+% left top textwidth textheight headheight
+% headsep footheight footskip
+\setmargins{3.0cm}{2.5cm}{15.5 cm}{22cm}{0.5cm}{1cm}{1cm}{1cm}
+
+\begin{document}
+
+\chapter{Conclusion and Further Research}
+
+\section{Quasi-linear Differential Problems}
+
+Throughout this theis, it has been possible to either use techniques from Applied Mathematics to construct solution strategies on a case by case basis, or use Statistical methods to find a semi-parametric fit. As differential equations become more complex, both approaches begin to rapidly become non-viable. In this section,  quasi-linear differential equation models will be touched upon.
+
+The difference between a quasi-linear and a linear differential equation is that the coefficients in a quasi-linear equation are allowed to depend on the unknown function. Instead of an ODE such as $y' = \beta(t)y,$ one would have an ODE such as $y' = \beta(y,t)y.$  Though quasi-linear problems tend to be reminiscent of linear ones, they are nonetheless substanially more complicated, and require more technical knowledge, and even ingenuity to tackle.
+
+For a quasi-linear variation of a linear ODE, consider the Van Der Pol Equation:
+
+\[
+   y''(t) + \beta (1 - y(t))^2 y'(t) + y(t)
+\]
+
+This ODE has no obvious solution.
+
+
+\subsection{Inviscid Burger's Equation}
+Even if a solution exists, an estimation strategy might be difficult to derive. Consider the inviscid Burger's Equation:
+\[
+    \frac{\partial u(x,t)}{\partial t} + \beta u(x,t) \frac{\partial u(x,t)}{\partial x} = 0
+\]
+
+This equation is identical to  the Transport Equation except that the rate term is equal to $\beta u(x,t).$ The solution is given by:
+
+\[
+   u(x,t) = f(s)
+\]
+
+Here $f(\cdot)$ is some arbitary function as  before, and $s$ is implicitly defined as the solution of the equation $x = \beta f(s) t + s$. Since $s = x - \beta ut,$ this can be written as:
+
+\[
+   u(x,t) = f(x - \beta ut)
+\]
+
+
+Fitting this model is substantially trickier than the Transport Equation. There is no clean seperation between the problem of estimating $f(\cdot)$ and $\beta$ since $u(x,t)$ appears on the righthand side and scales $\beta.$ 
+
+A further complication is that $u(x,t)$ might only define a \emph{relation}, instead of a function. There might be multiple values of $u$ associated with a given  $(x,t)$ that satisfy the solution equation. Physically speaking, multiple values correspond to shock waves. 
+
+\subsection{Discussion} 
+
+We see that the level of knowledge required to devise fitting strategies can increase substantially even with seemingly modest increases in the complexity of the associated differential equation.
+
+
+Consider the following quasi-linear model of genetic drift in a population proposed\footnote{In the \textit{Annals of Eugenics...}} by R.A. Fisher:\cite{fisher1937wave}
+
+\begin{equation}
+\frac{\partial u(x,t)}{\partial t} + \beta_1 \frac{\partial u(x,t)}{\partial x} = \beta_2 u(x,t)(1 - u(x,t))
+\end{equation}
+
+This problem is similar to the previous  PDEs we discussed, it even admits travelling wave solutions of the form $f(x + ct)$ as Fisher himself noted. Nonetheless, it is a much more difficult problem despite the apparently modest increase in complexity. One would likely  have to consult a textbook that covers non-linear PDEs that can generate waves in fair degree of detail to be able to devise a fitting strategy. This is quite a specialised subject!
+
+The overall result is that as the complexity of the differential equation increases, more and more time will be needed to model it correctly.
+
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{ref} 
+
+\end{document}
+
+
+\newpage
+
