@@ -1,123 +1,8 @@
-\documentclass[a4paper, 12pt]{report}
+\chapter{Overview of Optimisation Methods}\label{chap:optimisation_methods}
 
-\usepackage[margin=1in,footskip=0.25in]{geometry}
-\usepackage{amsmath}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{graphicx}
-\usepackage{amssymb}
-\usepackage{graphicx}
-\usepackage{algorithm}
-\usepackage{textcomp}
-\usepackage{algpseudocode}
-\usepackage[square,sort,comma,numbers]{natbib}
+This appendix provides an overview of the ideas in numerical optimisation used throughout this thesis. \cite{nocedalnumerical, chong2013introduction} are  accesible texts for those who wish for more detail.
 
-\usepackage{amsmath}
-\usepackage{graphicx}
-\usepackage{subfig}
-\usepackage{url}
-\usepackage[justification=centering]{caption}
-
-%\usepackage[a4paper, margin=3.0cm]{geometry}
-
-\usepackage{vmargin}
-% left top textwidth textheight headheight
-% headsep footheight footskip
-\setmargins{3.0cm}{2.5cm}{15.5 cm}{22cm}{0.5cm}{1cm}{1cm}{1cm}
-\setcounter{secnumdepth}{3}
-
-\begin{document}
-\chapter[Overview of Numerical Optimisation]{Overview of Numerical Optimisation}
-
-This chapter provides a brief overview of the ideas in optimisation used throughout this thesis. \cite{nocedalnumerical} is a standard and accesible text on the subject.
-
-First some notation, for the sake of brevity and legibility we will let $f_n$ denote the value of the objective function at $\mathbf{x}_n,$ $\mathbf{g}_n$ denote the gradient of the objective function evaluated at the $n$th iterate $\mathbf{x}_n,$ and $\mathbf{H}_n$ denote the Hessian matrix at the $n$th iteration. In other words:
-
-\begin{align*}
-f_n &= f(\mathbf{x}_n) \\
-\mathbf{g_n} &= \nabla f(\mathbf{x}_n) \\
-\mathbf{H}_n &= \nabla\nabla^\top f(x_n) \\
-\end{align*}
-
-
-\section[Rates Of Convergence]{Rates Of Convergence\footnote{There are slightly different definitions of convegrgence rates from text to text, but all capture the same basic meaning.  Refer to \cite{nocedalnumerical, chong2013introduction}.}}
-
-Throughout this thesis, it will sometimes be desireable to compare the rates of convergence of different methods. Suppose there is a vector-valued sequence $\mathbf{x}_n$ that  converges to a value $\mathbf{x^*}.$ 
-
-\paragraph{Linear Convergence:}A convergent sequence is said to \emph{converge linearly}\footnote{In \cite{nocedalnumerical}, the case $\mu = 0$ is considered to be a case of linear convergence as well. This definition makes it harder to sharply discriminate between linear and superlinear convergence.} to $\mathbf{x^*}$ if there is a $0 < \mu <1$ such that:
-
-\begin{equation}\label{eqn:linear_convergence}
-   \lim_{n \rightarrow \infty}  \frac{\|\mathbf{x}_{n+1}- \mathbf{x}^*\|}{\|\mathbf{x}_{n}- \mathbf{x}^*\|} = \mu
-\end{equation}
-
-If a sequence $\mathbf{x}_n$ converges linearly with constant $\mu,$ then $\|\mathbf{x}_{n+1}- \mathbf{x}^*\| \approx \mu\|\mathbf{x}_{n}- \mathbf{x}^*\|$ for $n$ sufficiently large. A simple example of a linearly converging sequence is given by $1, \frac{1}{2}, \frac{1}{4}, \frac{1}{8},\dots$ If plotted on a log scale, the $\|\mathbf{x}_{n+1}- \mathbf{x}^*\|$ terms will  tend to lie on a straight line
-
-
-
-\paragraph{Sublinear Convergence:}A sequence is said to converge  \emph{sublinearly} to $\mathbf{x^*}$ if:
-
-\[
-   \lim_{n \rightarrow \infty}  \frac{\|\mathbf{x}_{n+1}- \mathbf{x}^*\|}{\|\mathbf{x}_{n}- \mathbf{x}^*\|} = 1
-\]
-
-Sublinear convergence is very slow. Every reduction in the order of magnitude of the error achieved takes more iterations than the previous reduction. The ur-example of a sublinearly convergent sequence is the reciprocals of the natural numbers: $1, \frac{1}{2}, \frac{1}{3}, \frac{1}{4}, \dots.$ 
-
-\paragraph{Superlinear Convergence:}A sequence is said to converge superlinearly if:
-
-\[
-   \lim_{n \rightarrow \infty}  \frac{\|\mathbf{x}_{n+1}- \mathbf{x}^*\|}{\|\mathbf{x}_{n}- \mathbf{x}^*\|} = 0
-\]
-
-Usually, one can be more specific about the rate. A sequence is said to converge superlinearly with order $p$ if there exist positive constants $p > 1$ and $\mu>0$ such that:
-\begin{equation}\label{eqn:linear_convergence}
-   \lim_{n \rightarrow \infty}  \frac{\|\mathbf{x}_{n+1}- \mathbf{x}^*\|}{\|\mathbf{x}_{n}- \mathbf{x}^*\|^p} = \mu
-\end{equation}
-
-Note that there is no requirement that $\mu < 1$ in this case. If $p=2,$ the sequence is said to converge quadratically.Taking logs yields that $\log(\|\mathbf{x}_{n+1}- \mathbf{x}^*\|) \approx -p\log(\|\mathbf{x}_{n}- \mathbf{x}^*\|).$ For a linear sequence, the magnitude of the error declines exponentially, whereas the \emph{order of magnitude of the error} declines exponentially for a superlinearly convergent sequence. For a quadratically converging sequence, each iteration tends to roughly double the number of digits of precision. For example, if the error in the first iterate is approximately $0.1$, the next iterate will have error on the order of $10^{-2}$, the next will have error on the order of $10^{-4},$ and so on. 
-An  example of superlinear convergence is given by the sequence $x_n = 2^{-2^n}.$ 
-
-\begin{table}[]
-\centering
-\begin{tabular}{|c|c|c|c|}
-\hline
-Convergence Class & Example               & Iterations until $<10^{-6}$        & Iterations until $<10^{-12}$  \\
-\hline
-Sublinear        & $x_n = \frac{1}{n}$    & $10^6 + 1$                         & $10^{12}$ + 1                \\
-Linear           & $x_n = 2^{-n}$         & 20                                 & 40                            \\
-Superlinear      & $x_n  = 2^{-2^{n}}$    & 5                                  & 6                             \\
-\hline                                              
-\end{tabular}    
-\caption{Illustrating the different classes of convergence.}  
-\end{table}
-
-
-\paragraph{An Extended Definition of Convergence Rates:}The above appraoch to defining the rate of convergence can't handle every sequence however. For example, the  sequence $1,1, \frac{1}{2}, \frac{1}{2}, \frac{1}{4}, \frac{1}{4}, \dots$ does not converge linearly in the sense of (\ref{eqn:linear_convergence}). To cover these situations, a sequence is also said to converge linearly/sublinearly/superlinearly if there is an associated auxillary sequence $\epsilon_n$ such that $\|\mathbf{x}_{n+1}- \mathbf{x}^*\| \leq \epsilon_n$ for all $n \geq 0,$ and the sequence $\epsilon_n$ converges linearly/sublinearly/superlinearly to zero.\footnote{The simple definition presented here is known as \emph{Q-Convergence}, and the extended definition is known as \emph{R-Convergence} \cite{nocedalnumerical}.}
-
-
-\paragraph{Linear Convergence and Iterated Mappings:}Nearly all estimation algorithms used in statistics start with an initial estimate $\theta_0$ and generate a sequence of estimates by $\mathbf{\theta}_{n+1} = \mathbf{\mathbf{M}}(\theta_n)$ for some mapping $\mathbf{M}(\cdot).$ The alogrithm is stopped when the generated sequence has converged within a tolerance of the limit $\theta^*.$ Examples include the Newton-Raphson Method, Fisher's Method of Scoring, Gradient Descent, the EM Algorithm,  Block Relaxation, and many imputation methods. As shall be seen, a statistically motiviated fitting alogorithm will nearly always converge linearly unless it has been specifically engineered so that $\mathbf{M}'(\theta^*) = 0.$
-
- Linear convergence is common for  convergent sequences defined by repeatedly applying a function $\mathbf{f}$ so that $\mathbf{x}_{n+1} = \mathbf{f}(\mathbf{x}_n).$ To see this, perform a Taylor expansion about the limit point $\mathbf{x^*}:$
-
-\begin{align*}
-\mathbf{f}(\mathbf{x}_{n}) &\approx \mathbf{f}(\mathbf{x^*}) + \mathbf{f'}(\mathbf{x^*})(\mathbf{x}_n - \mathbf{x^*}) \\
-\mathbf{f}(\mathbf{x}_{n}) &\approx \mathbf{x^*} + \mathbf{f'}(\mathbf{x^*})(\mathbf{x}_n - \mathbf{x^*}) \\
-\mathbf{f}(\mathbf{x}_{n}) - \mathbf{x^*} &\approx \mathbf{f'}(\mathbf{x^*})(\mathbf{x}_n - \mathbf{x^*}) \\
-\mathbf{x}_{n+1}  - \mathbf{x^*} &\approx \mathbf{f'}(\mathbf{x^*})(\mathbf{x}_n - \mathbf{x^*}) \\
-\end{align*}
-
-Taking norms of both sides yields that:
-
-\[
-   \|\mathbf{x}_{n+1}  - \mathbf{x^*}\| \lesssim \|\mathbf{f'}(\mathbf{x^*}) \| \|\mathbf{x}_{n+1}  - \mathbf{x^*}\|
-\]
-
-The situaion here is a little subtle because $\mathbf{f}$ is a multivariate function. The exact rate is of convergence is controlled by the norm of the Jacobian matrix $\mathbf{f}'(\mathbf{x})$ at $\mathbf{x^*}.$ So long as there is a matrix norm such that $\|f'(\mathbf{x}^*)\| < 1$ the sequence will converge linearly at worst, though faster than linear convergence is potentially possible if $0$ is an eigenvalue of $\mathbf{f}'(\mathbf{x}^*).$\footnote{Consider for example the multivariate sequence defined by $(x_{n+1}, y_{n+1}) = (x_n^2, y_n/2).$  This convergence  towards zero is  superlinear  in the $x$ direction, but only linear in the $y$ direction. If $(x_0, y_0) = (0.5, 0),$ then the convergence will be superlinear, but the $y$ component will generally drag the convergence rate down to linear convergence.} If $\mathbf{f'}(\mathbf{x^*}) = \mathbf{0},$ the convergence will be superlinear.
-
-
-More sophisticated optimisation algorithms such as the Newton-Raphson method are specifically designed so that $\mathbf{f'}(\mathbf{x^*}) = 0,$ so that the convergence is superlinear.
-
-
-\section{Gradient Descent and the Newton-Raphson Method}
+\section{Gradient Descent and the Newton-Raphson Method}\label{sec:newton_gradient}
 
 
 The simplest derivative-based optimisation algorithm is known as \emph{Gradient Descent}:
@@ -134,37 +19,47 @@ The fixed parameter $\alpha >0$ controls how big a step the method will take on 
                        &= f(\mathbf{x}_n) - \alpha \|\mathbf{g}_n\|^2
 \end{align*}
 
-This means that $f(\mathbf{x}_{n+1}) < f(\mathbf{x}_{n})$ so long as $\alpha$ isn't too big. Gradient descent is simple but it is slow, woefully slow sometimes\cite{nocedalnumerical,chong2013introduction}. If the objective function isn't sufficiently well behaved, gradient descent can even converge sublinearly \cite{mathematicsdata2018}.
+This means that $f(\mathbf{x}_{n+1}) < f(\mathbf{x}_{n})$ so long as $\alpha$ isn't too big. Gradient descent is simple but it only converges linearly under ideal conditions. \cite{nocedalnumerical,chong2013introduction, mathematicsdata2018}. If the objective function isn't sufficiently ideal, gradient descent might only converge sublinearly \cite{mathematicsdata2018}.
 
-What consitutes an ill-behaved function might not be as obvious as it might seem. Consider the question of minimising the function $f(x) = x^4$ using gradient descent, starting at $x = 0.5$ with $\alpha = 0.2.$ The minimum of $f(x)$ is of course at $x=0,$ so the absolute value of the iterates $x_n$ is a measure of the error. Figure \ref{fig:grad_descent} plots the log errors for the first 20,000  iterations, It is readily apparent that the alogrithm is converging sublinearly and that the rate of convergence is absolutely and utterly woeful. It takes around 250 iterations before the error falls below $10^{-3},$  around 1900 iterations before the error falls below $10^{-4}$, and 13800 iterations before the error falls below  $10^{-5}.$ The data suggests that the number of iterations needed to reduce the error to $10^{-n-1}$ is approximately $7.4$ times the number of iterations needed to achieve an error of $10^{-n}.$ So it could take over 100,000 iterations to get an error of less than $10^{-6}.$
+Consider the question of minimising the function $f(x) = x^4$ using gradient descent, starting at $x = 0.5$ with $\alpha = 0.2.$ The minimum of $f(x)$ is of course at $x=0,$ so the absolute value of the iterates $x_n$ is a measure of the error. Figure \ref{fig:grad_descent} plots the log errors for the first 20,000  iterations, It is readily apparent that the alogrithm is converging sublinearly and that the rate of convergence is absolutely and utterly woeful. It takes around 250 iterations before the error falls below $10^{-3},$  around 1900 iterations before the error falls below $10^{-4}$, and 13800 iterations before the error falls below  $10^{-5}.$ The data suggests that the number of iterations needed to reduce the error to $10^{-n-1}$ is approximately $7.4$ times the number of iterations needed to achieve an error of $10^{-n}.$ So it could take over 100,000 iterations to get an error of less than $10^{-6}.$
 
 
 
-Gradient descent can be thought of as the naive choice if one only has access to $f(\mathbf{x})$ and $\nabla f(\mathbf{x}.$ Suppose  if second derivatives were available as well. What would the naive choice be in this case? Perform a second-order Taylor expansion of the objective function around $\mathbf{x}_n:$
+Gradient descent can be thought of as the naive choice if one only has access to $f(\mathbf{x})$ and $\nabla f(\mathbf{x}).$ Suppose the second derivatives were available as well. What would the `obvious'   choice be in this case? Perform a second-order Taylor expansion of the objective function around $\mathbf{x}_n:$
 
 \[
    f(\mathbf{x}) \approx f_n +  \mathbf{g}_n^\top(\mathbf{x} - \mathbf{x}_n) + \frac{1}{2}(\mathbf{x} - \mathbf{x}_n)^\top\mathbf{H}_n(\mathbf{x} - \mathbf{x}_n)
 \]
 
-The expression on the lefthand side is minimised by $\mathbf{x} = \mathbf{x}_n - \mathbf{H}_n^{-1}\mathbf{g}_n.$ Given the iterate $\mathbf{x}_n$, the \emph{Newton-Raphson} method defines the next iterate by:
+The expression on the righthand side is minimised by $\mathbf{x} = \mathbf{x}_n - \mathbf{H}_n^{-1}\mathbf{g}_n.$ Given the iterate $\mathbf{x}_n$, the \emph{Newton-Raphson} method defines the next iterate by:
 
 \[
     \mathbf{x}_{n+1} = \mathbf{x}_n - \mathbf{H}_n^{-1}\mathbf{g}_n
 \]
 
-The Newton-Raphson Method generally  converges quadratically so long as one is already near the optimal point.\cite{nocedalnumerical} Its biggest weaknesses are the cost of constantly computing the Hessians, the possibilty that $ - \mathbf{H}_n^{-1}\mathbf{g}_n$ fails to be a descent direction, and the possibilty of poor performance or even divergence if one is far from the optimal value.
+The Newton-Raphson Method converges quadratically, subject to technical conditions including that  so long as one is already near the optimal point and that the Hessian at the optimal point is not pathological.\cite{nocedalnumerical,isaacson2012analysis, lange2010numerical, lange2004optimization,chong2013introduction} If these assumptions do not hold, undesriable behaviour can occur. For example, the Newton Raphson Method only converges linearly with rate $0.666$ when applied to the function $f(x) = x^4$ as can be seen in Figure \ref{fig:newton_grad_descent}, because the second derivative is zero at the optimal point.\footnote{For the case of univariate optimisation, the specific rate of convergence is given by $m/(m+1),$ where $m$ is the number of consecutive higher order derivatives starting from the second derivative that are zero at the optimal point.\cite{isaacson2012analysis} In the case where $f(x) = x^4,$ we have that $f''(0) = 0$ and $f'''(0) = 0,$ but $f^{(4)}(0) = 24 \neq 0,$ and so $m = 2.$}\cite{isaacson2012analysis} While the Newton-Raphson method is undeniably a huge improvement over Gradient Descent here, it nonetheless completely fails to achieve the usual quadratic convergence. 
+
+The biggest weaknesses of Newton's Method the cost of constantly computing the Hessians, the possibilty that $ - \mathbf{H}_n^{-1}\mathbf{g}_n$ fails to be a descent direction, and the possibilty of poor performance or even divergence if one is far from the optimal value.
 
 \newpage
 
 \begin{figure}
-\centering
-\includegraphics[height = 15cm]{gradient_sublinear_extended.pdf} 
-\caption{Plot of the log errors from applying gradient descent to the function $f(x) = x^4.$}
-\label{fig:grad_descent}
+   \centering
+   \includegraphics[height = 15cm]{gradient_sublinear_extended.pdf} 
+   \caption{Plot of the log errors from applying Gradient Descent to the function $f(x) = x^4.$}
+   \label{fig:grad_descent}
 \end{figure}
-\clearpage
-\newpage
-\section{Chord Methods} \label{sec:chord_methods}
+\newpage\clearpage
+
+\begin{figure}
+    \centering
+    \includegraphics[height = 15cm]{newton_gradient.pdf} 
+    \caption{Plot of the log errors from applying Gradient Descent and the Newton-Raphson Method to the function $f(x) = x^4.$}
+    \label{fig:newton_grad_descent}
+\end{figure}
+
+\newpage\clearpage
+\section{The Chord Method} \label{sec:chord_methods}
 
 
 Chord Methods attempt to approximate the Hessian matrix by using a constant matrix $\mathbf{Q}.$ The next iterate is defined by:
@@ -187,7 +82,7 @@ Ensuring that $\mathbf{x^\top Qx} < 0, \forall \mathbf{x} \neq \mathbf{0}$ means
 
 
 
-It can be shown that the Chord Method converges linearly\cite{kelley1995iterative}, a very informal sketch will be provided here.\footnote{This is a straightforward generalisation of results presented in \cite{isaacson2012analysis} to the multivariate case.} Let $\mathbf{g}(\mathbf{x})$ denote the mapping $\mathbf{g}(\mathbf{x})  = \mathbf{x} + \mathbf{Q}\nabla f(\mathbf{x}).$ Note that $\mathbf{x}_{n+1} = \mathbf{g}(\mathbf{x}_n).$ Suppose the sequence $\mathbf{x}_n$ converges, to determine how quickly the converge occurs, perform a Taylor expansion about the limit $\mathbf{x}^*:$
+It can be shown that the Chord Method converges linearly\cite{kelley1995iterative}, an informal argument will be provided here which closely follows the presentation in \cite{isaacson2012analysis}.Let $\mathbf{g}(\mathbf{x})$ denote the mapping $\mathbf{g}(\mathbf{x})  = \mathbf{x} + \mathbf{Q}\nabla f(\mathbf{x}).$ Note that $\mathbf{x}_{n+1} = \mathbf{g}(\mathbf{x}_n).$ Suppose the sequence $\mathbf{x}_n$ converges, to determine how quickly the converge occurs, perform a Taylor expansion about the limit $\mathbf{x}^*:$
 
 \begin{align*} \label{eqn:chord_convergence}
 \mathbf{x}_{n+1} - \mathbf{x^*} &= \mathbf{g'}(\mathbf{x^*})(\mathbf{x}_{n} - \mathbf{x^*})\\
@@ -197,43 +92,7 @@ It can be shown that the Chord Method converges linearly\cite{kelley1995iterativ
 
 For brevity, we let $\mathbf{H}$ denote the Hessian of $f$ at $\mathbf{x^*}.$ The convergence of the Chord Method around $\mathbf{x^*}$ is governed by the matrix $\mathbf{K} = \mathbf{I} + \mathbf{Q}\mathbf{H} .$ If $\mathbf{K} = 0,$ then $\mathbf{Q} = \mathbf{H}^{-1}$ and the method converges superlinearly. It is very rarely the case that the Hessian at the limit point is available though. Usually the matrix $\mathbf{Q}$ is only an approximation to $\mathbf{H}^{-1}.$ The better the approximation, the smaller the matrix $\mathbf{K}$ will be, and the faster the rate of convergence.
 
-\subsection{Using the Chord Method For Maximum Likelihood Estimation With The Poisson Distribution} \label{sec:chord_poisson}
-
-For the problem of maximum likelihood estimation in one variable, the mapping associated with the Chord Method is given by by $g(\theta)$ = $ \theta + qS(\theta_n).$ In this case, $g'(\theta) = 1 + qq I(\theta)$ The Chord Method will converge to the MLE if $|1 + qI(\hat{\theta})| < 1.$ The closer $q$ is to $1/I(\hat{\theta}),$ the faster the rate of convergence.
-
-Consider the Poisson Distribution. The MLE\footnote{The Score function is given by $S(\lambda) = n(\frac{\bar{x}}{\lambda} - 1)$ and the information is given by $I(\lambda) = -\frac{n\bar{x}}{\lambda^2}.$} is given by $\hat{\lambda} = \bar{x}.$ The usual Newton-Raphson iteration is given by:
-
-
-\[
-    \bar{\lambda}_{n+1} = \bar{\lambda}_n - \frac{S(\bar{\lambda}_n)}{I(\bar{\lambda}_n)},
-\]
-
-A Chord Method is of the form:
-\[ 
-     \tilde{\lambda}_{n+1} = \tilde{\lambda}_n +  qS(\tilde{\lambda}_n).
-\]
-
-To find a value of $q,$ rely  on the fact that the variance of the MLE is asympotically equal to $1/I(\theta).$ Since the MLE is the sample mean, the Fisher Information can thus be approximated by estimating the variance of the sample mean, which is  straightforwardly yields $m = \hat{\sigma}^2/n$,where $\hat{\sigma}^2$ is the sample variance.
-
-Figure \ref{fig:poisson_convergence_plot} compares the convergence of the Chord Method and the standard Newton-Raphson Method. The linear convergence of the Chord Method is readily apparent on the log plot, and the Chord Method performs reasonably well compared to the Newton-Raphson Method.
-
-The asymptotic method used to justify the choice of $q$ suggests that as  the sample size gets bigger, the sample variance and observed Fisher Information might get closer and closer together, so that the Chord Method should converge more quickly. A simulation was conducted and the results are presented in Figure \ref{fig:poisson_sample_plot}. Each curve plotted is the avearge over many error curves generated by generating samples from a poisson distribution and running the Chord Method on them. It can be seen that the method tends to converge more quickly as the sample size increases.
-
-
-\begin{figure} 
-\centering
-\includegraphics[height=9cm]{poisson_convergence_plot.pdf}
-\caption{Plot comparing the convergence of the Chord Method and the Newton-Raphson Method for finding the MLE of a Poisson Distribution} \label{fig:poisson_convergence_plot}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[height=9cm]{poisson_sample_size_plot.pdf}
-\caption{The Chord Method converges more quickly as the sample size increases.} \label{fig:poisson_sample_plot}
-\end{figure}
-
-\newpage \clearpage
-\section[Higher Order Methods]{Higher Order Methods and Quasi-Newton Methods}
+\section{More Sophisticated Hessian Approximations}\label{sec:higher_order_methods}
 
 Instead of using a fixed matrix on each iteration as with the Chord Method, more advanced methods allow the matrix $\mathbf{Q}$ to vary on each iteration:
 
@@ -241,21 +100,37 @@ Instead of using a fixed matrix on each iteration as with the Chord Method, more
    \mathbf{x}_{n+1} = \mathbf{x}_n + \mathbf{Q}_n\mathbf{g}_n
 \]
 
-The choice $\mathbf{Q}_n = \mathbf{H}_n^{-1}$ corresponds to  the  Newton-Raphson Method. The discussion in Section \ref{sec:chord_methods} suggests that to ensure faster than linear convergence, it is necessary to ensure that $\mathbf{I} + \mathbf{Q}_n\mathbf{H}$ goes to $\mathbf{0}$ as $n$ goes to infinity.\footnote{As noted in \cite{nocedalnumerical}, it is actually only required that the $\mathbf{Q}_n$ approximates $\mathbf{H}_n$ along the directions which the alogorithm is searching.} Not every method that changes $\mathbf{Q}_n$ on each interation  has this property. Consider for example Fisher's Method of Scoring, which uses the expected information matrix $\mathbf{\mathcal{I}}(\mathbf{\theta})$ to approximate the observed information $\mathbf{I}(\mathbf{\theta}).$ It is not the case that $\mathbf{\mathcal{I}}(\mathbf{\hat{\theta}}) =  \mathbf{I}(\mathbf{\hat{\theta}}),$ so one should not expect  $\mathbf{I} + \mathbf{Q}_n\mathbf{H} \rightarrow \mathbf{0}$  as the algorithm converges to the MLE $\mathbf{\hat{\theta}}.$ As a result, Fisher's Method of Scoring will only converge linearly, though at a decent pace so long as it is a reasonable approximation to the observed Fisher Information.\footnote{As the sample size grows larger, the expected Fisher Information gets increasingly good at approximating $\mathbf{I}(\mathbf{\hat{\theta}})^{-1},$ so that Fisher's Method of Scoring tends to converge  faster and faster as the sample size gets bigger in a similar fashion to Figure \ref{fig:poisson_sample_plot}. But that doesn not mean that Fisher's Method of Scoring achieves  superlinear convergence when applied to one specific sample.}
+
+Bearing in mind the derivation of the Newton-Raphson Method presented in Section \ref{sec:newton_gradient}, suppose that the objective function $f(\mathbf{x})$ is locally approximated by a quadratic function as follows:
+
+\[
+   f(\mathbf{x}) \approx f_n +  \mathbf{g}_n^\top(\mathbf{x} - \mathbf{x}_n) + \frac{1}{2}(\mathbf{x} - \mathbf{x}_n)^\top\mathbf{A}_n(\mathbf{x} - \mathbf{x}_n)
+\]
+
+for some matrix $\mathbf{A}_n$ This approximation is minimised by:
+
+\[
+    \mathbf{x}_{n+1} = \mathbf{x}_n - \mathbf{A}_n^{-1}\mathbf{g}_n
+\]
+
+A condition generally imposed  is that the approximate Hessians $\mathbf{A}_n$ used  must be positive-definite. This ensures that the approximate qudaratics don't have any saddle points or surfaces on which the second derivative is zero so that  a well defined search direction is guaranteed. \cite{nocedalnumerical, lange2004optimization, lange2010numerical}
+
+The choice $\mathbf{Q}_n = \mathbf{H}_n^{-1}$ corresponds to  the  Newton-Raphson Method. The discussion in Section \ref{sec:chord_methods} suggests that to ensure faster than linear convergence, it is necessary to ensure that $\mathbf{I} + \mathbf{Q}_n\mathbf{H}$ goes to $\mathbf{0}$ as $n$ goes to infinity.\footnote{As noted in \cite{nocedalnumerical}, it is actually only required that the $\mathbf{Q}_n$ approximates $\mathbf{H}_n$ along the directions which the alogorithm is searching.} 
+
+\paragraph{Linearly Convergent Methods:}Not every method that changes $\mathbf{Q}_n$ on each interation  converges superlinearly. A straightforward example  of linear convergence\footnote{For the sake of simplicity it is assumed that all the  methods discussed here do in fact converge.} is found by  setting $\mathbf{A}_n$ to the diagonal elements of the Hessian, so that:
+
+\[
+   \mathbf{A}_n = \begin{bmatrix}
+                  \frac{\partial f^2}{\partial x_1^2} & & \\
+                  & \ddots & \\
+                  & & \frac{\partial f^2}{\partial x_n^2}
+                  \end{bmatrix}
+\]
 
 
-One obvious approach is to  only recompute and invert the Hessian every $m$ iterations, and otherwise recycle it. This is known in the literature as the \emph{Shamanskii Method}\cite{kelley1995iterative}. This method can achieves superlinear convergence while reducing the need to to compute and solve Hessian matrices. With $m = 3$ for example, the Shamanskii Method takes the form:
-\begin{align*}
-   \mathbf{\bar{x}}_n &= \mathbf{x}_n - \mathbf{H}_n^{-1} \nabla f(\mathbf{x}_n) \\
-   \mathbf{\tilde{x}}_n &= \mathbf{\bar{x}}_n - \mathbf{H}_n^{-1} \nabla f(\mathbf{\bar{x}}_n)\\
-   \mathbf{x}_{n+1}     &= \mathbf{\tilde{x}}_n - \mathbf{H}_n^{-1} \nabla f(\mathbf{\tilde{x}}_n)
-\end{align*}
 
-Notice that the intermediate values are thrown away and only the final values $\mathbf{x}_{n+1}$ are retained.
-
-The Shamanskii Method  with $m=2$  was applied to the  Poisson estimation problem introduced in Section \ref{sec:chord_poisson}, the results are plotted in Figure \ref{fig:shamanskii}. This method is faster than both the Newton-Raphson Method and the Chord Method. The line chart in the plot terminates prematurely because the Shamanskii's Method  converges completely after five iterations so that the log error becomes $-\infty.$
-
-\emph{Quasi-Newton Methods} use the computed gradients to construct  approximations to the true Hessians as the algorithm progesses.\cite{nocedalnumerical} These methods produce a sequence of psuedo-Hessians $\mathbf{B}_n$ that satisfy the Secant Condition:
+Another method that only converges linearly is Fisher's Method of Scoring for Maximum Likelihood estimation, which uses the expected information matrix $\mathbf{\mathcal{I}}(\mathbf{\theta})$ to approximate the observed information $\mathbf{I}(\mathbf{\theta}).$ It is not the case that $\mathbf{\mathcal{I}}(\mathbf{\hat{\theta}}) =  \mathbf{I}(\mathbf{\hat{\theta}}),$ so one should not expect  $\mathbf{I} + \mathbf{Q}_n\mathbf{H} \rightarrow \mathbf{0}$  as the algorithm converges to the MLE $\mathbf{\hat{\theta}}.$ As a result, Fisher's Method of Scoring will only converge linearly, though at a decent pace so long as it is a reasonable approximation to the observed Fisher Information.\footnote{As the sample size grows larger, the expected Fisher Information gets increasingly good at approximating $\mathbf{I}(\mathbf{\hat{\theta}})^{-1},$ so that Fisher's Method of Scoring tends to converge  faster and faster as the sample size gets bigger. But that doesn not mean that Fisher's Method of Scoring achieves  superlinear convergence when applied to one specific set of data.}
+\paragraph{Quasi-Newton Methods:}Quasi-Newton Methods use the computed gradients to construct  approximations to the true Hessians as the algorithm proceeds.\cite{nocedalnumerical} These methods produce a sequence of psuedo-Hessians $\mathbf{B}_n$ that satisfy the \emph{Secant Condition:}
 
 \[
    \mathbf{B}_n(\mathbf{x}_{n} - \mathbf{x}_{n-1}) = \mathbf{g}_{n+1} - \mathbf{g}_n
@@ -263,28 +138,73 @@ The Shamanskii Method  with $m=2$  was applied to the  Poisson estimation proble
 
 In one dimension, finding a $B_n$ that satisfies the Secant Condition is equivalent to   computing a finite difference approximation to the second deriviative:
 
-\begin{eqnarray*}\label{eqn:seq_finite_diff}
+\begin{align*}\label{eqn:seq_finite_diff}
         B_n(x_n - x_{n-1}) &= f'(x_n) - f'(x_{n-1}) \\
         B_n &= \frac{f'(x_n) - f'(x_{n-1})}{x_n - x_{n-1}}
-\end{eqnarray*}
+\end{align*}
 
-For multivariate problems, the second derivative is in the form of a matrix, so there is not enough information to construct a full approximation afresh on each iteration. Rather the approximate Hessian is partially updated using one of several approaches.
+When the sequence $x_n$ converges, the denominator in the finite difference approximation converges to zero as well, so the that the rate of convergence is faster than for a finite difference approximimation which uses a fixed denominator $h.$\cite{kelley1995iterative}
+
+For multivariate problems, the second derivative is in the form of a matrix, so there is not enough information to construct a full approximation afresh on each iteration. Rather the approximate Hessian is partially updated using one of several approaches. 
 
 R's \texttt{optim} routine uses the BFGS method to compute the next approximate Hessian\cite{rlanguage}. BFGS finds the symmetric matrix $\mathbf{B}_{n+1}$ satisfying the secant condition such that the inverse $\mathbf{B}^{-1}_{n+1}$ minimises a weighted Frobenius distance  between itself and the previous inverse $\mathbf{B}^{-1}_{n}.$ A low memory variant of BFGS known as L-BFGS is also available in R's standard libary\cite{rlanguage, nocedalnumerical}.
 
-Quasi-Newton Methods converge superlinearly, but are not quadratically convergent like Newton's Method. They have the advantage of avoiding the cost of computing Hessian Matrices, so they can prove faster than Newton's Method in practice despite more iterations being needed.
+Quasi-Newton Methods converge superlinearly, but are not quadratically convergent like Newton's Method. \cite{nocedalnumerical} They have the advantage however of avoiding the cost of computing Hessian Matrices, so they can prove faster than Newton's Method in practice despite more iterations being needed to achieve a given degree of accuracy.
+
+\paragraph{Finite Differences:} In several places in this thesis  finite difference methods are used to approximate derivatives.\footnote{Refer to \cite{nocedalnumerical, leveque2007finite, kelley1995iterative} for more detail.}
+
+For example, one might wish to use finite difference methods to approximate the elements of $\mathbf{H}_n.$ There are many different ways  of computing finite difference approximations. A straightforward scheme to approximated $\mathbf{H}_n$ that only requires additional function evalutions  is given by:
+
+\begin{align*}
+    [\mathbf{H}_n]_{ij} \approx  \frac{f(\mathbf{x}_n + h\mathbf{e}_i) + f(\mathbf{x}_n + h\mathbf{e}_j) - f(\mathbf{x}_n - h\mathbf{e}_i)  - f(\mathbf{x}_n - h\mathbf{e}_j)}{4h^2}
+\end{align*}
+
+For very small values of $h$, any numerical error in evaluating the objective function will start to dominate the finite difference estimates. Suppose that that a univariate function $g(x)$ were computed with errors $\epsilon(x)$ and $|\epsilon(x)| \leq \bar{\epsilon}$ for all $x.$ Furthermore, suppose a forward difference $\nabla_h g(x)$ approximation were used to estimate $g'(x).$ Taking into account the error in evaluating $g(x),$ the approximation proceeds as follows:
+
+\begin{align*}
+  \nabla_h g(x) &=\frac{g(x + h) + \epsilon(x + h) - f(x)  - \epsilon(x)}{h} \\
+                &=\frac{g(x) + hg'(x) - g(x) +  \epsilon(x + h) - \epsilon(x) +\mathcal{O}(h^2)}{h} \\
+               &=\frac{hg'(x) + \mathcal{O}(\bar{\epsilon}) + \mathcal{O}(h^2)}{h} \\ 
+               &=g'(x) + \mathcal{O}\left(\frac{\bar{\epsilon}}{h}\right) + \mathcal{O}(h) \\
+               &=g'(x) + \mathcal{O}\left(\frac{\bar{\epsilon}}{h} + h\right) 
+\end{align*}
+
+The approximation error will first shrink and then get larger and larger as  as $h \rightarrow 0$. The optimal choice of h is given by $h = \mathcal{O}(\sqrt{\bar{\epsilon}}),$ because it simultaneously keeps the order of magnitudes of both $\bar{\epsilon}/h$ and $h$ small.
+
+
+The question of the convergence rate for the finite difference method is more complex than for other methods. Define the errors by $\mathbf{e_n} = \mathbf{x_n} - \mathbf{x^*}$ where $\mathbf{x^*}$ is the optimal point. Subject to technical conditions\footnote{Including that $h > M\sqrt{\bar{\epsilon}}$, for some constant $M$ that depends on the function being approximated.} the errors satisfy the following recurrence relation \cite{kelley1995iterative}:\footnote{In the mulitvariate case here, we require that $\|\epsilon(\mathbf{x})\| \leq \bar{\epsilon}$ where $\epsilon(\mathbf{x})$ is the evaluation error as before.}
+
+\begin{equation}\label{eqn:finite_diff_error}
+  \|\mathbf{e}_{n+1}\| \leq K[\bar{\epsilon} +  (\|\mathbf{e}_n\| + h)\|\mathbf{e}_n\|]
+\end{equation}
+
+If the objective function is evaluated to a degree of accuracy close to machine precision, it would be the case  that $\bar{\epsilon}$ is on the order of $10^{-16}$ and $h \approx 10^{-8}.$ On the other hand, if the  objective function were approximated using a complex or slow simulation method, it might only be the case that $\bar{\epsilon} \approx 10^{-4}$ and $h \approx 10^{-2}.$  To get a sense of the implications of this result, consider the following three cases:
+
+\begin{itemize}
+
+\item If $\|\mathbf{e}_n\|$ is very large compared to $h$ and $\bar{\epsilon}$ so that $h \ll \|\mathbf{e}_n\|$ and $\bar{\epsilon} \ll \|\mathbf{e}_n\|,$ then  $\|\mathbf{e}_{n+1}\| \leq K\|\mathbf{e}_{n+1}\|^2$ holds approximately and the convergence appears quadratic.
+
+\item If $\|\mathbf{e}_n\|$ is of similar order of magnitude to $h$ so that $\|\mathbf{e}_n\| \lesssim Ch$ for $C>0;$ and both terms are large compared to $\bar{\epsilon},$ so that  $h \gg \bar{\epsilon},$ and  $ \|\mathbf{e}_n\| \gg \bar{\epsilon};$ then it is approximately the case that $\|\mathbf{e}_{n+1}\| \leq K(C+1)h\|\mathbf{e}_{n}\|,$ so that the rate of convergence appears to be linear.
+
+\item Finally, if $\|\mathbf{e}_n\|$ is of the same order of magnitude as ${\bar{\epsilon}}$ or smaller,  we have that $\|\mathbf{e}_{n+1}\| \leq \mathcal{O}(K[\bar{\epsilon} +(\bar{\epsilon} + h)\bar{\epsilon}]).$ A reduction in the error is no longer guranteed.
+\end{itemize}
+
+To surmise: the finite difference method converges quite rapidly at first, but begins to slow down and then stagnate entirely as it  proceeds. The degree of accuracy that can be ultimately achieved is limited by $\bar{\epsilon}.$
+
+Figure \ref{fig:finite_difference_converge} illustrates the recurrence relation in Equation \ref{eqn:finite_diff_error}. It is apparent that  instead of converging towards zero, the various sequences converge to a limiting value depending the specific value of $\bar{\epsilon},$ and $h$ governs the rate of convergence.
+
+
 
 \begin{figure}
-\centering
-\includegraphics[height=9cm]{shamanskii.pdf}
-\caption{Applying the Shamanskii Method to the Poisson MLE problem}
-\label{fig:shamanskii}
+\centering 
+\includegraphics[height=9cm]{finite_difference_converge_plot.pdf}
+\caption{Plot of the log iterates produced from the recurrence relation $e_{n+1} = \bar{e} + (e_n + h)e_n$ with $e_0 = 0.5,$ for various choices of $\bar{e}$ and $h.$}
+\label{fig:finite_difference_converge}
 \end{figure}
 
+\section{Line Search Methods} \label{sec:line_search_methods}
 
-\section{Line Search Methods}
-
-So far, every method has entailed computing a direction $\mathbf{p}_n$ and letting $\mathbf{x}_{n+1} = \mathbf{x}_{n} +  \alpha \mathbf{p}_{n},$ where it is often the case that $\alpha = 1.$
+So far, every method has entailed computing a search direction $\mathbf{p}_n$ and letting $\mathbf{x}_{n+1} = \mathbf{x}_{n} +  \alpha \mathbf{p}_{n},$ where it is often the case that $\alpha = 1.$
 The generated search directions $\mathbf{p}_n$ have  been required to  be a descent directions so that:
 
 \[
@@ -293,24 +213,25 @@ The generated search directions $\mathbf{p}_n$ have  been required to  be a desc
 
 This means that if $\alpha$ is small enough, then a step in direction $\mathbf{p}_n$ will reduce the value of the objective function. At most, the  optimisation method only knows the values of $f_n, \mathbf{g}_n$ and $\mathbf{H}_n,$ so it can construct a quadratic or linear approxmition to to the objective function $\mathbf{x}_n$ and use that to find the next point.  
 
-As illustrated in Figure ~\ref{fig:extrapolateDisaster}, the  model can fail if one takes too big a step. For complex estimation problems, the objective funtion often has multiple peaks and troughs, so one must be careful that one has not wandered out of the range of validity of the locally constructed approximation.
+As illustrated in Figure ~\ref{fig:extrapolateDisaster}, the  approximation can fail if one takes too big a step. For complex estimation problems, the objective funtion often has multiple peaks and troughs, so one must be careful that one has not wandered out of the range of validity of the locally constructed approximation.
 
-Perhaps the default choice is to set $\alpha$ to some very small value. The first problem is that $\alpha$ might be unnecessarily small so that convergence is needlessly slow. The second problem is that the quality of a choice of $\alpha$ is governed by the higher order derivatives of the objective function, especially  the higher order derivatives at the optimal point \footnote{The literature very often works with Lipschitz continuity instead of differentiability. For simplicity in  exposition, diffentiability will be used here.}. It will often be the case that such information is not available. Imagine the frustration if one had  started an optimisation routine with a value of $\alpha$ that looked reasoanable for the initial values, and then came back  12 hours later to find the routine had failed as it approached the optimal point because it $\alpha$ was ultimately too high. In addition, a global choice of $\alpha$ might be far too low in some places.
 
-A more sophisticated approach is to allow $\alpha$ to vary on each iteration:
+The naive solution is  to set $\alpha$ to some very small value. The first problem with this approach is that $\alpha$ might be unnecessarily small so that convergence is needlessly slow. The second problem is that the quality of a choice of $\alpha$ is governed by the higher order derivatives of the objective function, especially  the higher order derivatives at the optimal point \footnote{The literature very often works with Lipschitz continuity instead of differentiability. For simplicity in  exposition, diffentiability will be used here.}. It will often be the case that such information is not available. Imagine the frustration if one had  started an optimisation routine with a value of $\alpha$ that looked reasoanable for the initial values, and then came back  12 hours later to find the routine had failed as it approached the optimal point because it $\alpha$ was ultimately too high. Third, a globally valid choice of $\alpha$ might be far too low in some places by definition. More flexibility would allow $\alpha$ to be bigger where viable to gain a faster rate of convergence.
+
+The more sophisticated approach is to allow $\alpha$ to vary on each iteration:
 
 \[
    \mathbf{x}_{n+1} = \mathbf{x}_{n} +  \alpha_n \mathbf{p}_{n}
 \]
 
-Alongside the problem of choosing the search direction $\mathbf{p}_n,$ it is now necessary to decide how far in this direction to go. Conducting a Line Search entails probing the  objective function along the ray $\{\mathbf{x}_n+ \alpha\mathbf{p}_n|\alpha > 0\}$ to find the next point. 
+Alongside the problem of choosing the search direction $\mathbf{p}_n,$ it is now necessary to decide on each iteration how far in this direction to go. This entails probing the  objective function along the ray $\{\mathbf{x}_n+ \alpha\mathbf{p}_n|\alpha > 0\}$ to find the next point. 
 
 For convenience, let the function $\phi(\alpha) = f(\mathbf{x}_n + \alpha\mathbf{p}_n)$ denote the restriction of $f(\cdot)$ to the ray from $\mathbf{x_n}$ in the direction $\mathbf{p}_n.$ Note  that $\phi(0) = f(\mathbf{x}_n)$ and $\phi'(\alpha) = \mathbf{p}_n^\top \nabla f(\mathbf{x}_n  + \alpha\mathbf{p}_n).$ 
 
 
 The goal of the line search is to find a point along the ray generated by $\mathbf{x}_n$ and $\mathbf{p}_n$ that is satisfactory. In principle one could of course attempt to find the value $\alpha^*$ that minimises $\phi(\alpha),$ but this is generally regarded as excessive. Usually one only iterates until sufficient improvement has been found and uses that point for the next iteration.  \cite{nocedalnumerical} 
 
-Besides setting $\alpha_n = \alpha$ for all $n,$ the line search method is known as \emph{Backtracking Line Search}. In this case, $\alpha$ is replaced by $\rho\alpha,$ where $0<\rho<1$ until a satisfactory point is found.
+Besides setting simply $\alpha_n = \alpha$ for all $n,$ the simplest line search method is known as a \emph{Backtracking Line Search}. In this case, $\alpha$ is set to an initial value $\alpha_0$ and repeatedly shrunk down to $\rho\alpha,$ where $0<\rho<1$ until a satisfactory point is found.
 
 
 \begin{algorithm}
@@ -350,9 +271,9 @@ The first condition ensures sufficient decrease in the objective function, the s
 
 More sophisticated line search alogrithms try to make better use of the values of $\phi(\alpha)$ and $\phi'(\alpha)$ computed in the course of the search. The first approach is to construct a quadratic interpolant through the points $\phi(0), \phi'(0),$ and $\phi(\bar{\alpha}),$ where $\bar{\alpha}$ is the current value of $\alpha$. The constructed quadratic $m(\alpha)$ has the properties that $m(0) = \phi(0), m'(0) = \phi'(0)$ and $m(\bar{\alpha}) =\phi(\bar{\alpha}$) The next value of $\alpha$ is taken to be the minimiser of $m(\alpha).$ 
 
-If the line search has been running for longer, so that  values $\phi(\bar{\alpha})$ and $\phi(\tilde{\alpha})$  are available, then cubic interpolation is possible thorugh the values $\phi(0), \phi'(0),\phi(\bar{\alpha})$ and $\phi(\tilde{\alpha}).$ The next value of $\alpha$ is taken as the minimum of the interpolating cubic, which entails solving a quadratic equation. While cubic methods can converge more rapidly than quadratic methods\footnote{It is claimed in the literature that line searaches using cubic interpolants constructed using only values of $\phi(\alpha)$ and no derivatives do not converge quadratically.\cite{tamir1976line} It can be shown using similar arguments to those used in Section \ref{sec:quad_methods} that the error term for the cubic interpolant through  $\phi(0), \phi'(0),\phi(\bar{\alpha})$ and $\phi(\tilde{\alpha})$  is of the form to $\frac{\phi^{(4)}(\epsilon)}{4!}\alpha^2(\alpha - \bar{\alpha})(\alpha - \tilde{\alpha}).$ Barring the unlikely event that the cubic is minimised at $\alpha =0,$ the $\alpha^2$ term will be bounded away from zero. In other words, holding one point fixed at $\alpha = 0$ will generally hurt the rate of convergence. Thus for a large number of iterations,  the distance between the $i$th iterate $\alpha_i$ and the minimiser of $\phi(\alpha),$ which was already denoted $\alpha^*,$ might be something like $(\alpha_{i+1} - \alpha^*) \approx C(\alpha_i -\alpha^*)(\alpha_{i-1} - \alpha^*),$ which suggests that the cubic interpolation method does not converge quadratically.} they are also sometimes unstable and can have multiple critical points.
+If the line search has been running for longer, so that  values $\phi(\bar{\alpha})$ and $\phi(\tilde{\alpha})$  are available, then cubic interpolation is possible thorugh the values $\phi(0), \phi'(0),\phi(\bar{\alpha})$ and $\phi(\tilde{\alpha}).$ The next value of $\alpha$ is taken as the minimum of the interpolating cubic, which entails solving a quadratic equation. While cubic methods can converge more rapidly than quadratic methods\footnote{It is noted in the literature that line searaches using cubic interpolants constructed using only values of $\phi(\alpha)$ and no derivatives do not converge quadratically \cite{tamir1976line}.} they are also sometimes unstable and can have multiple critical points.
 
-More exotic choices proposed in the literature include the possibility of using rational functions to approximate $\phi(\alpha)$  instead of polynomials, as discussed in \cite{barzilai1982nonpolynomial}. An example of such an approximation is:
+More exotic choices proposed in the literature include the posibility of using rational functions to approximate $\phi(\alpha)$  instead of polynomials, as discussed in \cite{barzilai1982nonpolynomial}. An example of such an approximation is:
 
 \begin{equation}
    \phi(\alpha) \approx \frac{p\alpha^2 + q \alpha + r}{s\alpha + u}
@@ -367,9 +288,137 @@ Here, the values $p,q,r,s$ and $u$ are the parameters of the rational function t
 \label{fig:extrapolateDisaster}
 \end{figure}
 
+\clearpage\newpage
 
-\nocite{*}
-\bibliographystyle{plain}
-\bibliography{ref} 
-\end{document}
+\chapter[Implicit Filtering]{Implicit Filtering\footnote{Interested readers are pointed towards \cite{nocedalnumerical, kelly2002filtering, kelley2011implicit}.}} \label{sec:implicit_filtering}
+
+
+The weakness of the finite difference approach discussed in Section \ref{sec:higher_order_methods} is that errors in evaluation eventually cripple the method. Suppose for the sake of argument that the errors were related to the stepsize $h$ so that the error bound is given by $\bar{\epsilon}(h)$ instead of a constant $\bar{\epsilon}.$ In this case the error in the forward difference approximation would be given by:
+
+\[
+  \mathcal{O}\left(\frac{\bar{\epsilon}(h)}{h} + h \right)
+\]
+
+
+So long as $\bar{\epsilon}(h)/h \rightarrow 0$ as $h \rightarrow 0,$ the error in approximating the derivative goes to zero as well. The method might converge properly in this case.
+
+The implicit filtering algorithm is designed for optimising problems where the exact value of the objective function $f(\cdot$) is unavailable. Instead, it is assumed that there is  parameter $h$ which controls the degree of the accuarcy. It is further assumed that the lower $h,$ the lower the error. It is usually the case that getting a higher degree of accuaracy means a higher run time.
+
+For example, if the objective function is of the form $\mathbb{E}[f(\theta)]$ and the expection is being  approximated using a Monte Carlo method, it would be reasonable to set $h = 1/\sqrt{N}$ where $N$ is the number of samples used so that the standard deviation  is proportional to $h.$ On the other hand if the expectation were being approximated by numerical integration, it would be reasonable to set  $h$ to the step size used. 
+
+\section{Description of the Algorithm:}Let $f(\mathbf{x};h)$ denote the result of approximately evauluating $f(\cdot)$ at the point $\mathbf{x}$ with precision level $h$ and  $\epsilon(\mathbf{x};h)$ be the associated error. To generate a search direction, Implicit Filtering uses an approximation $\nabla_h f(\mathbf{x})$ to the gradient $\nabla f(\mathbf{x})$ that depends on $h.$ The simplest such approximation employs forward differencing to approximate the gradient:
+
+\begin{equation}\label{eqn:forward_difference}
+  [\nabla_h f(\mathbf{x})]_i  = \frac{f(\mathbf{x} + h\mathbf{e}_i;h) - f(\mathbf{x};h)}{h}
+\end{equation}
+
+Here $[\nabla_h f(\mathbf{x})]_i$ denotes the $i$th component of $\nabla_h f(\mathbf{x})$ and $ \mathbf{e}_i$ is the $i$th basis vector. This approximate gradient is then used to define a search direction. The algorithm proceeds to conduct a line search along this direction until a point that achieves a sufficient reduction is found, which then becomes the latest iterate, and a new search direction is computed.\footnote{More precisely, the  next point $\mathbf{x}_{k + 1}$ is required to satisfy a condition of the form $f(\mathbf{x}_{k + 1}; h) \leq f(\mathbf{x}_k;h) - c\mathbf{d}_{k}^\top[\nabla_h f(\mathbf{x}_k)],$ where $\mathbf{d}_k = \mathbf{x}_{k+1} - \mathbf{x}_k$ and  $0 < c < 1.$ Note that there  is no requirement to decrease the norm of the approximate gradient $\nabla_hf(x).$}
+
+In the event of any of the following occuring, it is deemed that more precision is needed:
+
+\begin{itemize}
+
+\item A point achieving sufficient reduction cannot be found after a maximum number of  iterations.
+
+\item A clear descent direction cannot be identified.
+
+\item The approximate gradient is of  a similar order of magnitude to $h,$ so that one can't be confident that true gradient isn't in fact zero.
+
+\end{itemize}
+
+If any of these conditions hold, the    value of $h$ is shrunk so that $h \leftarrow \delta h$ with $0 < \delta < 1.$ The algorithm then proceeds again with this higher level of precision. 
+
+The algorithm terminates when the change in the value of the objective function produced by  reducing the value of $h$ and running again is within a chosen tolerance.
+
+
+The sequence of approximate values returned by Implicit Filtering is monotone decreasing so that if $m < n$ then $f(\mathbf{x}_m ;h_1) \geq f(\mathbf{x}_n;h_2),$ where $h_1$ is the precision used with $\mathbf{x}_m$ and $h_2$ is the precision used with $\mathbf{x}_n.$ Bear in mind  however that since Implicit Filtering only ever approximately evaluates the objective function, it is not necessarily the case that $m < n$ implies $f(\mathbf{x}_m) \geq f(\mathbf{x}_n).$
+
+A variation of the Gauss-Newton algoritm of the Implicit Filtering has been developed, and was used to fit parameters to an harmonic oscillator of the form $y'' + cy' + ku = 0$ where the initial conditions are known and $c$ and $k$ must be estimated.\cite{kelley2001implicit}
+
+\section{Convergence Theory}For Implicit filtering to converge, the error needs to decrease sufficiently rapidly relative to sequence of precision parameters $h_n.$ The specific condtions depend on the specific variation of Implicit Filtering used.\cite{nocedalnumerical, kelly2002filtering, kelley2011implicit, kelley2001implicit} The convergence criteria generally look something like:
+
+\begin{equation} \label{eqn:implicit_filtering_convergence_criterion}
+   \lim_{n \rightarrow \infty} \left[\frac{\epsilon(\mathbf{x};h_n)}{h_n} + h_n \right]= 0
+\end{equation}
+
+In a statistical context, being too naive and failing to treat the convergence criteria with respect risks a failure of convergence. Consider again the question of minimising $\mathbb{E}[f(\theta)]$ For the Monte Carlo method that sets $h_n = 1/\sqrt{n},$ the associated error is approximately equal to $\sigma/\sqrt{n}$ for some $\sigma >0,$ Substituting this into (\ref{eqn:implicit_filtering_convergence_criterion}) gives that 
+
+\begin{align*}
+     \lim_{n \rightarrow \infty} \left[\frac{\epsilon(\mathbf{x};h_n)}{h_n} + h_n \right] &=  \lim_{n \rightarrow \infty} \left[\frac{\left(\frac{\sigma}{\sqrt{n}}\right)}{\left(\frac{1}{\sqrt{n}}\right)}  + \frac{1}{\sqrt{n}} \right]\\
+   &=\sigma
+\end{align*}
+
+In this case, there is no guarantee that the method would converge. An obvious rectification would be to set the sample size associated with $h_n$ to $(1/h_n)^4$ instead of $(1/h_n)^2$ so that $\epsilon(x;h_n)/h_n = \sigma/\sqrt{n}.$ This illustrates a potential weakness of Implicit Filtering, that the cost of approximating the objective function grows very rapidly as $h$ decreases.
+ 
+\section{Assessment of the Method}Brief experimentation found  that there were many disadvantages associated with Implicit Filtering: 
+
+\begin{itemize} 
+
+\item Implicit Filtering is  complex to code, and is thus  difficult to maintain and debug. The R code used to fit the ODE (\ref{eqn:quasi_linear_oscillator}) by Implicit Filtering came out at a little over 300 lines long. The code in the Data2LD package that performs optimisation is over 600 lines long. Code that uses Brent's Method tends to be much shorter. 
+
+\item Implicit Filtering proved to be very slow when applied to the test problem in Section \ref{sec:implicit_brent} below. 
+
+\item The results of the fitting are sensitive to the value of the shrink factor $\delta$ choosen. 
+
+\item It can  be necessary to add a penalty term to the objective function to ensure convergence.
+
+\end{itemize}
+
+\section{Using Implicit Filtering to Fit an ODE to the Melanoma Data} \label{sec:implicit_brent}
+To test Implicit Filtering, the following quasi-linear fourth order ODE was fitted to the melanoma data:\footnote{The version of Implicit Filtering used is actually a modified version of that described above. A Quasi-Newton algorithm was used instead of naive gradient descent to compute search directions, and central differences were used to estimate the gradient instead of forward differences as in (\ref{eqn:forward_difference}).}
+
+\begin{equation} \label{eqn:quasi_linear_oscillator}
+   y^{(4)} = \mu^2[1 - \sin(\pi y'')^2]y''' - \omega^2 y''
+\end{equation}
+
+The objective function used was a penalised sum of squared errors of the form:
+
+\[
+   PENSSE(f(t), \omega, \mu) = \rho \sum[y_i  -f(t_i)]^2 + (1 - \rho) \int |f''(t)|^2 dt
+\]
+
+The value of $PENSSE$ is influenced by $\omega$ and $\mu$ because  $f(t)$ is required to be a solution of (\ref{eqn:quasi_linear_oscillator}) with given values of $\omega$ and $\mu.$  The Implicit Filtering algorithm will not converge correctly without the penalty term as illustrated in Figure \ref{fig:implicit_filtering_no_penalty}.
+
+To compute $PENSSE,$ the package \verb|deSolve| was used to numerically solve (\ref{eqn:quasi_linear_oscillator}) with the appropriate values of $\omega$ and $\mu.$ The precision factor $h$ determined the stepsize used. The $\int|f''(t)|^2 dt$ term was approximated by taking the vector of computed values of $f''(t)$ returned by \verb|deSolve|, and then finding the sum of squared values. As $h \rightarrow 0,$ this approximation becomes more and more accurate.
+
+ As can be seen in Table \ref{tab:run_times}, the algorithm takes a long time to run. It can be seen in both the table and Figure \ref{fig:implicit_filtering} that changing the value of $\delta$ can introduce qualitative changes in behaviour. The algorithm is much quicker for $\delta = 0.9,$ presumably because the algorithm is converging to a different fit than for the other cases. For the fastest case where $\delta = 0.9,$  200 values of the $PENSSE$ sequence are generated before the sequence converges to within a tolerance of  $10^{-4}.$ This statistic substantially underestimates the actual amount of work done since Implicit Filtering rejects many evaluations as being inadaquate in the course of its execuction and further evaluations are needed to compute the approximate gradients $\nabla_hf(\cdot).$ For case where  $\delta = 0.9, PENSSE$ was computed over $3700$ times with various values of $h$ used. 
+
+\begin{table}[htb]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+$\delta$ & Running Time (Seconds) & Running Time (Minutes) \\
+\hline
+0.7      &    1717.807 & 28.63 \\
+\hline
+0.8      &    1611.459 & 26.85 \\
+\hline
+0.9      &    1013.165 & 16.88 \\
+\hline
+\end{tabular}
+\caption{Time taken for Implicit Filtering to fit (\ref{eqn:quasi_linear_oscillator}) to the melanoma data for various values of $\delta.$}
+\label{tab:run_times}
+\end{table}
+\clearpage
+\begin{figure}
+\centering
+\subfloat[]{
+\includegraphics[height = 9cm]{implicit_filtering_0_7.pdf}
+}
+
+\subfloat[]{
+\includegraphics[height = 9cm]{implicit_filtering_0_9.pdf}
+}
+\caption{Fitting the ODE (\ref{eqn:quasi_linear_oscillator}) to the Melanoma data. The exact value of the shrink value $\delta$ effects the fit the Implicit Filtering algorithm converges to. For $\delta = 0.7$ the computed fit in (a) resembles a straight line, but $\delta = 0.9$ results in a sinusodial plus linear trend as can be seen in (b).}
+\label{fig:implicit_filtering}
+\end{figure}
+\newpage
+
+\begin{figure}
+\centering
+\includegraphics[height=9cm]{implicit_filtering_no_penalty.pdf}
+\caption{Without a penalty term, Implicit Filtering entirely fails to fit the ODE (\ref{eqn:quasi_linear_oscillator}) to the melanoma data.}
+\label{fig:implicit_filtering_no_penalty}
+\end{figure}
+
 

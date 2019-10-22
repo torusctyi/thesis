@@ -1,22 +1,4 @@
-\documentclass{report}
-
-\usepackage{amsmath}
-\usepackage{graphicx}
-\usepackage{subfig}
-\usepackage{url}
-\usepackage[justification=centering]{caption}
-
-
-
-%\usepackage[a4paper, margin=3.0cm]{geometry}
-
-\usepackage{vmargin}
-% left top textwidth textheight headheight
-% headsep footheight footskip
-\setmargins{3.0cm}{2.5cm}{15.5 cm}{22cm}{0.5cm}{0cm}{1cm}{1cm}
-
-\begin{document}
-\chapter{A Two Level $L_1$ Parameter Cascade Using the MM Alogrithm.}
+\chapter{A Two Level $L_1$ Parameter Cascade Using the MM Alogrithm.} \label{chap:mm_methods}
 
 In the previous chapter, Brent's method was introduced and was used to tackle Parameter Cascade problems where the middle level uses a loss function which is difficult or to differentiate or simply has no well-defined derivative everywhere. It was remarked  that Brent's method ensures that the different elements of the Parameter Cascade tend to be loosely coupled from each other and this allows one to combine different fitting methodologies for different levels with straightforwardly.
 
@@ -35,7 +17,7 @@ Suppose that given a set of numbers $\{x_1, \dots, x_N\}$ , one wished to find t
    SAE(x) = \sum_{i=1}^N |x_i - x|
 \]
 
-It is well known that $SAE(x)$ is minimised by the sample median of the numbers \cite{small1990survey}\footnote{This is asserted without proof in \cite{small1990survey}, probably because the proof tends to be simultaneously awkward but trivial to those familiar with it. The amount of work required to demonstrate that the sample median minimises $SAE(x)$ is greatly reduced if one notes that $SAE(x)$ is a convex function in $x.$ Any local minimum of a convex function is also a  global minimum\cite{boyd2004convex}, so one only needs to show that for any sufficiently small $\epsilon$ that $SAE(\bar{x}) \leq SAE(\bar{x} \pm \epsilon),$ where $\bar{x}$ is the sample median.}. The usual approach to computing the sample median - sorting the numbers and taking the one in the middle -  can't be generalised to FDA problems, so we will use a different approach. The main difficulty is that the function $SAE(x)$ is not everywhere differentiable, which means that the usual derivative-based techniques such as gradient descent or Newton's method can't work. Instead an approach known as Majorise-Minimise or the MM Alogrithm  will be used\cite{hunter2004tutorial,lange2004optimization,lange2010numerical}.  For a given iterate $x_n$, a function $M(x|x_n)$ is required with the following properties:
+It is well known that $SAE(x)$ is minimised by the sample median of the numbers \cite{small1990survey}\footnote{This is asserted without proof in \cite{small1990survey}, probably because the proof tends to be simultaneously awkward but trivial to those familiar with it. The amount of work required to demonstrate that the sample median minimises $SAE(x)$ is greatly reduced if one notes that $SAE(x)$ is a convex function in $x.$ Any local minimum of a convex function is also a  global minimum\cite{boyd2004convex}, so one only needs to show that for any sufficiently small $\epsilon$ that $SAE(\bar{x}) \leq SAE(\bar{x} \pm \epsilon),$ where $\bar{x}$ is the sample median.}. The usual approach to computing the sample median - sorting the numbers and taking the one in the middle -  cannot be generalised to FDA problems, so we will use a different approach. The main difficulty is that the function $SAE(x)$ is not everywhere differentiable, which means that the usual derivative-based techniques such as gradient descent or Newton's method can't work. Instead an approach known as Majorise-Minimise or the MM Alogrithm  will be used\cite{hunter2004tutorial,lange2004optimization,lange2010numerical}.  For a given iterate $x_n$, a function $M(x|x_n)$ is required with the following properties:
 
 \begin{align*}
      M(x|x_n)    &\geq SAE(x) \\
@@ -126,7 +108,7 @@ Given $\epsilon >0,$ it is not hard to see that there exists an associated numbe
 
 Such woefully slow performance is unusual, but not entirely unprecedented. An example of a simple Poisson estimation problem  where the EM Algorithm exhibits sublinear $\mathcal{O}(1/n)$ convergence\footnote{A possibly vector-valued sequence $\{\mathbf{x}_n\}_{n=1}^\infty$ is said to exhibit $\mathcal{O}(1/n)$ convergence or converages at rate  $\mathcal{O}(1/n)$ if there exists constants $c_1 > c_2 >0$ and a limit value $\mathbf{x}^*$ such that $c_1/n \geq \|\mathbf{x}_n - \mathbf{x^*}\| \geq c_2/n.$} is given in \cite{lange2010numerical}. The Implicit Filtering fitting algorithm previously discussed is another example of an incredibly slow method, requiring around 200 iterates before the sequence of values objective function converges to within $10^{-4}$ of each other \footnote{The exact order of convergence of Implicit Filtering is difficult to determine. Experimentation suggests that the rate of convergence is sublinear.}.
 
-This result is very pessimistic though, the EM and MM Alogrithms usuallly  converge linearly \cite{mclachlan2007algorithm, hunter2004tutorial} The MM alogrithm for $L_1$ fitting does not quite converge linearly though as shall be seen in Section \ref{sec:testing} below.
+This result is very pessimistic though, the EM and MM Alogrithms usuallly  converge linearly \cite{mclachlan2007algorithm, hunter2004tutorial}. The MM alogrithm for $L_1$ fitting does not quite converge linearly though as shall be seen in Section \ref{sec:testing} below.
 \newpage 
 
 \subsection{Testing the Algorithm on the Melanoma Data} \label{sec:testing}
@@ -368,12 +350,5 @@ To conclude, it is possible to save some time by acceleration, but the scope for
    \caption{Accelerating the SAE sequence using multiple methods. Aitken's method performs the best, despite it's lack of sophistication.}
 \label{fig:sae_multi_accel}
 \end{figure}
-\newpage
 
-\newpage
-\nocite{*}
-\bibliographystyle{plain}
-\bibliography{ref} 
-
-\end{document}
 

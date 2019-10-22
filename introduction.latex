@@ -1,32 +1,4 @@
-\documentclass[a4paper, 12pt]{report}
-
-\usepackage[margin=1in,footskip=0.25in]{geometry}
-\usepackage{amsmath}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{graphicx}
-\usepackage{amssymb}
-\usepackage{graphicx}
-\usepackage{algorithm}
-\usepackage{algpseudocode}
-\usepackage[square,sort,comma,numbers]{natbib}
-
-\usepackage{amsmath}
-\usepackage{graphicx}
-\usepackage{subfig}
-\usepackage{url}
-\usepackage[justification=centering]{caption}
-
-%\usepackage[a4paper, margin=3.0cm]{geometry}
-
-\usepackage{vmargin}
-% left top textwidth textheight headheight
-% headsep footheight footskip
-\setmargins{3.0cm}{2.5cm}{15.5 cm}{22cm}{0.5cm}{1cm}{1cm}{1cm}
-\setcounter{secnumdepth}{3}
-\begin{document}
-
-\chapter{Background Material}
+\chapter{Introduction}
 \section{Preliminaries}
 
 
@@ -347,7 +319,29 @@ The \texttt{FDA} packages is not as powerful as the \texttt{Data2LD} package, wh
 
 \newpage\clearpage
 
-\section{Fitting an ODE to the Reflux Data}
+\section{The \texttt{Data2LD} Package}
+
+The Data2LD package is an R package intended to perform smoothing using general linear differential operators with a forcing function, that is, ODEs of the form:
+
+\begin{equation}
+    \sum \beta_i(t)D^i f(t) = u(t)
+\end{equation}
+
+The $\beta_i(t)$ are paremeter functions for the linear differential opertor on the lefthand side, and $u(t)$ is a forcing function. 
+
+More generally, \texttt{Data2LD} can model a system of inhomogenous linear differntial equations:
+
+\begin{equation}\label{fig:ode_system}
+   \mathbf{y}(t)' + \mathbf{B}(t)\mathbf{y} = \mathbf{u}(t)
+\end{equation}
+
+Each element of $\mathbf{B}(t)$ is a time-varying linear parameter function of the the form $\beta_{ij}(t)$ and each element of $\mathbf{u}(t)$ denotes the forcing function applied to the $i$th equation.
+
+A further advantage of \texttt{Data2LD} over the \texttt{FDA} package is that not only can it smooth ODEs with functional parameters, but it estimate the associated parameters even if they are functions.
+
+While \texttt{Data2LD} can estimate parameters for the differential operator, it does not provide a means for finding the optimal smoothing parameter.\footnote{For \texttt{Data2LD}, the smoothing parameter is written in terms of $\rho = \lambda/(1 + \lambda).$}
+
+\section{Modelling the Reflux Data: A Parametric Approach vs \texttt{Data2LD}}
 
 The Reflux data, plotted in Figure \ref{fig:refluxPlot}, describes the output of an oil refining system. A given fraction of oil is being distilled into a specific tray, at which point it flows out through a valve. At a given time, the valve is switched off, and distillate starts to accumulate in the tray \cite{ramsay2005functional}. The Reflux data was taken from the \texttt{Data2LD} package used for FDA, which will be discussed in more detail later. The authors of the \texttt{Data2LD} package model the data using the following ODE:
 
@@ -381,7 +375,9 @@ Without loss of generality the  exponential term $Ce^{-\beta (t - t_0)}$ can be 
 
 In order to ensure that $y(t)$ is continous at $t_0$ and monotone increasing, we require that $\gamma + C =0 $ and that $\beta > 0$
 
-This model is perfectly adaquate, but it turns out that the constraint $C = -\gamma$ is unsuitable from the point of view of numerical parameter estimation. R's \texttt{nls} command reports errors when this constraint is imposed.
+
+\subsection{Parametric Approach} \label{sec:reflux_parametric_approach}
+It turns out that the constraint $C = -\gamma$ is unsuitable from the point of view of numerical parameter estimation. R's \texttt{nls} command reports errors when this constraint is imposed.
 
 However, if we allow $t_0$ to vary, we can allow $C$ to assume any negative value while preserving monotonicity and continuity.
 
@@ -407,7 +403,7 @@ The function $\tilde{y}(t)$ is a combination of simpler functions, joined togeth
 \end{figure}
 
 \newpage
-\subsection{Parametric Fitting}
+\subsubsection{Parametric Fitting}
 
 Instead of approximately solving an associated problem as discussed in Section \ref{sec:finite_dimension_general}, a  purely parametric approach to fitting  the ODE (\ref{eqn:reflux_ode}) will be employed. The question of modelling the Reflux data using FDA will be discussed in a later chapter.
 
@@ -468,25 +464,131 @@ The resulting fit is  presented in Figure \ref{fig:reflux_ode_fit}.
 
 Using this formula, it was estimated that ${t}_0 = 67.71.$ This new value will produce the same results as for $t_0 = 68$ because it doesn't change the set of  observation points  used to estimate $\beta_0, \beta_1,$ and $\beta_2.$
 
-\subsection{Discussion}
+\subsubsection{Discussion}
 
-The approach taken to estimation here is somewhat \textit{ad hoc.} Instead of devising a formal estimation strategy in advance, the fitting approach evolved organically alongside the problems of solving the $ODE$ and fitting the data. Use was made of properties tied to the ODE model to compute estimates. While this has produced an effective fit, there are obvious concerns about generalising this approach to other ODEs. Futhermore, since the fitting model was devised by peeking at the data, it is not obvious that one can find a valid p-value for the fit without getting an entirely new set of data. 
+The parametric approach taken to estimation here is somewhat \textit{ad hoc.} Instead of devising a formal estimation strategy in advance, the fitting approach evolved organically alongside the problems of solving the $ODE$ and fitting the data. Use was made of properties tied to the ODE model to compute estimates. While this has produced an effective fit, there are obvious concerns about generalising this approach to other ODEs. Futhermore, since the fitting model was devised by peeking at the data, it is not obvious that one can find a valid p-value for the fit without getting an entirely new set of data. 
 
 This issue is difficult to resolve using purely parametric methods. It is often the case in Applied Mathematics that one can't fully investigate an ODE model until one has a rough grasp of its behaviour. It has been demonstrated that the  associated Statistical fitting problem inherits this tendency. 
 
-
 \begin{figure}
 \centering
-\includegraphics[height=9cm]{nls_fit.pdf}
-\caption{Fitting the Reflux data to the ODE (\ref{eqn:reflux_ode}).}
+\includegraphics[height=11cm]{nls_fit.pdf}
+\caption{Fitting the Reflux data to the ODE model parametrically.}
 \label{fig:reflux_ode_fit}
 \end{figure}
 
+\subsection{Fitting the Reflux Data with Data2LD}
+
+While the parametric approach employed in Section \ref{sec:reflux_parametric_approach} requires a considerable amount of domain-specific knowledge,  the functional model can be more  generally employed. The FDA approach doesn't rely on individual features of the specific differential equation at hand,\footnote{The FDA approach does rely on more general features of course, such as whether or not the differential equation is linear.} and produces a similar fit to the Reflux data as the parametric approach.
+
+The functional model asserts that 
+
+\[
+   y'(t) \approx -\beta y(t) + u(t)
+\]
+
+Where $y(\cdot)$ and $u(\cdot)$ are functions to be estimated, and $\beta$ is a single scalar parameter.
+
+It is assumed that $u(t)$ is a step function of the form
+
+\[
+   u(t) = a\mathbb{I}_{[0, t_0)}(t) + b\mathbb{I}_{[t_0, \infty)}(t)
+\]
+
+As in the parametric case, the breakpoint $t_0$ is fixed in advance. It is further assumed that $y(t)$ can be expanded as a linear combination of B-Splines. The knots are duplicated at $t_0$ so that the first derivative at the breakpoint is discontinous. 
+
+This model was fitted using the \texttt{Data2LD} package, and the results are plotted in Figure \ref{fig:reflux_fda_fit}. It can be seen that the fit is quite similar to the parametric one presented in Figure \ref{fig:reflux_ode_fit}. The main disadvantage of the FDA approach compared to the parametric one is that \texttt{Data2LD} can be complex and unintuitive to use.
 
 
-\nocite{*}
-\bibliographystyle{plain}
-\bibliography{ref} 
-\end{document}
+\begin{figure}
+   \centering
+   \includegraphics[height=11cm]{fda_plot.pdf}
+   \caption{Modelling the Reflux data using \texttt{Data2LD}.}
+   \label{fig:reflux_fda_fit}
+\end{figure}
+
+
+\section[Rates Of Convergence]{Rates Of Convergence\footnote{There are slightly different definitions of convegrgence rates from text to text, but all capture the same basic meaning.  Refer to \cite{nocedalnumerical, chong2013introduction}.}}\label{sec:rates_of_convergence}
+
+Throughout this thesis, it will sometimes be desireable to consider the rates of convergence of different fitting and estimation methods. For the purposes of this section, it is assumed that there is a vector-valued sequence $\mathbf{x}_0, \mathbf{x}_1,  \mathbf{x}_2, \dots$ that  converges to a value $\mathbf{x^*}.$ 
+
+\paragraph{Linear Convergence:}A convergent sequence is said to \emph{converge linearly}\footnote{In \cite{nocedalnumerical}, the case $\mu = 0$ is considered to be a case of linear convergence as well. This definition makes it harder to sharply discriminate between linear and superlinear convergence.} to $\mathbf{x^*}$ (with convergence rate $\mu$) if there is a $0 < \mu <1$ such that:
+
+\begin{equation}\label{eqn:linear_convergence}
+   \lim_{n \rightarrow \infty}  \frac{\|\mathbf{x}_{n+1}- \mathbf{x}^*\|}{\|\mathbf{x}_{n}- \mathbf{x}^*\|} = \mu
+\end{equation}
+
+If a sequence $\mathbf{x}_n$ converges linearly with constant $\mu,$ then $\|\mathbf{x}_{n+1}- \mathbf{x}^*\| \approx \mu\|\mathbf{x}_{n}- \mathbf{x}^*\|$ for $n$ sufficiently large. A simple example of a linearly converging sequence is given by $1, \frac{1}{2}, \frac{1}{4}, \frac{1}{8},\dots$ If plotted on a log scale, the error terms $\|\mathbf{x}_{n+1}- \mathbf{x}^*\|$  will  tend to lie on a straight line. As suggested by the nomenclature, a linearly convergent sequence has the property that if the number of iterations is doubled, then the number of digits of  precision achieved is roughly doubled as well. 
+
+\paragraph{Sublinear Convergence:}A sequence is said to converge  \emph{sublinearly} to $\mathbf{x^*}$ if:
+
+\[
+   \lim_{n \rightarrow \infty}  \frac{\|\mathbf{x}_{n+1}- \mathbf{x}^*\|}{\|\mathbf{x}_{n}- \mathbf{x}^*\|} = 1
+\]
+
+Sublinear convergence is very slow. Every reduction in the order of magnitude of the error achieved takes more iterations than the previous reduction. The ur-example of a sublinearly convergent sequence is the reciprocals of the natural numbers: $1, \frac{1}{2}, \frac{1}{3}, \frac{1}{4}, \dots.$ 
+
+\paragraph{Superlinear and Quadratic Convergence:}A sequence is said to converge superlinearly if:
+
+\[
+   \lim_{n \rightarrow \infty}  \frac{\|\mathbf{x}_{n+1}- \mathbf{x}^*\|}{\|\mathbf{x}_{n}- \mathbf{x}^*\|} = 0
+\]
+
+It is often the case that one can be more specific. A sequence is said to converge superlinearly with order $p$ if there exist positive constants $p > 1$ and $\mu>0$ such that:
+\begin{equation}\label{eqn:linear_convergence}
+   \lim_{n \rightarrow \infty}  \frac{\|\mathbf{x}_{n+1}- \mathbf{x}^*\|}{\|\mathbf{x}_{n}- \mathbf{x}^*\|^p} = \mu
+\end{equation}
+
+If $p=2$, the sequence is said to converge quadratically.
+
+Note that there is no requirement that $\mu < 1$ in this case. If $p=2,$ the sequence is said to converge quadratically.Taking logs yields that $\log(\|\mathbf{x}_{n+1}- \mathbf{x}^*\|) \approx -p\log(\|\mathbf{x}_{n}- \mathbf{x}^*\|).$ For a linearly convergent sequence, the magnitude of the error declines exponentially and the number of digits of precision gained increases linearly with the number of iterations. But for a superlinearly convergent sequence, the \emph{order of magnitude of the error} declines exponentially and the number of digits of precision gained grows geometrically with the number of iterations. For a quadratically converging sequence, each iteration tends to roughly double the number of digits of precision. For example, if the error in the first iterate is approximately $0.1$, the next iterate will have error on the order of $10^{-2}$, the next again will have error on the order of $10^{-4},$ and so on. 
+An  example of superlinear convergence is given by the sequence $x_n = 2^{-2^n}.$ 
+
+\begin{table}[]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+Convergence Class & Example               & Iterations until $<10^{-6}$        & Iterations until $<10^{-12}$  \\
+\hline
+Sublinear        & $x_n = \frac{1}{n}$    & $10^6 + 1$                         & $10^{12}$ + 1                \\
+Linear           & $x_n = 2^{-n}$         & 20                                 & 40                            \\
+Superlinear      & $x_n  = 2^{-2^{n}}$    & 5                                  & 6                             \\
+\hline                                              
+\end{tabular}    
+\caption{Illustrating the different classes of convergence.}  
+\end{table}
+
+
+\paragraph{An Extended Definition of Convergence Rates:}The above appraoch to defining the rate of convergence can't handle every sequence however. For example, the  sequence $1,1, \frac{1}{2}, \frac{1}{2}, \frac{1}{4}, \frac{1}{4}, \dots$ does not converge linearly in the sense of (\ref{eqn:linear_convergence}). To cover these situations, a sequence is also said to converge linearly/sublinearly/superlinearly if there is an associated auxillary sequence $\epsilon_n$ such that $\|\mathbf{x}_{n+1}- \mathbf{x}^*\| \leq \epsilon_n$ for all $n \geq 0,$ and the sequence $\epsilon_n$ converges linearly/sublinearly/superlinearly to zero.\footnote{The simple definition presented here is known as \emph{Q-Convergence}, and the extended definition is known as \emph{R-Convergence} \cite{nocedalnumerical}.}
+
+
+\paragraph{Linear Convergence and Iterated Mappings:}Nearly all estimation algorithms used in statistics start with an initial estimate $\theta_0$ and generate a sequence of estimates by $\mathbf{\theta}_{n+1} = \mathbf{\mathbf{M}}(\theta_n)$ for some mapping $\mathbf{M}(\cdot).$ The alogrithm is stopped when the generated sequence has converged within a tolerance of the limit $\theta^*.$ Examples include the Newton-Raphson Method, Fisher's Method of Scoring, Gradient Descent, the EM Algorithm,  Block Relaxation, and many imputation methods. As shall be seen, a statistically motiviated fitting alogorithm will nearly always converge linearly unless it has been specifically engineered so that $\mathbf{M}'(\theta^*) = 0.$
+
+ Linear convergence is common for  convergent sequences defined by repeatedly applying a function $\mathbf{f}$ so that $\mathbf{x}_{n+1} = \mathbf{f}(\mathbf{x}_n).$ To see this, perform a Taylor expansion about the limit point $\mathbf{x^*}:$
+
+\begin{align*}
+\mathbf{f}(\mathbf{x}_{n}) &\approx \mathbf{f}(\mathbf{x^*}) + \mathbf{f'}(\mathbf{x^*})(\mathbf{x}_n - \mathbf{x^*}) \\
+\mathbf{f}(\mathbf{x}_{n}) &\approx \mathbf{x^*} + \mathbf{f'}(\mathbf{x^*})(\mathbf{x}_n - \mathbf{x^*}) \\
+\mathbf{f}(\mathbf{x}_{n}) - \mathbf{x^*} &\approx \mathbf{f'}(\mathbf{x^*})(\mathbf{x}_n - \mathbf{x^*}) \\
+\mathbf{x}_{n+1}  - \mathbf{x^*} &\approx \mathbf{f'}(\mathbf{x^*})(\mathbf{x}_n - \mathbf{x^*}) \\
+\end{align*}
+
+Taking norms of both sides yields that:
+
+\[
+   \|\mathbf{x}_{n+1}  - \mathbf{x^*}\| \lesssim \|\mathbf{f'}(\mathbf{x^*}) \| \|\mathbf{x}_{n+1}  - \mathbf{x^*}\|
+\]
+
+The situation here is a little subtle because $\mathbf{f}$ is a multivariate function. The exact rate is of convergence is controlled by the norm of the Jacobian matrix $\mathbf{f}'(\mathbf{x})$ at $\mathbf{x^*}.$ So long as there is a matrix norm such that $\|\mathbf{f}'(\mathbf{x}^*)\| < 1$ the sequence will converge linearly at worst, though faster than linear convergence is potentially possible if $0$ is an eigenvalue of $\mathbf{f}'(\mathbf{x}^*).$\footnote{Consider for example the multivariate sequence defined by $(x_{n+1}, y_{n+1}) = (x_n^2, y_n/2).$  This convergence  towards zero is  superlinear  in the $x$ direction, but only linear in the $y$ direction. If $(x_0, y_0) = (0.5, 0),$ then the convergence will be superlinear. Usually however the $y$ component will be nonzero and will drag the convergence rate down to linear convergence.} If $\mathbf{f'}(\mathbf{x^*}) = \mathbf{0},$ the convergence will be superlinear.
+
+
+
+
+
+\section{Overview of Appendices}
+
+
+
+
 
 

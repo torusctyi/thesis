@@ -18,25 +18,23 @@
 
 \begin{document}
 
-\chapter{Dissecting the Data2LD Package}
+\section{Dissecting the Data2LD Package}
 
+Data2LD uses a sophisticated two-level parameter cascade algorithm to fit parameters to the data, which is briefly described here.
 
-The code in Data2LD hardcodes unnamed constants  into the code. For example putting the number \texttt{3.14159} into code without context instead of \texttt{PI}. Allowing such 'Magic Numbers' is strongly discouraged because it makes code more error prone and difficult to understand \cite{mcconnell2004code}. 
+The code for Data2LD is difficult to understand. For example, Data2LD hardcodes unnamed constants  into the code. For example putting the number \texttt{3.14159} into code without context instead of \texttt{PI}. Allowing such 'Magic Numbers' is strongly discouraged because it makes code more error prone and difficult to understand \cite{mcconnell2004code}. 
 
-\section{How Data2LD Works in Practice}
+\subsection{How Data2LD Fits Parameters}
 The search directions used by Data2LD are the gradient descent direction:
 
-
 \begin{equation} \label{eqn:grad_descent}
-    \mathbf{p}_k = -\mathbf{g}_k \tag{\textbf{S1}}
+    \mathbf{p}_n = -\mathbf{g}_k \tag{\textbf{S1}}
 \end{equation}
 
 and the Newton Direction:
 \begin{equation} \label{eqn:grad_descent}
-    \mathbf{p}_k = - \mathbf{H}_k^{-1}\mathbf{g}_k
+    \mathbf{p}_n = - \mathbf{H}_k^{-1}\mathbf{g}_k
 \end{equation}
-
-
 
 Data2LD uses four tests to determine how good a step is:\footnote{Data2LD actually tests for the negative of \ref{eqn:t3} and \ref{eqn:t4}, but they are presented so here so that passing a test consistetly good good and failing is consistently bad.}
 
@@ -45,30 +43,30 @@ Data2LD uses four tests to determine how good a step is:\footnote{Data2LD actual
 \item First Wolfe Condition - compares the  decrease in the value of the objective function to an estimate of what it should be.
 
 \begin{equation} \label{eqn:t1}
-   f(\mathbf{x}_k + \alpha_k\mathbf{p}_k) \leq f(\mathbf{x}_k) + c_1\alpha_k \mathbf{p}_k^\top\nabla f(\mathbf{x}_k) \tag{\textbf{T1}}
+   f(\mathbf{x}_k + \alpha_k\mathbf{p}_n) \leq f(\mathbf{x}_k) + c_1\alpha_k \mathbf{p}_n^\top\mathbf{g}_n \tag{\textbf{T1}}
 \end{equation}
 
 \item Second  Wolfe Condition (Strong Version) - tests whether the gradient has decreased sufficiently relative to the previous value
 
 \begin{equation} \label{eqn:t2}
-   |\mathbf{p}_k^\top\nabla  f(\mathbf{x}_k+ \alpha_k\mathbf{p}_k)| \leq c_2 |\mathbf{p}_k^\top\nabla  f(\mathbf{x}_k)| \tag{\textbf{T2}}
+   |\mathbf{p}_n^\top\nabla  f(\mathbf{x}_k+ \alpha_k\mathbf{p}_n)| \leq c_2 |\mathbf{p}_n^\top\nabla  f(\mathbf{x}_k)| \tag{\textbf{T2}}
 \end{equation}
 
 \item Has the function even decreased compared to the previous iteration?
 
 \begin{equation}\label{eqn:t3}
-   f(\mathbf{x}_k + \alpha_k\mathbf{p}_k) \leq  f(\mathbf{x}_k) \tag{\textbf{T3}}
+   f(\mathbf{x}_k + \alpha_k\mathbf{p}_n) \leq  f(\mathbf{x}_k) \tag{\textbf{T3}}
 \end{equation}
    
 \item Has the slope along the search direction remained nonnegative? 
 
 \begin{equation}\label{eqn:t4}
-    \mathbf{p}_k^\top\nabla  f(\mathbf{x}_k+ \alpha_k\mathbf{p}_k)  \leq 0 \tag{\textbf{T4}}
+    \mathbf{p}_n^\top\nabla  f(\mathbf{x}_k+ \alpha_k\mathbf{p}_n)  \leq 0 \tag{\textbf{T4}}
 \end{equation}
 
 \end{itemize}
 
-If \ref{eqn:t1} and \ref{eqn:t2} are satisfied, then the line search has converged completely. If \ref{eqn:t3} has failed, this represents a total failure because it means the line search has failed to actually produce any improvement in the objective function. A failure in \ref{eqn:t4} means the function has overshot a critical point.\footnote{If \ref{eqn:t4} fails, this implies that $\mathbf{p}_k^\top\nabla  f(\mathbf{x}_k+ \alpha_k\mathbf{p}_k)$ and $\mathbf{p}_k^\top\nabla  f(\mathbf{x}_k)$ are of opposite sign since $\mathbf{p}_k$ is choosen so that $\mathbf{p}_k^\top\nabla f(\mathbf{x}_k) <0.$ The Intermediate Value Theorem means there is an $\bar{\alpha}$ between $0$ and $\alpha_k$ such that $\mathbf{p}_k^\top\nabla  f(\mathbf{x}_k+ \bar{\alpha}\mathbf{p}_k) = 0,$ so that there is a crtical point on the line segment between $\mathbf{x}_k$ and $\mathbf{x}_k+ \alpha_k\mathbf{p}_k.$}
+If \ref{eqn:t1} and \ref{eqn:t2} are satisfied, then the line search has converged completely. If \ref{eqn:t3} has failed, this represents a serious failure because it means the line search is failing to actually produce any improvement in the objective function. A failure in \ref{eqn:t4} means the function has overshot a critical point.\footnote{If \ref{eqn:t4} fails, this implies that $\mathbf{p}_n^\top\nabla  f(\mathbf{x}_k+ \alpha_k\mathbf{p}_n)$ and $\mathbf{p}_n^\top\nabla  f(\mathbf{x}_k)$ are of opposite sign since $\mathbf{p}_n$ is choosen so that $\mathbf{p}_n^\top\mathbf{g}_n <0.$ The Intermediate Value Theorem means there is an $\bar{\alpha}$ between $0$ and $\alpha_k$ such that $\mathbf{p}_n^\top\nabla  f_n+ \bar{\alpha}\mathbf{p}_n) = 0,$ so that there is a crtical point on the line segment between $\mathbf{x}_k$ and $\mathbf{x}_k+ \alpha_k\mathbf{p}_n.$}
 
 Depending on the outcome of the tests, Data2LD chooses the stepsize as follows:
 
@@ -78,7 +76,11 @@ Depending on the outcome of the tests, Data2LD chooses the stepsize as follows:
 
 \item If \ref{eqn:t1} and \ref{eqn:t1} are passed, or  \ref{eqn:t4} is passed; but  \ref{eqn:t3} is failed, it means that the slope is satisfactory, but the function has increased rather than decreased. Data2LD reduces the step size
 
-\item If all four tests are failed, then the newest point is unsuitable entirely. Data2LD falls back on interpolation to try to find a critical point of $\phi(\alpha)_k = f(\mathbf{x}_k + \alpha\mathbf{p}_k),$ falling back on the secant method if necessary.
+\item If all four tests are failed, then the newest point is unsuitable entirely. Data2LD falls back on interpolation to try to find a critical point of $\phi(\alpha)_k = f(\mathbf{x}_k + \alpha\mathbf{p}_n),$ falling back on the secant method if necessary.
+
+If the line search succeeds in reducing the objective function, Data2LD uses the Newton search direction for the next iteration. If the line search makes the objective function worse, the gradient descent direction is used. In the event of the line search making the objective function worse twice in a row, Data2LD returns an error.
+
+Somewhat pecuralily, \texttt{Data2LD} does not make use of $\phi''(\alpha)$ despite being able to compute it easily. One would think that Newton's Method would thus be the first approach attempted to perform the line search before resorting to interpolation-based methods since it is simpler and faster. 
 
 \end{itemize}
 \begin{figure}
