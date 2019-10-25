@@ -26,11 +26,9 @@ Substantial complications are introduced into the statistical analysis because f
 
 For the purposes of this thesis, it is assumed that the functions in question are continous mappings.
 
-In practice one attempts to resolve this difficulty by finding or otherwise constructing a discrete problem that resembles the functional problem, and then solve this approximate problem.
+In practice one attempts to resolve the problem of potential infite-dimensionality by finding or otherwise constructing a discrete problem that resembles the functional problem, and then solving this approximate problem instead.
 
-It might be that case that the approximate problem can itself only be solved approximately using numerical methods.
-
-Statistical problems that involve differential equations are particularly difficult. More naive approaches force the practitioner to solve the ordinary differential equation (ODE) numerically everytime it is desired to evaluate the goodness of fit. For these situations, it is necesary by definition to use numerical analytic techniques to construct a proxy problem that resembles the original problem sufficiently well and that is  sufficiently easy to work with.
+Statistical problems that involve differential equations are particularly difficult. A naive approach is to force the practitioner to solve the ordinary differential equation (ODE) numerically again every time it is desired to evaluate the goodness of fit for a given choice of parameters. For these situations, it is necesary by definition to use numerical analytic techniques to construct a proxy problem that resembles the original problem sufficiently well and that is  sufficiently easy to tackle computationally.
  
 For example, consider the problem of parametric estimation for a stochastic differential equation (SDE) of the form
 
@@ -62,33 +60,33 @@ A differential equation (or a similar problem) over some finite dimesional space
 
 The modelling process for functional data as described in Figure \ref{fig:statModellingProcess} can be more complex than standard statistical problems. 
 
-\paragraph{Formulate a Model:}  As is the case for any statistical problem, the first step is to formulate a model . Here one must only be certain that the model at used is sufficiently broad or well-specified to be able to actually capture the phenomona at hand.
+\paragraph{Formulate a Model:}  As is the case for any statistical problem, the first step is to formulate a model. In the context of FDA, this often entails an ODE model. \cite{ramsay2009functional, ramsay2005functional} One must be certain that the model at used is sufficiently broad or well-specified to be able to actually capture the phenomona under investigation.
 
 
 
 \paragraph{Construct a Discretised Model that Approximates the Original Model:} Unless the statistical model is trivial, the next step is to construct a proxy model. This generally requires ideas from Numerical Analysis.
 
-\paragraph{Conduct Statistical Analysis Using the Discretised Model:} While the discretised model tends to be simpler than the original model, this task is not necesarily trivial as shall be seen.
+\paragraph{Conduct Statistical Analysis Using the Discretised Model:} While the discretised model tends to be simpler than the original model, this task is not necesarily trivial. For FDA problems, R packages such as \texttt{FDA}\footnote{Discussed in Section \ref{sec:intro_fda_package}} and \texttt{Data2LD}\footnote{Discussed in Section \ref{sec:intro_data2ld}} that are designed to conduct such analysis are complex.
 
 \paragraph{Check the Approximation Error in Discretised Model:} If the discretised model is too poor an approximation, then the results of any statistical analysis conducted could be substantially biased as a result of the  approximation error introduced, even if the original model were perfectly sound. If the orginal model is biased, then the approximate one might be even more so. 
 
-Therefore, one should consider conducting post hoc checks. For example, running the analysis again with a more accurate approximate model and comparing the results with the original model.  If both agree, it is evidence the approximate models are both reasonably accurate. Constructing a more accurate approximation is generally a straightforward and intuitive process, with the exact approach depending on the situation at hand. 
+Therefore, one should consider conducting post hoc checks. For example, running the analysis again with an alternative approximate model and comparing the results with the original model.  If both agree, it is evidence the approximate models are both reasonably accurate. 
 
 In the context of FDA, this generally entails  increasing the number of basis functions so that the associated approximation error is smaller. 
 
 For example, suppose that one were attempting to estimate the parameters of an ODE by means of least squares, and one was using a finite difference solver to compute the fitted values, and hence to determine the goodness-of-fit. 
 
-Once the fitting alogrithm had converged, one might run the solver again with a smaller stepsize and the same parameters and check if this has made a substantial change in the the sum of squared residuals. 
+Once the fitting alogrithm had converged, one might run the solver again with a smaller stepsize (or more basis functions) and the same parameters and check if this has made a substantial change in the the sum of squared residuals or whatever goodness-of-fit statistic is of interest.
 
-If there has been a substantial change as a result of the stepsize reduction, then one would have to consider running the entire fitting procedure again starting from the previously computed parameter estimate, except with the smaller stepsize, taking the new parameter estimates, and then checking again if decreasing the stepsize yet again produces substantial change in the goodness-of-fit statistic.
+Suppose that there has been a substantial change as a result of the stepsize reduction. One  would have to consider running the entire fitting procedure again starting from the previously computed parameter estimate, except with the smaller stepsize. If reducing the stepsize a second time doesn't produce a substantial change  in the goodness-of-fit statistic, one can be confident that no further reductions in the stepsize are necessary.
 
-This procedure can even be automated. The Implicit Filtering alogrithm computes an approximate gradient using finite differnences and uses this to perform optimisation. If the alogorithm cannot produce a decrease in the objective function, or it cannot be certain that the true gradient isn't in fact zero, it reduces the stepsize. The algorithm terminates when the change in the objective function between changes in the stepsize has fallen below a chosen tolerance level.
+This procedure can be automated. The Implicit Filtering alogrithm discussed in Section \ref{sec:implicit_filtering}  is an example of such automation. On each iteration, Implicit Filtering computes an approximate gradient using finite differnences and uses this to perform optimisation.\cite{kelly2002filtering} If the Implicit Filtering alogorithm cannot produce a decrease in the objective function, or it cannot be certain that the true gradient isn't in fact zero, it reduces the stepsize. The algorithm terminates when the change in the objective function between changes in the stepsize has fallen below a chosen tolerance level.
 
 If the fitting method used is slow however, then these such approaches can potentially be very slow  due to the need to solve the same problem over and over again at increasing levels of precision. 
 
 Fortunately, Functional Data Analysis does not always require the recomputation of the curve in such a fashion whenever the parameters are changed. Instead of being implicitly represented as solutions of an ODE, functions are explicitly represented as elements in some finite dimesional vector space. As shall be seen, the objective function is generally a mapping from some vector space $R^n$ to $R$ that can often be evaluated reasonably easily, or at least more easily than having to run an ODE solver.
 
-\paragraph{Check If Results of Statistical Analysis Are Consistent With Discretised Model.} In the previous step, one checked that the approximate model was actually acting as a proxy for the original model. One must then check that the statistical analysis conducted using the approximate model is valid in its own right. For example, it will be seen throughout this thesis that many statistical problems involving functions can be approximated by nonlinear regression models. These constructed nonlinear regression models should be checked for statistical validity.
+\paragraph{Check If Results of Statistical Analysis Are Consistent With Discretised Model.} In the previous step, one checked that the approximate model was actually acting as a proxy for the original model. One must then check that the statistical analysis conducted using the approximate model is valid in its own right. For example, it will be seen throughout this thesis that many statistical problems involving functions can be approximated by non-linear regression models. These constructed non-linear regression models should be checked for statistical validity.
 
 
 \begin{figure}
@@ -149,7 +147,7 @@ To find the minimiser of $PENSSE(\cdot; \lambda)$ first, assume that $f(t)$ can 
 
 Note that it is only required that the set of basis splines only possess enough resolution to represent the function that minimises $PENSSE$, it is not required that this set of splines is minimal. 
 
-Let the design matrix $\mathbf{\Phi}$ be defined by $\mathbf{\Phi}_{ij} = \phi_i(t_j),$ and let the weight matrix $\mathbf{R}$ be defined by $\mathbf{R}_{ij} = \int_0^T \phi_i''(t)\phi_j''(t).$ Then $PENSSE$ can be written in terms of the vector of coefficients $\mathbf{c}$ and observations $\mathbf{y}$ as:
+Let the design matrix $\mathbf{\Phi}$ be defined by $\mathbf{\Phi}_{ij} = \phi_i(t_j),$ where $i$ indexes the basis functions and $j$ indexes the observations. Let the weight matrix $\mathbf{R}$ be defined by $\mathbf{R}_{ij} = \int_0^T \phi_i''(t)\phi_j''(t)dt.$ Then $PENSSE$ can be written in terms of the vector of coefficients $\mathbf{c}$ and observations $\mathbf{y}$ as:
 
 \[
    PENSSE(\mathbf{c}; \lambda) = \|\mathbf{y} - \mathbf{\Phi c}\|^2+ \lambda \mathbf{c'Rc}
@@ -175,7 +173,7 @@ Consider a more difficult penalised regression problem:
     PENSSE(f; \lambda) = \sum_{i = 1}^N (y_i - f(t_i))^2 + \lambda \int_0^T |f''(t) - f(t)|^2 dt
 \]
 
-The penalty against  $f''(t)$ has been replaced with a penalty against $f''(t) - f(t).$
+The penalty  $f''(t)$ has been replaced with a penalty $f''(t) - f(t).$
 $PENSSE$ can be minimised in this case taking by a piecewise function consisting of linear combinations of $\sin(t)$ and $\cos(t)$ over each interval, and matching them together. 
 
 Note that a function of the form
@@ -203,16 +201,16 @@ To find an exact solution to the two problems in Section \ref{sec:pen_regression
 
 For comparison, Chebyshev Polynomials can often provide better approximation power for a given number of basis functions.\cite{boyd2001chebyshev} Unfortunately, it was found that they can be poorly behaved statistically because they consist of high order polynomials that are difficult to fit to data. 
 
-Functional Data Analysis thus consists of the following steps, illustrated in Figures  \ref{fig:fda_modelling} and :
+Functional Data Analysis thus consists of the following steps, illustrated in Figures  \ref{fig:fda_modelling} and \ref{fig:fda_modelling_cyclical}:
 
 \begin{enumerate}
  \item Formulate a model for $f(t).$ Usually, this takes the form of a penalised regression model, where $f(t)$ is defined as the function that minimises some kind of penalised error
-\item Assume that $f(t)$ can be written as a finite combination of chosen basis functions. In practice, this is only approximately true, so it is important to ensure that our basis can actually approximate the optimal $f(t)$ sufficently well. The  function $f(t)$ can thus be written:
+\item Assume that $f(t)$ can be written as a finite combination of chosen basis functions. In practice a finte basis can only ever approximate $f(t),$ so it is imporant to ensure the basis is large enough to  approximate the optimal $f(t)$ sufficently well. The  function $f(t)$ can thus be written:
 
 \begin{align*}
 f(t) &= \sum_{i=1}^Kc_i\phi_i(t) \\
      &= [c_1, \dots, c_K]'[\phi_1(t), \dots, \phi_K(t)]\\
-     &= \mathbf{c'}\mathbf{\phi}(t)
+     &= \mathbf{c}^\top\boldsymbol{\phi}(t)
 \end{align*}
 
 Note that $f(t)$ is now defined by the coefficent vector $\mathbf{c}.$
@@ -221,7 +219,9 @@ Note that $f(t)$ is now defined by the coefficent vector $\mathbf{c}.$
 
 \end{enumerate}
 
-For a given choice of $\mathbf{c},$ one gets a goodness-of-fit statistic of some kind back. It's important to note that the problem of fitting the coefficients $\mathbf{c}$ is a problem in nonlinear regression as a result of the finite dimesionalisation. Besides formulating an FDA model, one needs to consider the questions of constructing a finite dimensional approximation and then solving the associated nonlinear regression. The situation is sketched in Figure \ref{fig:fda_modelling_cyclical}.
+For every valid choice of $\mathbf{c},$ a statistic that measures the  goodness of fit to  the data can be  computed. One desires the value of $\mathbf{c}$ that maximises the goodness-of-fit statistic under considetion.  The problem of finding the coefficients $\mathbf{c}$ can thus be thought of as being a non-linear regression problem since $\mathbf{c}$ is finite-dimensional.
+
+Besides formulating an FDA model, one needs to consider the questions of constructing a finite dimensional approximation and then solving the associated non-linear regression. The situation is sketched in Figure \ref{fig:fda_modelling_cyclical}.
 
 \begin{figure}
    \centering
@@ -237,14 +237,14 @@ For a given choice of $\mathbf{c},$ one gets a goodness-of-fit statistic of some
    \caption{Elements of Functional Data Analysis}
    \label{fig:fda_modelling_cyclical}
 \end{figure}
-\subsection{FDA With A Quadratic Basis}
-As is done in some texts\footnote{\cite{boyd2001chebyshev} for example.}, we will immediately provide an example with a very small basis to illustrate these steps. Consider the following penalised regression problem:
+\subsection{FDA With A Quadratic Basis} \label{sec:fda_quadratic_basis}
+As carried out in \cite{boyd2001chebyshev}, we will immediately provide an example with a very small basis to illustrate these steps. Consider the following penalised regression problem:
 
 \[
     PENSSE(f; \lambda) = \sum_{i = 1}^N [y_i - f(t_i)]^2 + \lambda \int_0^1 |t^2f'' - 0.5f|^2 dt
 \]
 
-The differential equation associated with the penalty term is known as an Euler's Equation, and can be regarded here as a toy equation representative of equations such as Bessel's equation. The solution is given by $f(t) = a t^{r_1} + b t^{r_2},$ where $r_1$ and $r_2$ are the roots of the quadratic equation $r^2 - r - 0.5 = 0.$ Thus, $r_1 \approx -0.36$ and $r_2 \approx 1.36.$
+The differential equation associated with the penalty term is known as an Euler's Equation. The solution is given by $f(t) = a t^{r_1} + b t^{r_2},$ where $r_1$ and $r_2$ are the roots of the quadratic equation $r^2 - r - 0.5 = 0.$ Thus, $r_1 \approx -0.36$ and $r_2 \approx 1.36.$
 
 For the sake of illustration it will be assumed that that $f(t)$ can be written as a quadratic - a linear combination of the basis functions $\{1,t,t^2\}$:
 
@@ -280,9 +280,9 @@ We have now gone from a problem specified in terms of functions, to a penalised 
 
 To illustrate this example further, the method was fitted to simulated data. A solution to the ODE $t^2f'' - f = 0$ was generated over the interval $[0,1],$ samples were taken at various points before being corrupted by Gaussian noise. The quadratic that minimised (\ref{eqn:pen_quad}) with $\lambda = 100$ was then found. For comparison, the data was also fitted to a quadratic using ordinary least squares. The original function $f(t),$ the perturbed data, and the two fitted functions are all shown in Figure \ref{fig:quad_model} 
 
-It's already been noted that the quality of the model depends partially on how well $f(t)$ can ever   be approximated by a quadratic over $[0,1]$ in the first place. Therefore, the quadratic $q(t)$ that minimises $\int_0^1|f(t) - q(t)|dt$ was found numerically  and  also plotted in Figure \ref{fig:quad_model}.
+It's already been noted that the quality of the model depends partially on how well $f(t)$ can ever   be approximated by a quadratic over $[0,1].$ Therefore, the quadratic $q(t)$ that minimises $\int_0^1|f(t) - q(t)|dt$ was found numerically  and  also plotted in Figure \ref{fig:quad_model}.
 
-Figure \ref{fig:quad_model} suggests that $f(t)$ can be approximated reasonably well by quadratics for so long as one stays away from the point $t =  0.$  This is consistent with theory. The ODE $t^2f'' - f = 0$ behaves degenerately at  the origin. When $t=0,$ the ODE has what is known as a singular point, the term in  front of $f''$ becomes zero so that the  ODE reduces to $(0)^2f'' - f = 0.$ Additionally, it is always the case that the second derivative diverges to infinity at $0$ if $f(t)$ is of the form $a t^{-0.36} + b t^{1.36}$. As a result of  both the singular point and infinite curvature at $t=0,$ polynomial approximation is predicted to be execptionally tricky around this point.\cite{isaacson2012analysis, teschl2012ordinary}
+Figure \ref{fig:quad_model} suggests that $f(t)$ can be approximated reasonably well by quadratics  so long as one stays away from the point $t =  0.$  The ODE $t^2f'' - f = 0$ behaves degenerately at  the origin. When $t=0,$ the ODE has a singular point, the term in  front of $f''$ becomes zero so that the  ODE reduces to $(0)^2f'' - f = 0.$ Additionally, it is always the case that the second derivative diverges to infinity at $0$ if $f(t)$ is of the form $a t^{-0.36} + b t^{1.36}$. As a result of  both the singular point and infinite curvature at $t=0,$ polynomial approximation is theoreticallyection 1.3 developed FDA algorithms for penalised fitting from scratch. However the FDA package in R.... predicted to be execptionally tricky around this point.\cite{isaacson2012analysis, teschl2012ordinary}
 
 Comparing the two fits in Figure \ref{fig:quad_model}, it is fair to argue that the penalised regression model captures the shape of $f(t)$ better than ordinary least squares away from $t=0.$ Both models seem to have similar predictive power on average. The penalised fit is being heavily influenced by the singularity  at $t=0$ and probably would have performed better if a more robust loss function than least squares were used.
 
@@ -298,17 +298,16 @@ Comparing the two fits in Figure \ref{fig:quad_model}, it is fair to argue that 
 
 \newpage
 
-\section{The \texttt{FDA} Package}
-
-Instead of having to develop develop FDA algorithms from scratch as done in Section \ref{sec:finite_dimension_general}, the  \texttt{FDA} package was developed\cite{fdapackage,ramsay2009functional} to  tackle penalised problems of the form:
+\section{The \texttt{FDA} Package} \label{sec:intro_fda_package}
+Section 1.3 developed FDA algorithms for penalised fitting from scratch. However the \texttt{FDA} package in R  was developed\cite{fdapackage,ramsay2009functional} to  tackle penalised problems of the form:
 
 \begin{equation}
 PENSSE(f) = \sum_{i=1}^N[y_i - f(t_i)]^2 + \lambda \int |Lf(t)|^2dt
 \end{equation}
 
-Here $Lf$ is a parameterised linear differential operator of the form $\sum_{j=0}^n \beta_jD^j$ where the $\beta_j$ are constants. The result of fitting the differential operator $Lf = f - \omega^2f^{(4)}$ with $\omega = 0.65$ is shown in Figure \ref{fig:fda_mela_smooth}.
+Here $Lf$ is a parameterised linear differential operator of the form $\sum_{j=0}^n \beta_jD^j$ where the $\beta_j$ are constants. The result of fitting the differential operator $Lf = f - \omega^2f^{(4)}$ with $\omega = 0.65$ is shown in Figure \ref{fig:fda_mela_smooth}. This operator was choosen because a penalty of the form $f - \omega^2f^{(4)}$ ignores functions of the form $c_1 + c_2t + c_3\sin(\omega t) + c_4 \cos(\omega t).$
 
-The \texttt{FDA} packages is not as powerful as the \texttt{Data2LD} package, which will be introudced later on. It has the advantage of simplicity and ease of use though, and is used throughout this thesis to fit FDA models unless $\texttt{Data2LD}$ is essential. A deficiency of the \texttt{FDA} package is that it provides no guidence on the best choice of  the parameters $\beta_i$ nor the smoothing parameter $\lambda.$\footnote{The \texttt{FDA} package has a command called \texttt{lambda2gcv} whose documentation claims it `[finds] the smoothing parameter that minimizes GCV' \cite{fdapackage}. Inspection of the code for this function shows that it only performs a fit based on the value of $\lambda$ passed and then reports the GCV. Incorrect or unclear documentation is unfortunately not an uncommon problem with FDA codes.}
+The \texttt{FDA} packages is not as powerful as the \texttt{Data2LD} package, which will be introuduced in Section \ref{sec:intro_data2ld}. It has the advantage of simplicity and ease of use, and is used throughout this thesis to fit FDA models unless $\texttt{Data2LD}$ is essential. A deficiency of the \texttt{FDA} package is that it provides no guidence on the best choice of  the parameters $\beta_i$ nor the smoothing parameter $\lambda.$\footnote{The \texttt{FDA} package has a command called \texttt{lambda2gcv} whose documentation claims it `[finds] the smoothing parameter that minimizes GCV' \cite{fdapackage}. Inspection of the code for this function shows that it only performs a fit based on the value of $\lambda$ passed and then reports the GCV. Incorrect or unclear documentation is unfortunately not an uncommon problem with FDA codes.}
 
 \begin{figure}
 \centering
@@ -319,7 +318,7 @@ The \texttt{FDA} packages is not as powerful as the \texttt{Data2LD} package, wh
 
 \newpage\clearpage
 
-\section{The \texttt{Data2LD} Package}
+\section{The \texttt{Data2LD} Package} \label{sec:intro_data2ld}
 
 The Data2LD package is an R package intended to perform smoothing using general linear differential operators with a forcing function, that is, ODEs of the form:
 
@@ -337,11 +336,11 @@ More generally, \texttt{Data2LD} can model a system of inhomogenous linear diffe
 
 Each element of $\mathbf{B}(t)$ is a time-varying linear parameter function of the the form $\beta_{ij}(t)$ and each element of $\mathbf{u}(t)$ denotes the forcing function applied to the $i$th equation.
 
-A further advantage of \texttt{Data2LD} over the \texttt{FDA} package is that not only can it smooth ODEs with functional parameters, but it estimate the associated parameters even if they are functions.
+A further advantage of \texttt{Data2LD} over the \texttt{FDA} package is that not only can it smooth ODEs with functional parameters, but it can estimate the associated parameters even if they are functions.
 
 While \texttt{Data2LD} can estimate parameters for the differential operator, it does not provide a means for finding the optimal smoothing parameter.\footnote{For \texttt{Data2LD}, the smoothing parameter is written in terms of $\rho = \lambda/(1 + \lambda).$}
 
-\section{Modelling the Reflux Data: A Parametric Approach vs \texttt{Data2LD}}
+\section{Modelling the Reflux Data: A Parametric Approach vs \texttt{Data2LD}} \label{sec:reflux_parametric_vs_data2ld}
 
 The Reflux data, plotted in Figure \ref{fig:refluxPlot}, describes the output of an oil refining system. A given fraction of oil is being distilled into a specific tray, at which point it flows out through a valve. At a given time, the valve is switched off, and distillate starts to accumulate in the tray \cite{ramsay2005functional}. The Reflux data was taken from the \texttt{Data2LD} package used for FDA, which will be discussed in more detail later. The authors of the \texttt{Data2LD} package model the data using the following ODE:
 
@@ -371,13 +370,13 @@ This ODE admits an exact solution. Letting $\gamma = u_0/\beta$ and $C$ be an ar
    \end{cases} 
 \]
 
-Without loss of generality the  exponential term $Ce^{-\beta (t - t_0)}$ can be replaced with one of the  is of the form $ Ce^{-\beta t}.$ This is the case because  $Ce^{-\beta (t - t_0)} = Ce^{-\beta t}e^{-\beta t_0} = [Ce^{-\beta t_0}e^{-\beta t}],$ the $e^{-\beta t_0}$ term is thus absorbed into the  constant term.
+Without loss of generality the  exponential term $Ce^{-\beta (t - t_0)}$ can be replaced with one that is of the form $ Ce^{-\beta t}.$ This is the case because  $Ce^{-\beta (t - t_0)} = Ce^{-\beta t}e^{-\beta t_0} = [Ce^{-\beta t_0}e^{-\beta t}],$ the $e^{-\beta t_0}$ term is thus absorbed into the  constant term.
 
 In order to ensure that $y(t)$ is continous at $t_0$ and monotone increasing, we require that $\gamma + C =0 $ and that $\beta > 0$
 
 
 \subsection{Parametric Approach} \label{sec:reflux_parametric_approach}
-It turns out that the constraint $C = -\gamma$ is unsuitable from the point of view of numerical parameter estimation. R's \texttt{nls} command reports errors when this constraint is imposed.
+It turns out that the constraint $C = -\gamma$ is unsuitable from the point of view of numerical parameter estimation because R's \texttt{nls} command reports errors when this constraint is imposed.
 
 However, if we allow $t_0$ to vary, we can allow $C$ to assume any negative value while preserving monotonicity and continuity.
 
@@ -434,12 +433,12 @@ So an initial estimate for $\beta_0$ is given by $\hat{\beta}_0 = \max(y_i)$
 
 For $t \geq t_0,$ the model in Equation \ref{eqn:reflux_model} can be rearranged so that:
 
-\[
+\begin{equation} \label{eqn:reflux_rearranged_model}
    \log(\beta_0 - y(t)) = \log|\beta_1| + \beta_2t
-\]
+\end{equation}
 
 
-This equation is only valid so long as the left hand side is well defined however. It is  necessary to exclude the largest observed value of $y.$
+This equation is only valid so long as the left hand side is well defined however. It is  necessary to exclude the largest observed value of $y,$ because $\beta_0$ is estimated to be the largest obsevation at this point. If the largest value were included, there would be a term of the form $\log(0)$ in the rearranged model (\ref{eqn:reflux_rearranged_model}).
 
 The values of  $\log|\beta_1|$ and $\beta_2$ can be estimated by  performing linear regression against $\log(\beta_0 - y(t)),$ with the largest value of $y$ observed excluded. It was assumed that $\beta_1 < 0,$ so $\hat{\beta_1}$ can be found from the estimate of $\log|\beta_1|.$  
 
@@ -518,7 +517,7 @@ Throughout this thesis, it will sometimes be desireable to consider the rates of
    \lim_{n \rightarrow \infty}  \frac{\|\mathbf{x}_{n+1}- \mathbf{x}^*\|}{\|\mathbf{x}_{n}- \mathbf{x}^*\|} = \mu
 \end{equation}
 
-If a sequence $\mathbf{x}_n$ converges linearly with constant $\mu,$ then $\|\mathbf{x}_{n+1}- \mathbf{x}^*\| \approx \mu\|\mathbf{x}_{n}- \mathbf{x}^*\|$ for $n$ sufficiently large. A simple example of a linearly converging sequence is given by $1, \frac{1}{2}, \frac{1}{4}, \frac{1}{8},\dots$ If plotted on a log scale, the error terms $\|\mathbf{x}_{n+1}- \mathbf{x}^*\|$  will  tend to lie on a straight line. As suggested by the nomenclature, a linearly convergent sequence has the property that if the number of iterations is doubled, then the number of digits of  precision achieved is roughly doubled as well. 
+If a sequence $\mathbf{x}_n$ converges linearly with constant $\mu,$ then $\|\mathbf{x}_{n+1}- \mathbf{x}^*\| \approx \mu\|\mathbf{x}_{n}- \mathbf{x}^*\|$ for $n$ sufficiently large. A simple example of a linearly converging sequence is given by $1, \frac{1}{2}, \frac{1}{4}, \frac{1}{8},\dots$ If plotted on a log scale, the error terms $\|\mathbf{x}_{n+1}- \mathbf{x}^*\|$  will  tend to lie on a straight line. A linearly convergent sequence has the property that if the number of iterations is doubled, then the number of digits of  precision achieved is roughly doubled as well. 
 
 \paragraph{Sublinear Convergence:}A sequence is said to converge  \emph{sublinearly} to $\mathbf{x^*}$ if:
 
@@ -534,7 +533,7 @@ Sublinear convergence is very slow. Every reduction in the order of magnitude of
    \lim_{n \rightarrow \infty}  \frac{\|\mathbf{x}_{n+1}- \mathbf{x}^*\|}{\|\mathbf{x}_{n}- \mathbf{x}^*\|} = 0
 \]
 
-It is often the case that one can be more specific. A sequence is said to converge superlinearly with order $p$ if there exist positive constants $p > 1$ and $\mu>0$ such that:
+ A sequence is said to converge superlinearly with order $p$ if there exist positive constants $p > 1$ and $\mu>0$ such that:
 \begin{equation}\label{eqn:linear_convergence}
    \lim_{n \rightarrow \infty}  \frac{\|\mathbf{x}_{n+1}- \mathbf{x}^*\|}{\|\mathbf{x}_{n}- \mathbf{x}^*\|^p} = \mu
 \end{equation}
@@ -586,6 +585,10 @@ The situation here is a little subtle because $\mathbf{f}$ is a multivariate fun
 
 
 \section{Overview of Appendices}
+
+Appendix A contains an overview of the optimisation methods used throughout this thesis. It can be safely skipped if one is already familiar with the theory unconstrained optimisation up to Line Search Methods. Line Search methods can be thought of as a generalisation of Gradient Descent or the Newton-Raphson method where the size of the step taken (sometimes referred to as the \emph{Learning Rate}) varies on each iteration. The material in Appendix A is a prerequisite for Chapter 2 in particular.
+
+Appendix B discusses the Implicit Filtering method. Implicit Filtering was found to be inadaquate for our purposes and hence does not play any positive or active role in this thesis. The material associated with this purely negative result is accordingly relegated to the appendices.
 
 
 

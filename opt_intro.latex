@@ -1,6 +1,6 @@
 \chapter{Overview of Optimisation Methods}\label{chap:optimisation_methods}
 
-This appendix provides an overview of the ideas in numerical optimisation used throughout this thesis. \cite{nocedalnumerical, chong2013introduction} are  accesible texts for those who wish for more detail.
+This appendix provides an overview of the ideas in numerical optimisation used throughout this thesis. \cite{nocedalnumerical, chong2013introduction} are accessible texts for those who require more information. \cite{nocedalnumerical} is recommended since it covers line search methods in  more detail than \cite{chong2013introduction}.
 
 \section{Gradient Descent and the Newton-Raphson Method}\label{sec:newton_gradient}
 
@@ -19,13 +19,13 @@ The fixed parameter $\alpha >0$ controls how big a step the method will take on 
                        &= f(\mathbf{x}_n) - \alpha \|\mathbf{g}_n\|^2
 \end{align*}
 
-This means that $f(\mathbf{x}_{n+1}) < f(\mathbf{x}_{n})$ so long as $\alpha$ isn't too big. Gradient descent is simple but it only converges linearly under ideal conditions. \cite{nocedalnumerical,chong2013introduction, mathematicsdata2018}. If the objective function isn't sufficiently ideal, gradient descent might only converge sublinearly \cite{mathematicsdata2018}.
+This means that $f(\mathbf{x}_{n+1}) < f(\mathbf{x}_{n})$ so long as $\alpha$ isn't too big. Gradient descent is simple but it only converges linearly under ideal conditions. \cite{nocedalnumerical,chong2013introduction, mathematicsdata2018}. If the objective function isn't sufficiently ideal, gradient descent might only converge sublinearly.\cite{mathematicsdata2018}
 
-Consider the question of minimising the function $f(x) = x^4$ using gradient descent, starting at $x = 0.5$ with $\alpha = 0.2.$ The minimum of $f(x)$ is of course at $x=0,$ so the absolute value of the iterates $x_n$ is a measure of the error. Figure \ref{fig:grad_descent} plots the log errors for the first 20,000  iterations, It is readily apparent that the alogrithm is converging sublinearly and that the rate of convergence is absolutely and utterly woeful. It takes around 250 iterations before the error falls below $10^{-3},$  around 1900 iterations before the error falls below $10^{-4}$, and 13800 iterations before the error falls below  $10^{-5}.$ The data suggests that the number of iterations needed to reduce the error to $10^{-n-1}$ is approximately $7.4$ times the number of iterations needed to achieve an error of $10^{-n}.$ So it could take over 100,000 iterations to get an error of less than $10^{-6}.$
+Consider the question of minimising the function $f(x) = x^4$ using Gradient Descent, starting at $x = 0.5$ with $\alpha = 0.2.$ The minimum of $f(x)$ is of course at $x=0,$ so the absolute value of the iterates $x_n$ is a measure of the error. Figure \ref{fig:grad_descent} plots the log errors for the first 20,000  iterations, It is readily apparent that the alogrithm is converging sublinearly and that the rate of convergence is absolutely and utterly woeful. It takes around 250 iterations before the error falls below $10^{-3},$  around 1900 iterations before the error falls below $10^{-4}$, and 13800 iterations before the error falls below  $10^{-5}.$ The data suggests that the number of iterations needed to reduce the error to $10^{-n-1}$ is approximately $7.4$ times the number of iterations needed to achieve an error of $10^{-n}.$ So it could take over 100,000 iterations to get an error of less than $10^{-6}.$
 
 
 
-Gradient descent can be thought of as the naive choice if one only has access to $f(\mathbf{x})$ and $\nabla f(\mathbf{x}).$ Suppose the second derivatives were available as well. What would the `obvious'   choice be in this case? Perform a second-order Taylor expansion of the objective function around $\mathbf{x}_n:$
+Gradient descent can be thought of as the naive choice if one only has access to $f(\mathbf{x})$ and $\nabla f(\mathbf{x}).$ Suppose the second derivatives were available as well. What would the `obvious'   choice be in this case? Perform a second-order Taylor expansion of the objective function around $\mathbf{x}_n\colon$
 
 \[
    f(\mathbf{x}) \approx f_n +  \mathbf{g}_n^\top(\mathbf{x} - \mathbf{x}_n) + \frac{1}{2}(\mathbf{x} - \mathbf{x}_n)^\top\mathbf{H}_n(\mathbf{x} - \mathbf{x}_n)
@@ -37,7 +37,7 @@ The expression on the righthand side is minimised by $\mathbf{x} = \mathbf{x}_n 
     \mathbf{x}_{n+1} = \mathbf{x}_n - \mathbf{H}_n^{-1}\mathbf{g}_n
 \]
 
-The Newton-Raphson Method converges quadratically, subject to technical conditions including that  so long as one is already near the optimal point and that the Hessian at the optimal point is not pathological.\cite{nocedalnumerical,isaacson2012analysis, lange2010numerical, lange2004optimization,chong2013introduction} If these assumptions do not hold, undesriable behaviour can occur. For example, the Newton Raphson Method only converges linearly with rate $0.666$ when applied to the function $f(x) = x^4$ as can be seen in Figure \ref{fig:newton_grad_descent}, because the second derivative is zero at the optimal point.\footnote{For the case of univariate optimisation, the specific rate of convergence is given by $m/(m+1),$ where $m$ is the number of consecutive higher order derivatives starting from the second derivative that are zero at the optimal point.\cite{isaacson2012analysis} In the case where $f(x) = x^4,$ we have that $f''(0) = 0$ and $f'''(0) = 0,$ but $f^{(4)}(0) = 24 \neq 0,$ and so $m = 2.$}\cite{isaacson2012analysis} While the Newton-Raphson method is undeniably a huge improvement over Gradient Descent here, it nonetheless completely fails to achieve the usual quadratic convergence. 
+The Newton-Raphson Method converges quadratically, subject to technical conditions, including that  so long as one is already near the optimal point and that the Hessian at the optimal point is not pathological.\cite{nocedalnumerical,isaacson2012analysis, lange2010numerical, lange2004optimization,chong2013introduction} If these assumptions do not hold, undesirable behaviour can occur. For example, the Newton Raphson Method only converges linearly with rate $0.666$ when applied to the function $f(x) = x^4$ as can be seen in Figure \ref{fig:newton_grad_descent}, because the second derivative is zero at the optimal point.\footnote{For the case of univariate optimisation, the specific rate of convergence is given by $m/(m+1),$ where $m$ is the number of consecutive higher order derivatives starting from the second derivative that are zero at the optimal point.\cite{isaacson2012analysis} In the case where $f(x) = x^4,$ we have that $f''(0) = 0$ and $f'''(0) = 0,$ but $f^{(4)}(0) = 24 \neq 0,$ and so $m = 2.$}\cite{isaacson2012analysis} While the Newton-Raphson method is undeniably a huge improvement over Gradient Descent here, it nonetheless completely fails to achieve the usual quadratic convergence. 
 
 The biggest weaknesses of Newton's Method the cost of constantly computing the Hessians, the possibilty that $ - \mathbf{H}_n^{-1}\mathbf{g}_n$ fails to be a descent direction, and the possibilty of poor performance or even divergence if one is far from the optimal value.
 
@@ -68,9 +68,9 @@ Chord Methods attempt to approximate the Hessian matrix by using a constant matr
    \mathbf{x}_{n+1} = \mathbf{x}_n + \mathbf{Qg}_n
 \]
 
-The case $\mathbf{Q} = - \alpha\mathbf{I}$ with $\alpha>0$ corresponds to gradient descent.
+The case $\mathbf{Q} = - \alpha\mathbf{I}$ with $\alpha>0$ corresponds to Gradient Descent.
 
-The Chord Method might look crude, but it is useful.  In some cases for example, it is faster to compute the Hessian once at start and stick with it throughout the entire algorithm than to constantly recompute it \cite{kelley1995iterative}. In other words, set $\mathbf{Q} = \mathbf{H}_0.$ . This would be epecially so if evaluating the gradient is cheap compared to the cost of computing the Hessian. 
+The Chord Method might look crude, but it is useful.  In some cases for example, it is faster to compute the Hessian once at start and stick with it throughout the entire algorithm than to constantly recompute it so that $\mathbf{Q} = \mathbf{H}_0.$.\cite{kelley1995iterative} The Chord Method is  especially likely to be faster than the Newton-Raphson Method  if evaluating the gradient is cheap compared to the cost of computing the Hessian. 
 
 It is important that the matrix $-\mathbf{Q}$ be positive definite. The derivative of $f(x_n)$ in the direction $\mathbf{Qg}_n$ is proportional to $\mathbf{g_n^\top Qg_n}$ since:
 
@@ -82,7 +82,7 @@ Ensuring that $\mathbf{x^\top Qx} < 0, \forall \mathbf{x} \neq \mathbf{0}$ means
 
 
 
-It can be shown that the Chord Method converges linearly\cite{kelley1995iterative}, an informal argument will be provided here which closely follows the presentation in \cite{isaacson2012analysis}.Let $\mathbf{g}(\mathbf{x})$ denote the mapping $\mathbf{g}(\mathbf{x})  = \mathbf{x} + \mathbf{Q}\nabla f(\mathbf{x}).$ Note that $\mathbf{x}_{n+1} = \mathbf{g}(\mathbf{x}_n).$ Suppose the sequence $\mathbf{x}_n$ converges, to determine how quickly the converge occurs, perform a Taylor expansion about the limit $\mathbf{x}^*:$
+It can be shown that the Chord Method converges linearly,\cite{kelley1995iterative} an informal argument will be provided here which closely follows the presentation in \cite{isaacson2012analysis}. Let $\mathbf{g}(\mathbf{x})$ denote the mapping $\mathbf{g}(\mathbf{x})  = \mathbf{x} + \mathbf{Q}\nabla f(\mathbf{x}).$ Note that $\mathbf{x}_{n+1} = \mathbf{g}(\mathbf{x}_n).$ Suppose the sequence $\mathbf{x}_n$ converges, to determine how quickly the converge occurs, perform a Taylor expansion about the limit $\mathbf{x}^*:$
 
 \begin{align*} \label{eqn:chord_convergence}
 \mathbf{x}_{n+1} - \mathbf{x^*} &= \mathbf{g'}(\mathbf{x^*})(\mathbf{x}_{n} - \mathbf{x^*})\\

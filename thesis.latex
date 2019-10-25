@@ -27,7 +27,17 @@
 % headsep footheight footskip
 \setmargins{3.0cm}{2.5cm}{15.5 cm}{22cm}{0.5cm}{1cm}{1cm}{1cm}
 
+\title{Fitting Functional Data Using Derivative-Free Methods}
 \begin{document}
+
+\begin{titlepage}
+\maketitle
+\end{titlepage}
+
+\begin{abstract}
+Traditional algorithms for modelling functional data use derivative-based optimsation methods to fit parameters to the data. The process of finding the derivatives of the fitting criterion with respect to the paramters is complex and risks distracting from statistical modelling. In some cases, the derivatives might not even exiss as is the case when the Mean Absolute Deviation criterion is used instead of the usual Least Squares approach. Accordingly, the use of  derivative-free methods is investigated. It was found that the derivative-free methods perform satisfactorily on simple FDA problems and that the implementation effort was much less than for the derivative based methods. Furthermore, it is possible to fit models with the Mean Absolute Deviation criterion using derivative-free methods. It was also possible to fit parametric problems using a modified version of the derivative-free methodology developed in this thesis.
+\end{abstract}
+
 \tableofcontents
 
 \input{introduction.latex}
