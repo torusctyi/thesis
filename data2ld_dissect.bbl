@@ -1,0 +1,198 @@
+\begin{thebibliography}{10}
+
+\bibitem{boyd2001chebyshev}
+John~P Boyd.
+\newblock {\em Chebyshev and Fourier spectral methods}.
+\newblock Courier Corporation, 2001.
+
+\bibitem{boyd2004convex}
+Stephen Boyd and Lieven Vandenberghe.
+\newblock {\em Convex optimization}.
+\newblock Cambridge university press, 2004.
+
+\bibitem{brent2013algorithms}
+Richard~P Brent.
+\newblock {\em Algorithms for minimization without derivatives}.
+\newblock Courier Corporation, 2013.
+
+\bibitem{cao2007parameter}
+Jiguo Cao and James~O Ramsay.
+\newblock Parameter cascades and profiling in functional data analysis.
+\newblock {\em Computational Statistics}, 22(3):335--351, 2007.
+
+\bibitem{chan2017acceleration}
+Kwun Chuen~Gary Chan.
+\newblock Acceleration of expectation-maximization algorithm for length-biased
+  right-censored data.
+\newblock {\em Lifetime data analysis}, 23(1):102--112, 2017.
+
+\bibitem{chong2013introduction}
+Edwin~KP Chong and Stanislaw~H Zak.
+\newblock {\em An introduction to optimization}, volume~76.
+\newblock John Wiley \& Sons, 2013.
+
+\bibitem{dempster1977maximum}
+Arthur~P Dempster, Nan~M Laird, and Donald~B Rubin.
+\newblock Maximum likelihood from incomplete data via the em algorithm.
+\newblock {\em Journal of the Royal Statistical Society: Series B
+  (Methodological)}, 39(1):1--22, 1977.
+
+\bibitem{fisher1937wave}
+Ronald~Aylmer Fisher.
+\newblock The wave of advance of advantageous genes.
+\newblock {\em Annals of eugenics}, 7(4):355--369, 1937.
+
+\bibitem{fornberg1988generation}
+Bengt Fornberg.
+\newblock Generation of finite difference formulas on arbitrarily spaced grids.
+\newblock {\em Mathematics of computation}, 51(184):699--706, 1988.
+
+\bibitem{graves2000epsilon}
+PR~Graves-Morris, DE~Roberts, and A~Salam.
+\newblock The epsilon algorithm and related topics.
+\newblock {\em Journal of Computational and Applied Mathematics},
+  122(1-2):51--80, 2000.
+
+\bibitem{hunter2004tutorial}
+David~R Hunter and Kenneth Lange.
+\newblock A tutorial on {MM} algorithms.
+\newblock {\em The American Statistician}, 58(1):30--37, 2004.
+
+\bibitem{isaacson2012analysis}
+Eugene Isaacson and Herbert~Bishop Keller.
+\newblock {\em Analysis of numerical methods}.
+\newblock Courier Corporation, 2012.
+
+\bibitem{kelley1995iterative}
+Carl~T Kelley.
+\newblock {\em Iterative methods for linear and nonlinear equations},
+  volume~16.
+\newblock Siam, 1995.
+
+\bibitem{kelley2011implicit}
+Carl~T Kelley.
+\newblock {\em Implicit filtering}, volume~23.
+\newblock SIAM, 2011.
+
+\bibitem{kelly2002filtering}
+C.T. Kelley.
+\newblock A brief introduction to implicit filtering.
+\newblock
+  \url{https://projects.ncsu.edu/crsc/reports/ftp/pdf/crsc-tr02-28.pdf}, 2002.
+\newblock [Online; accessed 12-October-2019].
+
+\bibitem{kiefer1953sequential}
+Jack Kiefer.
+\newblock Sequential minimax search for a maximum.
+\newblock {\em Proceedings of the American mathematical society},
+  4(3):502--506, 1953.
+
+\bibitem{lange2004optimization}
+Kenneth Lange.
+\newblock {\em Optimization}.
+\newblock Springer, 2004.
+
+\bibitem{lange2010numerical}
+Kenneth Lange.
+\newblock {\em Numerical analysis for statisticians}.
+\newblock Springer Science \& Business Media, 2010.
+
+\bibitem{lange2007slides}
+Kenneth Lange.
+\newblock The {MM} algorithm.
+\newblock \url{https://www.stat.berkeley.edu/~aldous/Colloq/lange-talk.pdf},
+  April 2007.
+\newblock [Online, accessed 18-September-2019].
+
+\bibitem{leveque2007finite}
+Randall~J LeVeque.
+\newblock {\em Finite difference methods for ordinary and partial differential
+  equations: steady-state and time-dependent problems}, volume~98.
+\newblock Siam, 2007.
+
+\bibitem{mcconnell2004code}
+Steve McConnell.
+\newblock {\em Code complete}.
+\newblock Pearson Education, 2004.
+
+\bibitem{mclachlan2007algorithm}
+Geoffrey McLachlan and Thriyambakam Krishnan.
+\newblock {\em The EM algorithm and extensions}, volume 382.
+\newblock John Wiley \& Sons, 2007.
+
+\bibitem{nocedalnumerical}
+J~Nocedal and SJ~Wright.
+\newblock {\em Numerical Optimisation}.
+\newblock Springer verlag, 1999.
+
+\bibitem{osada1993acceleration}
+Naoki Osada.
+\newblock {\em Acceleration methods for slowly convergent sequences and their
+  applications}.
+\newblock PhD thesis, PhD thesis, Nagoya University, 1993.
+
+\bibitem{pawitan2001all}
+Yudi Pawitan.
+\newblock {\em In all likelihood: statistical modelling and inference using
+  likelihood}.
+\newblock Oxford University Press, 2001.
+
+\bibitem{rlanguage}
+{R Core Team}.
+\newblock {\em R: A Language and Environment for Statistical Computing}.
+\newblock R Foundation for Statistical Computing, Vienna, Austria, 2013.
+\newblock {ISBN} 3-900051-07-0.
+
+\bibitem{ramsay2005functional}
+James Ramsay.
+\newblock Functional data analysis.
+\newblock {\em Encyclopedia of Statistics in Behavioral Science}, 2005.
+
+\bibitem{rudin1964principles}
+Walter Rudin et~al.
+\newblock {\em Principles of mathematical analysis}, volume~3.
+\newblock McGraw-hill New York, 1964.
+
+\bibitem{small1990survey}
+Christopher~G Small.
+\newblock A survey of multidimensional medians.
+\newblock {\em International Statistical Review/Revue Internationale de
+  Statistique}, pages 263--277, 1990.
+
+\bibitem{desolve}
+Karline Soetaert, Thomas Petzoldt, and R.~Woodrow Setzer.
+\newblock Solving differential equations in {R}: Package de{S}olve.
+\newblock {\em Journal of Statistical Software}, 33(9):1--25, 2010.
+
+\bibitem{teschl2012ordinary}
+Gerald Teschl.
+\newblock {\em Ordinary differential equations and dynamical systems}, volume
+  140.
+\newblock American Mathematical Soc., 2012.
+
+\bibitem{vandebogart2017method}
+Keller Vandebogart.
+\newblock Method of quadratic interpolation.
+\newblock \url{http://people.math.sc.edu/kellerlv/Quadratic_Interpolation.pdf},
+  September 2017.
+\newblock [Online; accessed 13-September-2019].
+
+\bibitem{wimp1981sequence}
+Jet Wimp.
+\newblock {\em Sequence transformations and their applications}.
+\newblock Elsevier, 1981.
+
+\bibitem{mathematicsdata2018}
+Stephen Wright.
+\newblock Optimization for data analysis.
+\newblock In Michael~W. Mahoney, John~C. Duchi, and John~C. Duchi, editors,
+  {\em The Mathematics of Data}, chapter~2, pages 49--98. American Mathematical
+  Society and IAS/Park City Mathematics Institute and Society for Industrial
+  and Applied Mathematics, 2018.
+
+\bibitem{wu2010mm}
+Tong~Tong Wu, Kenneth Lange, et~al.
+\newblock The {MM} alternative to {EM}.
+\newblock {\em Statistical Science}, 25(4):492--505, 2010.
+
+\end{thebibliography}

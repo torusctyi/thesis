@@ -2,7 +2,7 @@
 
 This appendix provides an overview of the ideas in numerical optimisation used throughout this thesis. \cite{nocedalnumerical, chong2013introduction} are accessible texts for those who require more information. \cite{nocedalnumerical} is recommended since it covers line search methods in  more detail than \cite{chong2013introduction}.
 
-\section{Gradient Descent and the Newton-Raphson Method}\label{sec:newton_gradient}
+\section{Gradient Descent and the Newton-Raphson method}\label{sec:newton_gradient}
 
 
 The simplest derivative-based optimisation algorithm is known as \emph{Gradient Descent}:
@@ -113,9 +113,9 @@ for some matrix $\mathbf{A}_n$ This approximation is minimised by:
     \mathbf{x}_{n+1} = \mathbf{x}_n - \mathbf{A}_n^{-1}\mathbf{g}_n
 \]
 
-A condition generally imposed  is that the approximate Hessians $\mathbf{A}_n$ used  must be positive-definite. This ensures that the approximate qudaratics don't have any saddle points or surfaces on which the second derivative is zero so that  a well defined search direction is guaranteed. \cite{nocedalnumerical, lange2004optimization, lange2010numerical}
+A condition generally imposed  is that the approximate Hessians $\mathbf{A}_n$ used  must be positive-definite. This ensures that the approximate qudaratics don't have any saddle points or surfaces on which the second derivative is zero so that  a well defined search direction is guaranteed.\cite{nocedalnumerical, lange2004optimization, lange2010numerical}
 
-The choice $\mathbf{Q}_n = \mathbf{H}_n^{-1}$ corresponds to  the  Newton-Raphson Method. The discussion in Section \ref{sec:chord_methods} suggests that to ensure faster than linear convergence, it is necessary to ensure that $\mathbf{I} + \mathbf{Q}_n\mathbf{H}$ goes to $\mathbf{0}$ as $n$ goes to infinity.\footnote{As noted in \cite{nocedalnumerical}, it is actually only required that the $\mathbf{Q}_n$ approximates $\mathbf{H}_n$ along the directions which the alogorithm is searching.} 
+The choice $\mathbf{Q}_n = \mathbf{H}_n^{-1}$ corresponds to  the  Newton-Raphson Method. The discussion in Section \ref{sec:chord_methods} suggests that to ensure faster than linear convergence, it is necessary to ensure that $\mathbf{I} + \mathbf{Q}_n\mathbf{H}$ goes to $\mathbf{0}$ as $n$ goes to infinity.\footnote{As noted in \cite{nocedalnumerical}, it is actually only required that $\mathbf{Q}_n$ approximates $\mathbf{H}_n$ along the directions which the alogorithm is searching.} 
 
 \paragraph{Linearly Convergent Methods:}Not every method that changes $\mathbf{Q}_n$ on each interation  converges superlinearly. A straightforward example  of linear convergence\footnote{For the sake of simplicity it is assumed that all the  methods discussed here do in fact converge.} is found by  setting $\mathbf{A}_n$ to the diagonal elements of the Hessian, so that:
 
@@ -184,7 +184,7 @@ If the objective function is evaluated to a degree of accuracy close to machine 
 
 \item If $\|\mathbf{e}_n\|$ is very large compared to $h$ and $\bar{\epsilon}$ so that $h \ll \|\mathbf{e}_n\|$ and $\bar{\epsilon} \ll \|\mathbf{e}_n\|,$ then  $\|\mathbf{e}_{n+1}\| \leq K\|\mathbf{e}_{n+1}\|^2$ holds approximately and the convergence appears quadratic.
 
-\item If $\|\mathbf{e}_n\|$ is of similar order of magnitude to $h$ so that $\|\mathbf{e}_n\| \lesssim Ch$ for $C>0;$ and both terms are large compared to $\bar{\epsilon},$ so that  $h \gg \bar{\epsilon},$ and  $ \|\mathbf{e}_n\| \gg \bar{\epsilon};$ then it is approximately the case that $\|\mathbf{e}_{n+1}\| \leq K(C+1)h\|\mathbf{e}_{n}\|,$ so that the rate of convergence appears to be linear.
+\item If $\|\mathbf{e}_n\|$ is of similar order of magnitude to $h$ so that $\|\mathbf{e}_n\| \approx Ch$ for $ 1< C < 10;$ and both terms are large compared to $\bar{\epsilon},$ so that  $h \gg \bar{\epsilon},$ and  $ \|\mathbf{e}_n\| \gg \bar{\epsilon};$ then it is approximately the case that $\|\mathbf{e}_{n+1}\| \leq K(C+1)h\|\mathbf{e}_{n}\|,$ so that the rate of convergence appears to be linear.
 
 \item Finally, if $\|\mathbf{e}_n\|$ is of the same order of magnitude as ${\bar{\epsilon}}$ or smaller,  we have that $\|\mathbf{e}_{n+1}\| \leq \mathcal{O}(K[\bar{\epsilon} +(\bar{\epsilon} + h)\bar{\epsilon}]).$ A reduction in the error is no longer guranteed.
 \end{itemize}
@@ -216,7 +216,7 @@ This means that if $\alpha$ is small enough, then a step in direction $\mathbf{p
 As illustrated in Figure ~\ref{fig:extrapolateDisaster}, the  approximation can fail if one takes too big a step. For complex estimation problems, the objective funtion often has multiple peaks and troughs, so one must be careful that one has not wandered out of the range of validity of the locally constructed approximation.
 
 
-The naive solution is  to set $\alpha$ to some very small value. The first problem with this approach is that $\alpha$ might be unnecessarily small so that convergence is needlessly slow. The second problem is that the quality of a choice of $\alpha$ is governed by the higher order derivatives of the objective function, especially  the higher order derivatives at the optimal point \footnote{The literature very often works with Lipschitz continuity instead of differentiability. For simplicity in  exposition, diffentiability will be used here.}. It will often be the case that such information is not available. Imagine the frustration if one had  started an optimisation routine with a value of $\alpha$ that looked reasoanable for the initial values, and then came back  12 hours later to find the routine had failed as it approached the optimal point because it $\alpha$ was ultimately too high. Third, a globally valid choice of $\alpha$ might be far too low in some places by definition. More flexibility would allow $\alpha$ to be bigger where viable to gain a faster rate of convergence.
+The naive solution is  to set $\alpha$ to some very small value. The first problem with this approach is that $\alpha$ might be unnecessarily small so that convergence is needlessly slow. The second problem is that the quality of a choice of $\alpha$ is governed by the higher order derivatives of the objective function, especially  the higher order derivatives at the optimal point.\footnote{The literature very often works with Lipschitz continuity instead of differentiability. For simplicity in  exposition, diffentiability will be used here.} It will often be the case that such information is not available. Imagine the frustration if one had  started an optimisation routine with a value of $\alpha$ that looked reasoanable for the initial values, and then came back  12 hours later to find the routine had failed as it approached the optimal point because it $\alpha$ was ultimately too high. Third, a globally valid choice of $\alpha$ might be far too low in some places by definition. More flexibility would allow $\alpha$ to be bigger where viable to gain a faster rate of convergence.
 
 The more sophisticated approach is to allow $\alpha$ to vary on each iteration:
 
@@ -224,12 +224,12 @@ The more sophisticated approach is to allow $\alpha$ to vary on each iteration:
    \mathbf{x}_{n+1} = \mathbf{x}_{n} +  \alpha_n \mathbf{p}_{n}
 \]
 
-Alongside the problem of choosing the search direction $\mathbf{p}_n,$ it is now necessary to decide on each iteration how far in this direction to go. This entails probing the  objective function along the ray $\{\mathbf{x}_n+ \alpha\mathbf{p}_n|\alpha > 0\}$ to find the next point. 
+Alongside the problem of choosing the search direction $\mathbf{p}_n,$ it is now necessary to decide on each iteration how far in this direction to go. This entails probing the  objective function along the ray $\{\mathbf{x}_n+ \alpha\mathbf{p}_n|\alpha \geq 0\}$ to find the next point. 
 
 For convenience, let the function $\phi(\alpha) = f(\mathbf{x}_n + \alpha\mathbf{p}_n)$ denote the restriction of $f(\cdot)$ to the ray from $\mathbf{x_n}$ in the direction $\mathbf{p}_n.$ Note  that $\phi(0) = f(\mathbf{x}_n)$ and $\phi'(\alpha) = \mathbf{p}_n^\top \nabla f(\mathbf{x}_n  + \alpha\mathbf{p}_n).$ 
 
 
-The goal of the line search is to find a point along the ray generated by $\mathbf{x}_n$ and $\mathbf{p}_n$ that is satisfactory. In principle one could of course attempt to find the value $\alpha^*$ that minimises $\phi(\alpha),$ but this is generally regarded as excessive. Usually one only iterates until sufficient improvement has been found and uses that point for the next iteration.  \cite{nocedalnumerical} 
+The goal of the line search is to find a point along the ray generated by $\mathbf{x}_n$ and $\mathbf{p}_n$ that is satisfactory. In principle one could of course attempt to find the value $\alpha^*$ that minimises $\phi(\alpha),$ but this is generally regarded as excessive. Usually one only iterates until sufficient improvement has been found and uses that point for the next iteration.\cite{nocedalnumerical} 
 
 Besides setting simply $\alpha_n = \alpha$ for all $n,$ the simplest line search method is known as a \emph{Backtracking Line Search}. In this case, $\alpha$ is set to an initial value $\alpha_0$ and repeatedly shrunk down to $\rho\alpha,$ where $0<\rho<1$ until a satisfactory point is found.
 
@@ -252,7 +252,7 @@ Besides setting simply $\alpha_n = \alpha$ for all $n,$ the simplest line search
 \end{algorithm}
 
 
-
+\subsection{Wolfe Conditions}
 In order to ensure the line search method converges,\footnote{There are other conditions, but the Wolfe conditions are standard. Refer to \cite{nocedalnumerical} for more detail} the steps taken are required to satisfy the Wolfe Conditions.\footnote{Strictly, these are the Strong Wolfe conditions. The usual Wolfe conditions only require that $- \mathbf{p}_n^\top \mathbf{g}_{n+1} \leq - c_2\mathbf{p}_n^\top\mathbf{g}_n.$}
 \begin{align*}
     f(\mathbf{x}_n + \alpha_n\mathbf{p}_n) &\leq  f(\mathbf{x}_n) +  c_1 \alpha_n \mathbf{p}_n^\top\nabla  f(\mathbf{x}_n) \tag{\textbf{W1}}\\
@@ -306,7 +306,7 @@ The implicit filtering algorithm is designed for optimising problems where the e
 
 For example, if the objective function is of the form $\mathbb{E}[f(\theta)]$ and the expection is being  approximated using a Monte Carlo method, it would be reasonable to set $h = 1/\sqrt{N}$ where $N$ is the number of samples used so that the standard deviation  is proportional to $h.$ On the other hand if the expectation were being approximated by numerical integration, it would be reasonable to set  $h$ to the step size used. 
 
-\section{Description of the Algorithm:}Let $f(\mathbf{x};h)$ denote the result of approximately evauluating $f(\cdot)$ at the point $\mathbf{x}$ with precision level $h$ and  $\epsilon(\mathbf{x};h)$ be the associated error. To generate a search direction, Implicit Filtering uses an approximation $\nabla_h f(\mathbf{x})$ to the gradient $\nabla f(\mathbf{x})$ that depends on $h.$ The simplest such approximation employs forward differencing to approximate the gradient:
+\section{Description of the Algorithm}Let $f(\mathbf{x};h)$ denote the result of approximately evauluating $f(\cdot)$ at the point $\mathbf{x}$ with precision level $h$ and  $\epsilon(\mathbf{x};h)$ be the associated error. To generate a search direction, Implicit Filtering uses an approximation $\nabla_h f(\mathbf{x})$ to the gradient $\nabla f(\mathbf{x})$ that depends on $h.$ The simplest such approximation employs forward differencing to approximate the gradient:
 
 \begin{equation}\label{eqn:forward_difference}
   [\nabla_h f(\mathbf{x})]_i  = \frac{f(\mathbf{x} + h\mathbf{e}_i;h) - f(\mathbf{x};h)}{h}
@@ -341,7 +341,7 @@ A variation of the Gauss-Newton algoritm of the Implicit Filtering has been deve
    \lim_{n \rightarrow \infty} \left[\frac{\epsilon(\mathbf{x};h_n)}{h_n} + h_n \right]= 0
 \end{equation}
 
-In a statistical context, being too naive and failing to treat the convergence criteria with respect risks a failure of convergence. Consider again the question of minimising $\mathbb{E}[f(\theta)]$ For the Monte Carlo method that sets $h_n = 1/\sqrt{n},$ the associated error is approximately equal to $\sigma/\sqrt{n}$ for some $\sigma >0,$ Substituting this into (\ref{eqn:implicit_filtering_convergence_criterion}) gives that 
+In a statistical context, being too naive and failing to treat the convergence criteria with respect risks a failure of convergence. Consider again the question of minimising $\mathbb{E}[f(\theta)].$ For the Monte Carlo method that sets $h_n = 1/\sqrt{n},$ the associated error is approximately equal to $\sigma/\sqrt{n}$ for some $\sigma >0,$ Substituting this into (\ref{eqn:implicit_filtering_convergence_criterion}) gives that 
 
 \begin{align*}
      \lim_{n \rightarrow \infty} \left[\frac{\epsilon(\mathbf{x};h_n)}{h_n} + h_n \right] &=  \lim_{n \rightarrow \infty} \left[\frac{\left(\frac{\sigma}{\sqrt{n}}\right)}{\left(\frac{1}{\sqrt{n}}\right)}  + \frac{1}{\sqrt{n}} \right]\\

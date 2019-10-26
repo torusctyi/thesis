@@ -115,7 +115,7 @@ To ensure uniqueness, it is necessary to  impose a further condition to discrimi
 
 
 \subsection{Smoothing Splines}
-One potential criterion is to introduce a second order penalty. If two functions fit the observed data equally well, the more regular or less "wiggly" function is chosen. There are several ways of translating this intuition into a formal fitting procedure. 
+One potential criterion is to introduce a second order penalty. If two functions fit the observed data equally well, the more regular or less `wiggly' function is chosen. There are several ways of translating this intuition into a formal fitting procedure. 
 
 A common choice is to measure the degree of irregularity by using the integral of the second derivative over a chosen interval $[0,T].$ The upper limit $T$ should be choosen to  allow for all observation times to be included.
 
@@ -406,7 +406,7 @@ The function $\tilde{y}(t)$ is a combination of simpler functions, joined togeth
 
 Instead of approximately solving an associated problem as discussed in Section \ref{sec:finite_dimension_general}, a  purely parametric approach to fitting  the ODE (\ref{eqn:reflux_ode}) will be employed. The question of modelling the Reflux data using FDA will be discussed in a later chapter.
 
- We assume that the breakpoint $t_0$ is known in advance. Then our model for $y(t)$
+Assume that the breakpoint $t_0$ is known in advance. Then our model for $y(t)$ is:
 
 \begin{equation} \label{eqn:reflux_model}
   y(t) = \begin{cases} 
@@ -415,7 +415,8 @@ Instead of approximately solving an associated problem as discussed in Section \
    \end{cases} 
 \end{equation}
 
-Note that this function might not be well defined at $t_0,$ we will adress the question of matching later on.
+Note that this function might not be well defined at $t_0,$ we will adress the question of matching later on. It will not generally be the case that $ \beta_0 + \beta_1e^{\beta_2t_0}= 0$, so ultimately a model of the form $y(t) = \max(0, \beta_0 + \beta_1e^{\beta_2t})$ will be used to ensure continuity at the breakpoint. 
+
 We must estimate the three unknown coefficients $\beta_0, \beta_1, \beta_2.$
 
 \paragraph{Estimating $\beta_0$ from the data:}
@@ -476,7 +477,7 @@ This issue is difficult to resolve using purely parametric methods. It is often 
 \label{fig:reflux_ode_fit}
 \end{figure}
 
-\subsection{Fitting the Reflux Data with Data2LD}
+\subsection{Fitting the Reflux Data with \texttt{Data2LD}}
 
 While the parametric approach employed in Section \ref{sec:reflux_parametric_approach} requires a considerable amount of domain-specific knowledge,  the functional model can be more  generally employed. The FDA approach doesn't rely on individual features of the specific differential equation at hand,\footnote{The FDA approach does rely on more general features of course, such as whether or not the differential equation is linear.} and produces a similar fit to the Reflux data as the parametric approach.
 

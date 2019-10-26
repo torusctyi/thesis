@@ -1,0 +1,407 @@
+\relax 
+\citation{ramsay2005functional}
+\@writefile{toc}{\contentsline {chapter}{\numberline {1}Introduction}{4}}
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {1.1}Preliminaries}{4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1.1}Functional Data Analysis}{4}}
+\@writefile{toc}{\contentsline {subsubsection}{Specification of Function Spaces}{4}}
+\citation{ramsay2009functional,ramsay2005functional}
+\citation{kelly2002filtering}
+\@writefile{toc}{\contentsline {paragraph}{Formulate a Model:}{6}}
+\@writefile{toc}{\contentsline {paragraph}{Construct a Discretised Model that Approximates the Original Model:}{6}}
+\@writefile{toc}{\contentsline {paragraph}{Conduct Statistical Analysis Using the Discretised Model:}{6}}
+\@writefile{toc}{\contentsline {paragraph}{Check the Approximation Error in Discretised Model:}{6}}
+\@writefile{toc}{\contentsline {paragraph}{Check If Results of Statistical Analysis Are Consistent With Discretised Model.}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.1}{\ignorespaces Statistcal Modelling Process For Functions\relax }}{8}}
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:statModellingProcess}{{1.1}{8}}
+\@writefile{toc}{\contentsline {section}{\numberline {1.2}Penalised Regression}{9}}
+\newlabel{sec:pen_regression}{{1.2}{9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2.1}Smoothing Splines}{9}}
+\citation{schumaker2007spline}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2.2}Piecewise Trigonometric Interpolation}{10}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.2}{\ignorespaces Plot of a Piecewise Trigonometic Curve. Note the kinks between segments.\relax }}{11}}
+\newlabel{fig:pieceTrigCurve}{{1.2}{11}}
+\citation{boyd2001chebyshev}
+\citation{boyd2001chebyshev}
+\@writefile{toc}{\contentsline {section}{\numberline {1.3}Finte Dimensionalisation: the General Case}{12}}
+\newlabel{sec:finite_dimension_general}{{1.3}{12}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.3}{\ignorespaces Statistical Modelling Process For Functional Data Analysis\relax }}{13}}
+\newlabel{fig:fda_modelling}{{1.3}{13}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.4}{\ignorespaces Elements of Functional Data Analysis\relax }}{14}}
+\newlabel{fig:fda_modelling_cyclical}{{1.4}{14}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3.1}FDA With A Quadratic Basis}{15}}
+\newlabel{sec:fda_quadratic_basis}{{1.3.1}{15}}
+\newlabel{eqn:pen_quad}{{1.1}{15}}
+\citation{isaacson2012analysis,teschl2012ordinary}
+\citation{fdapackage,ramsay2009functional}
+\citation{fdapackage}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.5}{\ignorespaces Performing FDA with the differential operator $Lf = t^2f'' - 0.5f$ and the basis set $\{1, t, t^2\}.$\relax }}{17}}
+\newlabel{fig:quad_model}{{1.5}{17}}
+\@writefile{toc}{\contentsline {section}{\numberline {1.4}The \texttt  {FDA} Package}{17}}
+\newlabel{sec:intro_fda_package}{{1.4}{17}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.6}{\ignorespaces Using the \texttt  {FDA} package to smooth the melanoma data with the differential operator $Lf = f - \omega ^2f^{(4)}.$\relax }}{18}}
+\newlabel{fig:fda_mela_smooth}{{1.6}{18}}
+\citation{ramsay2005functional}
+\@writefile{toc}{\contentsline {section}{\numberline {1.5}The \texttt  {Data2LD} Package}{19}}
+\newlabel{sec:intro_data2ld}{{1.5}{19}}
+\newlabel{fig:ode_system}{{1.4}{19}}
+\@writefile{toc}{\contentsline {section}{\numberline {1.6}Modelling the Reflux Data: A Parametric Approach vs \texttt  {Data2LD}}{19}}
+\newlabel{sec:reflux_parametric_vs_data2ld}{{1.6}{19}}
+\newlabel{eqn:reflux_ode}{{1.5}{19}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.7}{\ignorespaces Reflux Data\relax }}{20}}
+\newlabel{fig:refluxPlot}{{1.7}{20}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.6.1}Parametric Approach}{21}}
+\newlabel{sec:reflux_parametric_approach}{{1.6.1}{21}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.8}{\ignorespaces Plot of $\mathaccentV {tilde}07E{y}(t)$ and its constituent functions\relax }}{22}}
+\newlabel{fig:constituentMaxFunctions}{{1.8}{22}}
+\@writefile{toc}{\contentsline {subsubsection}{Parametric Fitting}{23}}
+\newlabel{eqn:reflux_model}{{1.6}{23}}
+\@writefile{toc}{\contentsline {paragraph}{Estimating $\beta _0$ from the data:}{23}}
+\@writefile{toc}{\contentsline {paragraph}{Estimating $\beta _1$ and $\beta _2$ from $\beta _0$ and the data:}{23}}
+\newlabel{eqn:reflux_rearranged_model}{{1.7}{23}}
+\@writefile{toc}{\contentsline {paragraph}{Simulataneous Estimation of Parameters:}{23}}
+\@writefile{toc}{\contentsline {paragraph}{Matching:}{23}}
+\@writefile{toc}{\contentsline {paragraph}{Breakpoint Estimation:}{24}}
+\@writefile{toc}{\contentsline {subsubsection}{Discussion}{24}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.6.2}Fitting the Reflux Data with \texttt  {Data2LD}}{24}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.9}{\ignorespaces Fitting the Reflux data to the ODE model parametrically.\relax }}{25}}
+\newlabel{fig:reflux_ode_fit}{{1.9}{25}}
+\citation{nocedalnumerical,chong2013introduction}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.10}{\ignorespaces Modelling the Reflux data using \texttt  {Data2LD}.\relax }}{26}}
+\newlabel{fig:reflux_fda_fit}{{1.10}{26}}
+\@writefile{toc}{\contentsline {section}{\numberline {1.7}Rates Of Convergence}{26}}
+\newlabel{sec:rates_of_convergence}{{1.7}{26}}
+\citation{nocedalnumerical}
+\@writefile{toc}{\contentsline {paragraph}{Linear Convergence:}{27}}
+\newlabel{eqn:linear_convergence}{{1.8}{27}}
+\@writefile{toc}{\contentsline {paragraph}{Sublinear Convergence:}{27}}
+\@writefile{toc}{\contentsline {paragraph}{Superlinear and Quadratic Convergence:}{27}}
+\newlabel{eqn:linear_convergence}{{1.9}{27}}
+\citation{nocedalnumerical}
+\@writefile{lot}{\contentsline {table}{\numberline {1.1}{\ignorespaces Illustrating the different classes of convergence.\relax }}{28}}
+\@writefile{toc}{\contentsline {paragraph}{An Extended Definition of Convergence Rates:}{28}}
+\@writefile{toc}{\contentsline {paragraph}{Linear Convergence and Iterated Mappings:}{28}}
+\@writefile{toc}{\contentsline {section}{\numberline {1.8}Overview of Appendices}{29}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {2}Hierarchial Estimation and the Parameter Cascade}{30}}
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {2.1}Hierarchial fitting of a Partial Differential Equation}{30}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.2}The Two-Stage Parameter Cascade}{31}}
+\citation{cao2007parameter}
+\citation{cao2007parameter,ramsay2007parameter}
+\@writefile{toc}{\contentsline {section}{\numberline {2.3}Three Stage Parameter Cascade}{32}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.1}{\ignorespaces Two Stage Parameter Cascade (Simplified)\relax }}{33}}
+\newlabel{fig:twoStageParamSimplified}{{2.1}{33}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.2}{\ignorespaces Schematic of the Two Stage Parameter Cascade With the Inner Optimisation Visible\relax }}{34}}
+\newlabel{fig:twoStageParam}{{2.2}{34}}
+\citation{data2ld}
+\citation{mcconnell2004code}
+\@writefile{toc}{\contentsline {section}{\numberline {2.4}Investigating the \texttt  {Data2LD} Package}{35}}
+\newlabel{sec:data2ld_investigation}{{2.4}{35}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.1}How \texttt  {Data2LD} Estimates Parameters}{35}}
+\newlabel{eqn:grad_descent}{{{\textbf  {S1}}}{36}}
+\newlabel{eqn:newton_method}{{{\textbf  {S2}}}{36}}
+\newlabel{eqn:t1}{{{\textbf  {T1}}}{36}}
+\newlabel{eqn:t2}{{{\textbf  {T2}}}{36}}
+\newlabel{eqn:t3}{{{\textbf  {T3}}}{36}}
+\newlabel{eqn:t4}{{{\textbf  {T4}}}{36}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.3}{\ignorespaces Point A is the initial point. Point B passes {\textbf  {T1}}\hbox {} with $c_1 = 0.5$ and passes {\textbf  {T2}}\hbox {} with $c_2 = 0.9.$ Point C fails {\textbf  {T1}}\hbox {} with $c_1 = 0.5$ and also fails {\textbf  {T3}}\hbox {}, but passes {\textbf  {T4}}\hbox {}, and passes {\textbf  {T2}}\hbox {} with $c_2 = 0.9.$ Point D fails all four tests.\relax }}{38}}
+\newlabel{fig:data2ld_line_search_tests}{{2.3}{38}}
+\citation{nocedalnumerical}
+\citation{nocedalnumerical,isaacson2012analysis,lange2004optimization,lange2010numerical}
+\citation{isaacson2012analysis}
+\@writefile{toc}{\contentsline {chapter}{\numberline {3}Derivative-Free Optimisation and the Parameter Cascade}{39}}
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{chap:brent}{{3}{39}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.1}Overview of Quadratic Optimisation Methods}{39}}
+\newlabel{sec:quad_methods}{{3.1}{39}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.1}Newton's Method}{39}}
+\citation{isaacson2012analysis,nocedalnumerical}
+\citation{isaacson2012analysis}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.2}Secant Method}{40}}
+\newlabel{eqn:seq_finite_diff}{{3.1}{40}}
+\citation{isaacson2012analysis}
+\citation{nocedalnumerical,vandebogart2017method}
+\citation{nocedalnumerical}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.3}Successive Parabolic Interpolation}{41}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.4}Discussion}{41}}
+\newlabel{sec:quad_discussion}{{3.1.4}{41}}
+\citation{nocedalnumerical,isaacson2012analysis,lange2010numerical}
+\citation{data2ld}
+\@writefile{toc}{\contentsline {section}{\numberline {3.2}Modifying the \texttt  {Data2LD.opt} Routine}{42}}
+\@writefile{toc}{\contentsline {paragraph}{Approximating the Derivative:}{42}}
+\citation{kelley1995iterative}
+\newlabel{eqn:secant_diff_approx}{{3.2}{43}}
+\newlabel{eqn:data_2ld_secant}{{3.3}{43}}
+\@writefile{toc}{\contentsline {paragraph}{Error Analysis:}{43}}
+\newlabel{eqn:convergence_rate_error_in_deriv}{{3.4}{43}}
+\citation{vandebogart2017method}
+\@writefile{toc}{\contentsline {paragraph}{Comparison with the Secant Method and Succesive Parabolic Interpolation:}{44}}
+\@writefile{toc}{\contentsline {paragraph}{Comparing the Modfied Method with the Original Method:}{44}}
+\@writefile{toc}{\contentsline {paragraph}{Newton Method with Gradient Line Search}{45}}
+\@writefile{toc}{\contentsline {paragraph}{Newton Method with Secant Approximation To First Derivative}{46}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.3}Golden-Section Search}{46}}
+\citation{lange2010numerical,chong2013introduction}
+\citation{brent2013algorithms}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces Diagram of golden-section search taken from Wikipedia. \textbf  {TODO:} Find a better plot???\relax }}{47}}
+\newlabel{fig:golden_section}{{3.1}{47}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.4}Brent's Method}{47}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.5}Estimation Of Parameters For A Standard Cauchy Distribution Using Brent's Method}{48}}
+\newlabel{sec:cauchy_estimation}{{3.5}{48}}
+\citation{pawitan2001all}
+\citation{leveque2007finite,fornberg1988generation}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces Profile log likelihood in $\sigma ,$ and contour plot of the joint log likelihood. \relax }}{50}}
+\newlabel{fig:cauchy_likelihood}{{3.2}{50}}
+\citation{small1990survey}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces Plot of profile score statistic.\relax }}{51}}
+\newlabel{fig:profile_score_statistic}{{3.3}{51}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.6}Robust ODE Parameter Estimation}{51}}
+\newlabel{cauchy_ode}{{3.6}{51}}
+\citation{desolve}
+\newlabel{eqn:nonlinear_ode}{{3.5}{52}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces Original curve, fitted curve, and objective function.\relax }}{53}}
+\newlabel{fig:cauchy_ode}{{3.4}{53}}
+\citation{cao2007parameter}
+\@writefile{toc}{\contentsline {section}{\numberline {3.7}The Parameter Cascade and Brent's Method}{54}}
+\newlabel{brent_param}{{3.7}{54}}
+\newlabel{eqn:outer_objective_function}{{3.6}{54}}
+\@writefile{toc}{\contentsline {subsubsection}{Melanoma Data}{55}}
+\newlabel{eqn:param_operator}{{3.7}{55}}
+\citation{shor2012minimization}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces Plots of the middle and outer optimisation problems.\relax }}{57}}
+\newlabel{fig:mela_omega}{{3.5}{57}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces Plot of the middle optimisation problem with MAD used as a loss function\relax }}{58}}
+\newlabel{fig:mela_mad_omega}{{3.6}{58}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces Comparison of fits for MAD and SSE criteria for middle problem\relax }}{58}}
+\newlabel{fig:mela_l2_mad_omega}{{3.7}{58}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}A Two Level $L_1$ Parameter Cascade Using the MM Alogrithm.}{59}}
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{chap:mm_methods}{{4}{59}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}$L_1$ Estimation for the Inner Problem}{59}}
+\newlabel{sec:mm_l1_problem}{{4.1}{59}}
+\citation{small1990survey}
+\citation{small1990survey}
+\citation{boyd2004convex}
+\citation{hunter2004tutorial,lange2004optimization,lange2010numerical}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.1}An MM Algorithm For Computing the Median}{60}}
+\citation{wu2010mm}
+\citation{lange2007slides,hunter2004tutorial}
+\citation{lange2007slides}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.2}Penalised $L_1$ Fitting}{62}}
+\newlabel{sec:mm_l1_algorithm}{{4.1.2}{62}}
+\citation{rudin1964principles}
+\citation{mclachlan2007algorithm}
+\citation{wu2010mm}
+\newlabel{eqn:wpensse}{{4.1}{63}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.3}Discussion}{63}}
+\newlabel{sec:discuss}{{4.1.3}{63}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.4}Testing the Algorithm on the Melanoma Data}{63}}
+\newlabel{sec:testing}{{4.1.4}{63}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Comparison of $L_1$ and $L_2$ inner fits to Cauchy perturbed data with $\omega $ fixed at 0.3\relax }}{65}}
+\newlabel{fig:mela_l1_l2}{{4.1}{65}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Plot of values and log differences for SAE Statistic\relax }}{66}}
+\newlabel{fig:sae_plot}{{4.2}{66}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Plot of log norm differences for coefficients. Note that they tend to settle on a line.\relax }}{67}}
+\newlabel{fig:coef_plot}{{4.3}{67}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Plot of PENSAE statistic as the algorithm proceeds.\relax }}{67}}
+\newlabel{fig:pensae_plot}{{4.4}{67}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}The Two Level Parameter Cascade with $L_1$ Norm}{68}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces Fitting an $L_1$ Parameter Cascade to the Melanoma Data\relax }}{69}}
+\newlabel{fig:mela_l1_cascade}{{4.5}{69}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces $L_1$ and $L_2$ Parameter Cascades with the same perturbed data as in Figure 4.1\hbox {}. Compare the $L_1$ curve in this plot with the one in Figure 4.5\hbox {}.\relax }}{70}}
+\newlabel{fig:mela_l1_l2_cascade}{{4.6}{70}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces All possible combinations of $L_1$ and $L_2$ loss functions that can be used for the Parameter Cascade. The top plot applies them to the orginal melanoma data, the bottom to the same perturbed data as in Figures 4.1\hbox {} and 4.6\hbox {}\relax }}{71}}
+\newlabel{fig:mela_l1_l2_combiations}{{4.7}{71}}
+\citation{mclachlan2007algorithm}
+\citation{mclachlan2007algorithm}
+\citation{mclachlan2007algorithm}
+\citation{wu2010mm}
+\citation{dempster1977maximum,mclachlan2007algorithm}
+\citation{isaacson2012analysis}
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Accelerating The Rate of Convergence}{72}}
+\citation{mclachlan2007algorithm}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}Illustrative Example: Using Imputation to Fit an ANOVA Model With Missing Data}{73}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}Generalisations}{73}}
+\newlabel{eqn:rec_seq}{{4.3}{73}}
+\citation{isaacson2012analysis}
+\citation{chan2017acceleration,dempster1977maximum}
+\newlabel{eqn:rec_trans}{{4.4}{74}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces Log Errors for original sequnce of SSE values and the accelerated one\relax }}{75}}
+\newlabel{fig:sse_error}{{4.8}{75}}
+\@writefile{toc}{\contentsline {paragraph}{Other Approaches:}{75}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.9}{\ignorespaces More sophisticated acceleration methods can provide a further boost to convergence. There are gaps in the plot because the more accelerated iterations have no valid log error since R cannot numerically distinguish them from the final limit.\relax }}{76}}
+\newlabel{fig:double_sse_error}{{4.9}{76}}
+\@writefile{lot}{\contentsline {table}{\numberline {4.1}{\ignorespaces Iterations of the original sequence $SSE_n,$ the accelerated sequence $ASSE_n,$ the quadratically accelerated sequence $QASSE_n,$ and the doubly accelerated sequence $DASSE_n.$\relax }}{77}}
+\newlabel{tab:sse_error}{{4.1}{77}}
+\citation{graves2000epsilon,osada1993acceleration,wimp1981sequence}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.10}{\ignorespaces Accelerating the SAE sequence generating by the $L_1$ fitting alogrithm using Aitken's Method. The improvement in covergence is mediocre.\relax }}{78}}
+\newlabel{fig:sae_accel}{{4.10}{78}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.3}Accelerating the $L_1$ Fitting Alogrithm}{78}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.11}{\ignorespaces Accelerating the SAE sequence using multiple methods. Aitken's method performs the best, despite it's lack of sophistication.\relax }}{79}}
+\newlabel{fig:sae_multi_accel}{{4.11}{79}}
+\citation{ramsay2017dynamic,hooker2016collocinfer}
+\citation{hydon2000symmetry}
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Profiling Non-Linear Regression Models With the Parameter Cascade}{80}}
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}Fitting a Non-Linear Regression Model With the Parameter Cascade}{81}}
+\newlabel{sec:param_cascade_nonlinear_regress}{{5.1}{81}}
+\newlabel{eqn:nonlinear_model}{{5.1}{81}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.2}Fitting Linear Homogenous ODEs Using the Parameter Cascade}{82}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Profile Plot and Fitted Curve\relax }}{83}}
+\newlabel{fig:non_linear_model}{{5.1}{83}}
+\newlabel{eqn:ode_model}{{5.2}{84}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces Plot of fit to simulated data, and contour plot of SSE against $\alpha $ and $\beta .$ Blue dot is true parameter values, red is estimated parameter values.\relax }}{85}}
+\newlabel{fig:ode_plot}{{5.2}{85}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.3}Estimation for First Order Linear PDEs}{86}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.1}The Transport Equation}{86}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.3}{\ignorespaces Plot of outer optimisation for the transport equation. Blue line denotes original parameter, red line denotes fitted estimate\relax }}{87}}
+\newlabel{fig:transport_profile}{{5.3}{87}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.4}{\ignorespaces The estimates of $f(x)$ computed for various sample sizes. The plot (a) gives the result with 200 sample points, the plot (b) gives the result for 2000 sample points. To avoid confusion between $x$ and $x - \beta t, z$ was made the independent variable for this plot. Furthermore, the points used to fit $f(x)$ aren't displayed to reduce clutter and make it easier to compare the fitted curves with the original.\relax }}{88}}
+\newlabel{fig:transport_equation_fit}{{5.4}{88}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {}}}{88}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {}}}{88}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.5}{\ignorespaces Plot of outer optimisation for the modified transport equation with only 30 sample points. Blue line denotes original parameter, red line denotes fitted estimate\relax }}{89}}
+\newlabel{fig:mod_transport_profile}{{5.5}{89}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.2}The Transport Equation with Space-varying Velocity}{89}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.6}{\ignorespaces Plotted estimate of $f(x)$ for the modified transport equation with 30 sample points.\relax }}{90}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {6}Conclusion and Further Research}{91}}
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {6.1}Derivative-Free versus Derivative-Based Methods}{91}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.2}Further Subjects for Inquiry}{91}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.3}Quasi-linear Differential Problems}{92}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.1}Inviscid Burger's Equation}{92}}
+\citation{fisher1937wave}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.2}Discussion}{93}}
+\@writefile{toc}{\contentsline {chapter}{Appendices}{94}}
+\citation{nocedalnumerical,chong2013introduction}
+\citation{nocedalnumerical}
+\citation{chong2013introduction}
+\citation{nocedalnumerical,chong2013introduction,mathematicsdata2018}
+\citation{mathematicsdata2018}
+\@writefile{toc}{\contentsline {chapter}{\numberline {A}Overview of Optimisation Methods}{95}}
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{chap:optimisation_methods}{{A}{95}}
+\@writefile{toc}{\contentsline {section}{\numberline {A.1}Gradient Descent and the Newton-Raphson method}{95}}
+\newlabel{sec:newton_gradient}{{A.1}{95}}
+\citation{nocedalnumerical,isaacson2012analysis,lange2010numerical,lange2004optimization,chong2013introduction}
+\citation{isaacson2012analysis}
+\citation{isaacson2012analysis}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.1}{\ignorespaces Plot of the log errors from applying Gradient Descent to the function $f(x) = x^4.$\relax }}{97}}
+\newlabel{fig:grad_descent}{{A.1}{97}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.2}{\ignorespaces Plot of the log errors from applying Gradient Descent and the Newton-Raphson Method to the function $f(x) = x^4.$\relax }}{98}}
+\newlabel{fig:newton_grad_descent}{{A.2}{98}}
+\citation{kelley1995iterative}
+\citation{kelley1995iterative}
+\citation{isaacson2012analysis}
+\@writefile{toc}{\contentsline {section}{\numberline {A.2}The Chord Method}{99}}
+\newlabel{sec:chord_methods}{{A.2}{99}}
+\@writefile{toc}{\contentsline {section}{\numberline {A.3}More Sophisticated Hessian Approximations}{99}}
+\newlabel{sec:higher_order_methods}{{A.3}{99}}
+\citation{nocedalnumerical,lange2004optimization,lange2010numerical}
+\citation{nocedalnumerical}
+\citation{nocedalnumerical}
+\@writefile{toc}{\contentsline {paragraph}{Linearly Convergent Methods:}{100}}
+\@writefile{toc}{\contentsline {paragraph}{Quasi-Newton Methods:}{100}}
+\citation{kelley1995iterative}
+\citation{rlanguage}
+\citation{rlanguage,nocedalnumerical}
+\citation{nocedalnumerical}
+\citation{nocedalnumerical,leveque2007finite,kelley1995iterative}
+\@writefile{toc}{\contentsline {paragraph}{Finite Differences:}{101}}
+\citation{kelley1995iterative}
+\newlabel{eqn:finite_diff_error}{{A.1}{102}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.3}{\ignorespaces Plot of the log iterates produced from the recurrence relation $e_{n+1} = \mathaccentV {bar}016{e} + (e_n + h)e_n$ with $e_0 = 0.5,$ for various choices of $\mathaccentV {bar}016{e}$ and $h.$\relax }}{103}}
+\newlabel{fig:finite_difference_converge}{{A.3}{103}}
+\@writefile{toc}{\contentsline {section}{\numberline {A.4}Line Search Methods}{103}}
+\newlabel{sec:line_search_methods}{{A.4}{103}}
+\citation{nocedalnumerical}
+\citation{nocedalnumerical}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Sketch of Backtracking Line Search\relax }}{104}}
+\citation{tamir1976line}
+\citation{barzilai1982nonpolynomial}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.4.1}Wolfe Conditions}{105}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.4.2}More sophisticated Line Search Algorithms}{105}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.4}{\ignorespaces Extrapolating too far out can lead to disaster!\relax }}{106}}
+\newlabel{fig:extrapolateDisaster}{{A.4}{106}}
+\citation{nocedalnumerical,kelly2002filtering,kelley2011implicit}
+\@writefile{toc}{\contentsline {chapter}{\numberline {B}Implicit Filtering}{107}}
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{sec:implicit_filtering}{{B}{107}}
+\@writefile{toc}{\contentsline {section}{\numberline {B.1}Description of the Algorithm}{107}}
+\citation{kelley2001implicit}
+\citation{nocedalnumerical,kelly2002filtering,kelley2011implicit,kelley2001implicit}
+\newlabel{eqn:forward_difference}{{B.1}{108}}
+\@writefile{toc}{\contentsline {section}{\numberline {B.2}Convergence Theory}{108}}
+\newlabel{eqn:implicit_filtering_convergence_criterion}{{B.2}{108}}
+\@writefile{toc}{\contentsline {section}{\numberline {B.3}Assessment of the Method}{109}}
+\@writefile{toc}{\contentsline {section}{\numberline {B.4}Using Implicit Filtering to Fit an ODE to the Melanoma Data}{109}}
+\newlabel{sec:implicit_brent}{{B.4}{109}}
+\newlabel{eqn:quasi_linear_oscillator}{{B.3}{110}}
+\@writefile{lot}{\contentsline {table}{\numberline {B.1}{\ignorespaces Time taken for Implicit Filtering to fit (B.3\hbox {}) to the melanoma data for various values of $\delta .$\relax }}{110}}
+\newlabel{tab:run_times}{{B.1}{110}}
+\citation{*}
+\bibstyle{plain}
+\bibdata{ref}
+\@writefile{lof}{\contentsline {figure}{\numberline {B.1}{\ignorespaces Fitting the ODE (B.3\hbox {}) to the Melanoma data. The exact value of the shrink value $\delta $ effects the fit the Implicit Filtering algorithm converges to. For $\delta = 0.7$ the computed fit in (a) resembles a straight line, but $\delta = 0.9$ results in a sinusodial plus linear trend as can be seen in (b).\relax }}{111}}
+\newlabel{fig:implicit_filtering}{{B.1}{111}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {}}}{111}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {}}}{111}}
+\@writefile{lof}{\contentsline {figure}{\numberline {B.2}{\ignorespaces Without a penalty term, Implicit Filtering entirely fails to fit the ODE (B.3\hbox {}) to the melanoma data.\relax }}{112}}
+\newlabel{fig:implicit_filtering_no_penalty}{{B.2}{112}}
+\bibcite{barzilai1982nonpolynomial}{{1}{}{{}}{{}}}
+\bibcite{boyd2001chebyshev}{{2}{}{{}}{{}}}
+\bibcite{boyd2004convex}{{3}{}{{}}{{}}}
+\bibcite{brent2013algorithms}{{4}{}{{}}{{}}}
+\bibcite{cao2007parameter}{{5}{}{{}}{{}}}
+\bibcite{chan2017acceleration}{{6}{}{{}}{{}}}
+\bibcite{chong2013introduction}{{7}{}{{}}{{}}}
+\bibcite{dempster1977maximum}{{8}{}{{}}{{}}}
+\bibcite{fisher1937wave}{{9}{}{{}}{{}}}
+\bibcite{fornberg1988generation}{{10}{}{{}}{{}}}
+\bibcite{graves2000epsilon}{{11}{}{{}}{{}}}
+\bibcite{hooker2016collocinfer}{{12}{}{{}}{{}}}
+\bibcite{hunter2004tutorial}{{13}{}{{}}{{}}}
+\bibcite{hydon2000symmetry}{{14}{}{{}}{{}}}
+\@writefile{toc}{\contentsline {chapter}{Bibliography}{113}}
+\bibcite{isaacson2012analysis}{{15}{}{{}}{{}}}
+\bibcite{kelley1995iterative}{{16}{}{{}}{{}}}
+\bibcite{kelley2011implicit}{{17}{}{{}}{{}}}
+\bibcite{kelley2001implicit}{{18}{}{{}}{{}}}
+\bibcite{kelly2002filtering}{{19}{}{{}}{{}}}
+\bibcite{kiefer1953sequential}{{20}{}{{}}{{}}}
+\bibcite{lange2004optimization}{{21}{}{{}}{{}}}
+\bibcite{lange2010numerical}{{22}{}{{}}{{}}}
+\bibcite{lange2007slides}{{23}{}{{}}{{}}}
+\bibcite{leveque2007finite}{{24}{}{{}}{{}}}
+\bibcite{mcconnell2004code}{{25}{}{{}}{{}}}
+\bibcite{mclachlan2007algorithm}{{26}{}{{}}{{}}}
+\bibcite{nocedalnumerical}{{27}{}{{}}{{}}}
+\bibcite{osada1993acceleration}{{28}{}{{}}{{}}}
+\bibcite{pawitan2001all}{{29}{}{{}}{{}}}
+\bibcite{rlanguage}{{30}{}{{}}{{}}}
+\bibcite{fdapackage}{{31}{}{{}}{{}}}
+\bibcite{ramsay2005functional}{{32}{}{{}}{{}}}
+\bibcite{data2ld}{{33}{}{{}}{{}}}
+\bibcite{ramsay2017dynamic}{{34}{}{{}}{{}}}
+\bibcite{ramsay2007parameter}{{35}{}{{}}{{}}}
+\bibcite{ramsay2009functional}{{36}{}{{}}{{}}}
+\bibcite{rudin1964principles}{{37}{}{{}}{{}}}
+\bibcite{schumaker2007spline}{{38}{}{{}}{{}}}
+\bibcite{shor2012minimization}{{39}{}{{}}{{}}}
+\bibcite{small1990survey}{{40}{}{{}}{{}}}
+\bibcite{desolve}{{41}{}{{}}{{}}}
+\bibcite{tamir1976line}{{42}{}{{}}{{}}}
+\bibcite{teschl2012ordinary}{{43}{}{{}}{{}}}
+\bibcite{vandebogart2017method}{{44}{}{{}}{{}}}
+\bibcite{wimp1981sequence}{{45}{}{{}}{{}}}
+\bibcite{mathematicsdata2018}{{46}{}{{}}{{}}}
+\bibcite{wu2010mm}{{47}{}{{}}{{}}}
+\providecommand\NAT@force@numbers{}\NAT@force@numbers

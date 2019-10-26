@@ -1,23 +1,29 @@
 
 \chapter{Conclusion and Further Research}
 
+\section{Derivative-Free versus Derivative-Based Methods}
 We have shown that use of derivative free methods can allow for a considerable reduction in time spent on writing code to fit FDA problems. Brent's Method is much simpler than \texttt{Data2LD.opt}.
 
 The derivative-free approch is effective at fitting data using non-smooth loss functions such as the sum of absolute deviations. A huge advangtage is that it allows one to piggyback on existing code that only computes a goodness-of-fit statistic for a given choice of parameters. The problem of numerically finding the function that minimises a Penalised Sum of Squares criterion is outside the mainstream of Numerical Analysis, which means that one does not have a body of work to fall back on. One should thus try to avoid having to write solvers for the inner problem if possible.
 
 The derivative-free approach further allows problems that are not mainstream within FDA  such as parameterically fitting PDEs to be solved without having to implement a complex solver like \texttt{Data2LD.}
 
-However, the methodology suffers from some weaknessess. It is undeniably slower than derivative-based methods. The MM algorithm for $L_1$ fitting suffers particularly badly from this weakness.
+However, the methodology suffers from some weaknessess. It is undeniably slower than derivative-based methods. The MM algorithm for $L_1$ fitting suffers particularly badly from this weakness because it must solve many weighted $PENSSE$ problems in the course of its execution and it is difficult to accelerate. This must be balanced against the MM alogrithm's ease of implemention. 
+
+\section{Further Subjects for Inquiry}
 
 An obvious topic for further investigation is combining Brent's method with \texttt{Data2LD} so that the latter package can handle the question of parameter estimation, while Brent's method is used to find the optimal value of $\lambda.$
 
+Another question to be asked  is whether the MM alogrithm for $L_1$ fitting can be combined with \texttt{Data2LD} to perform $L_1$ fitting where the parameters of the ODE are time varying functions.
+
+Finally, while  the two level parameter cascade with $L_1$ errors was implemented, no effort was made to implement the three level parameter cascade. It has not been investigated by us whether the GCV is appropriate as a fitting criterion for $\lambda$ in the $L_1$ case. 
 
 
 \section{Quasi-linear Differential Problems}
 
-Throughout this thesis, it has been possible to either use techniques from Applied Mathematics to construct solution strategies on a case by case basis, or use Statistical methods to find a semi-parametric fit. As differential equations become more complex, both approaches begin to rapidly become non-viable. In this section,  quasi-linear differential equation models will be touched upon.
+Throughout this thesis, it has been possible to either use techniques from Applied Mathematics to construct solution strategies on a case by case basis, or use Statistical methods to find a semi-parametric fit. As differential equations become more complex, both approaches begin to rapidly become non-viable. In this section,  quasi-linear differential equation models will be touched upon to illustrate how small changes can greatly increase the difficulty of fitting.
 
-The difference between a quasi-linear and a linear differential equation is that the coefficients in a quasi-linear equation are allowed to depend on the unknown function. Instead of an ODE such as $y' = \beta(t)y,$ one would have an ODE such as $y' = \beta(y,t)y.$  Though quasi-linear problems tend to be reminiscent of linear ones, they are nonetheless substanially more complicated, and require more technical knowledge, and even ingenuity to tackle.
+The difference between a quasi-linear and a linear differential equation is that the coefficients in a quasi-linear equation are allowed to depend on the unknown function\footnote{In practice there is no precise definition of `quasi-linear', it is defined as suits the problem domain at hand}. Instead of an ODE such as $y' = \beta(t)y,$ one would have an ODE such as $y' = \beta(y,t)y.$  Though quasi-linear problems tend to be reminiscent of linear ones, they are nonetheless substanially more complicated, and require more technical knowledge, and even ingenuity to tackle.
 
 For a quasi-linear variation of a linear ODE, consider the Van Der Pol Equation:
 

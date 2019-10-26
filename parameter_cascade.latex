@@ -100,7 +100,7 @@ Just as the problem of fitting a function $f(\cdot|\theta)$ can generate an opti
 
 As stated in Chapter 1, neither the \texttt{FDA} nor \texttt{Data2LD} packages  implement the three stage parameter cascade. They instead expect practioners to find the best choice of $\lambda$ by cycling through a set of predetermined values or even just employing manual adjustment. There is no guarantee that the optimal choice of $\lambda$ would lie in a finite set of predetemined values. Manual adjustment is slow and cumbersome compared to an automated optimisation routine.
 
-\section{Investigating the Data2LD Package} \label{sec:data2ld_investigation}
+\section{Investigating the \texttt{Data2LD} Package} \label{sec:data2ld_investigation}
 
 Data2LD uses a sophisticated two-level parameter cascade algorithm to fit parameters to the data, which is briefly described here.
 
@@ -110,7 +110,7 @@ The \texttt{Data2LD} function is written in what might be called `R Style' -  up
 
 Only the \texttt{Data2LD.opt} command is  investigated in detail here. The middle level of the Parameter Cascade is generally the easier to implement than the inner level. When implementing the middle level,  one can generally treat the lower level as a `black box' that accepts a given choice of parameters as inputs, and then returns the value of the objective function and sometimes derivatives as outputs. There is plenty of existing methods for tackling such optimisation problems.
 
-\subsection{How Data2LD Estimates Parameters}
+\subsection{How \texttt{Data2LD} Estimates Parameters}
 
 The code for Data2LD can be difficult to understand unfortunately. While software with such powerful features was probably inevitably going to be complex, the authors compound the issue by not heeding best practices recommended for making code easy to read and maintain. For example, Data2LD hardcodes unnamed constants into the code. Allowing such 'Magic Numbers' is strongly discouraged because it makes code more error prone and difficult to understand.\cite{mcconnell2004code}
 

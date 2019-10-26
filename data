@@ -1,0 +1,35 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{url}
+\usepackage[justification=centering]{caption}
+
+
+
+%\usepackage[a4paper, margin=3.0cm]{geometry}
+
+\usepackage{vmargin}
+% left top textwidth textheight headheight
+% headsep footheight footskip
+\setmargins{3.0cm}{2.5cm}{15.5 cm}{22cm}{0.5cm}{0cm}{1cm}{1cm}
+
+\begin{document}
+
+\begin{table}[]
+\begin{tabular}{ll}
+$\delta$ & Running Time (Seconds) \\
+0.7      &    1717.807\\
+0.8      &    1611.459 \\
+0.9      &    1013.165 \\
+            
+\end{tabular}
+\end{table}
+
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{ref} 
+\end{document}
+
+

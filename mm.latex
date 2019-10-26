@@ -186,7 +186,7 @@ In Figure \ref{fig:mela_l1_cascade}, the result of fitting a two level $L_1$ Par
 
 \newpage
 \clearpage
-\section{Acclerating The Rate of Convergence}
+\section{Accelerating The Rate of Convergence}
 
 The MM Alogrithm is very sluggish, and this is a well known weakness of both itself and the EM algorithm. The literature however suggests that this problem could be easily ameliorated in this particular case because of a special feature present.\cite{mclachlan2007algorithm} In practice one doesn't  want to fit the full model, but only wants to compute an associated summary statistic that determines how good a given choice of parameters is. It will often be the case that  only the value of $PENSSAE$ or $GCV$ or $SAE$  associated with a given choice of parameters is required as inputs to an optimisation routine, and it is not desireable to iterate until the full model converges if this effort can be avoided. 
 
@@ -207,13 +207,13 @@ There is an equivalent definition that is easier to generalise \cite{isaacson201
 
 \subsection{Illustrative Example: Using Imputation to Fit an ANOVA Model With Missing Data}
 
-For illustrative purposes, we will make use of an example from chapter 2 of \cite{mclachlan2007algorithm}. The authors discuss fitting an ANOVA model to a factorial experiment where some of the values are missing. They proceed by using the fitted model to estimate the missing values; fitting the model again with the new imputed values; and using the new fitted values in turn to again update the estimates of missing values. The process is repeated until convergence. In the text, the authors do not work here with likelihood or any probablistic models and treat the question as purely a regression problem. This is similar to our $L_1$ fitting problem.
+For illustrative purposes, we will make use of an example from chapter 2 of \cite{mclachlan2007algorithm}. The authors discuss fitting an ANOVA model to a factorial experiment where some of the values are missing. They proceed by using the fitted model to estimate the missing values; fitting the model again with the new imputed values; and using the new fitted values in turn to again update the estimates of missing values. The process is repeated until convergence. In the text, the authors do not work with likelihood or any probablistic models and treat the question as purely a regression problem. This is similar to our $L_1$ fitting problem.
 
 The authors' example was implemented again in R.\footnote{The $SSE$ statistic here is different from the $RSS$ statistic presented in the text this example was taken from. The new code converges to the same estimates as in the original, so the example has been re-implemented correctly. It was not possible to determine with what degrees of freedom  $RSS$ was associated with.}. For each iteration, the $SSE$ statistic was computed. This defines an associated sequence $\{SSE_1, SSE_2,\dots, SSE_n, \dots\}.$ Applying Aitken's method to this sequence produces a new sequence $\{ASSE_n\}.$ As can be seen in Figure \ref{fig:sse_error} and Table \ref{tab:sse_error}, the accelerated sequence converges far more quickly to the limit of the $\{SSE_i\}$ sequence than the original sequence.
 
 \subsection{Generalisations}
 
-Exploring more powerful methods than Aitken's method can be justified in two circumstances. The first is that if one is running the algorithm over and over again such that an increase in speed over many iterations means the effort invested is worth it. This might be the case for example if one  wanted to use the bootstrap to model the distribution of  an likelihood ratio statistic computed using the EM Algorithm as previously described. The second is if the sequence is difficult to accelerate. In the context of accelerating the MM fitting algorithm introduced in Section \ref{sec:mm_l1_problem}, it shall be seen that both conditions apply.
+Exploring more powerful methods than Aitken's method can be justified in two circumstances. The first is that if one is running the algorithm over and over again such that an increase in speed over many iterations means the effort invested is worth it. This might be the case for example if one  wanted to use the bootstrap to model the distribution of  a likelihood ratio statistic computed using the EM Algorithm as previously described. The second is if the sequence is difficult to accelerate. In the context of accelerating the MM fitting algorithm introduced in Section \ref{sec:mm_l1_problem}, it shall be seen that both conditions apply.
 
 
 
@@ -246,7 +246,7 @@ If the transformation (\ref{eqn:rec_trans}) is applied to a sequence of values $
 
 
 
-The process of acceleration isn't quite so neat in practice because sequences don't adhere perfectly to these simple forms. Instead, the best that can be realistically hoped for is that the  transformed sequence converges to the same limit as the original, but the rate of convergence is higher. For example, if transformation (\ref{eqn:rec_trans}) is applied to a sequence of the form $y_n = \beta_0 + \frac{\beta_1}{n} + \frac{\beta_2}{n^2},$ then the transformed sequence is now of the form $\tilde{y}_n = \beta_0 + \mathcal{O}(\frac{1}{n^2}),$ which converges to $\beta_0$ more quickly than the original sequence.\footnote{Doing the algebra, it can be seen that it is now the case that $\hat{\beta}_{1,n} =  \beta_1 + \beta_2 \left[\frac{2n + 1}{n(n+1)}\right],$ and so $\tilde{y}_n = \beta_0 +\beta_{2}\left[-\frac{2n + 1}{n^2(n+1)} + \frac{1}{n^2}\right] = \beta_0  + \beta_{2}\left[\frac{-n^3 - n^2  + n}{n^4(n+1)}\right] .$}
+The process of acceleration isn't quite so neat in practice because sequences don't adhere perfectly to these simple forms. Instead, the best that can be hoped for is that the  transformed sequence converges to the same limit as the original, but the rate of convergence is higher. For example, if transformation (\ref{eqn:rec_trans}) is applied to a sequence of the form $y_n = \beta_0 + \frac{\beta_1}{n} + \frac{\beta_2}{n^2},$ then the transformed sequence is now of the form $\tilde{y}_n = \beta_0 + \mathcal{O}(\frac{1}{n^2}),$ which converges to $\beta_0$ more quickly than the original sequence.\footnote{Doing the algebra, it can be seen that it is now the case that $\hat{\beta}_{1,n} =  \beta_1 + \beta_2 \left[\frac{2n + 1}{n(n+1)}\right],$ and so $\tilde{y}_n = \beta_0 +\beta_{2}\left[-\frac{2n + 1}{n^2(n+1)} + \frac{1}{n^2}\right] = \beta_0  + \beta_{2}\left[\frac{-n^3 - n^2  + n}{n^4(n+1)}\right] .$}
 
 
 Suppose a convergent  sequence is of the form $x_{n+1} = f(x_{n})$ with $f(\cdot)$ differentiable and $x^*$ is the limit. Using a first order Taylor expansion, it can be seen that   for sufficiently large $n,$ $x_{n+1} \approx  x^* +  f'(x^*)(x_n - x^*).$ In this case, Aitken acceleration has a decent chance of accelerating the sequence so long as it has 'burned in' sufficiently.
@@ -317,7 +317,7 @@ $\infty$ & 3203.7829457364 & 3203.7829457364 &  3203.7829457364 & 3203.782945736
 \clearpage
 \subsection{Accelerating the $L_1$ Fitting Alogrithm}
 
-The $L_1$ fitting algorithm devised in Section \ref{sec:mm_l1_problem} is much more difficult to accelerate as can be seen in Figures \ref{fig:sae_accel} and \ref{fig:sae_multi_accel}. The $SAE$ sequence is apparently either numerically ill-behaved or of a very unusual form.
+The $L_1$ fitting algorithm devised in Section \ref{sec:mm_l1_problem} is much more difficult to accelerate as can be seen in Figures \ref{fig:sae_accel} and \ref{fig:sae_multi_accel}. Figure \ref{fig:sae_accel}  shows the result of applying Aitken acceleration to the $SAE$ sequence generated, and Figure \ref{fig:sae_multi_accel} shows the results of attempting an entire battery of acceleration methods, including methods specifically designed for accelerating slowly converging sequences that Aitken acceleration cannnot accelerate such as Epsilon Algorithm and Lubkin's W transform. \cite{graves2000epsilon, osada1993acceleration,wimp1981sequence} No method performs substantially better than Aitken acceleration. The $SAE$ sequence is apparently either numerically ill-behaved or of a very unusual form.
 
 To conclude, it is possible to save some time by acceleration, but the scope for doing so is limited and the process would have to be monitored carefully to ensure that numerical instability isn't causing trouble. 
 
