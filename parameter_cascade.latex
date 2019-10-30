@@ -1,10 +1,10 @@
-\chapter{Hierarchial Estimation and the  Parameter Cascade}
+\chapter{Hierarchical Estimation and the  Parameter Cascade}
 
 This chapter opens with a discussion on fitting parameters to Partial Differential Equations. It is shown that a hierarchial method is needed, where the \emph{inner problem} consists of fitting the PDE to the data given the paremters, and the \emph{middle problem} in turn entails finding the best choice of parameters. The Parameter Cascade method for fitting penalised smoothing problems with unknown parameters is then introduced. 
 
 A familiarity with numerical optimisation methods such as Gradient Descent, the Newton-Raphson Mathod, and Line Searches is assumed. Details are provided in Appendix \ref{chap:optimisation_methods}.
 
-\section{Hierarchial fitting of a Partial Differential Equation}
+\section{Hierarchical fitting of a Partial Differential Equation}
 
 A linear PDE that is analogous to the linear ODE used to model the Reflux data in Section \ref{sec:reflux_parametric_vs_data2ld} is the Transport Equation:
 
@@ -102,7 +102,7 @@ As stated in Chapter 1, neither the \texttt{FDA} nor \texttt{Data2LD} packages  
 
 \section{Investigating the \texttt{Data2LD} Package} \label{sec:data2ld_investigation}
 
-Data2LD uses a sophisticated two-level parameter cascade algorithm to fit parameters to the data, which is briefly described here.
+\texttt{Data2LD} uses a sophisticated two-level parameter cascade algorithm to fit parameters to the data, which is briefly described here.
 
 The inner level of the parameter cascade is implemented by the eponymous \texttt{Data2LD} routine. The middle level is implemented by the \texttt{Data2LD.opt} command.\cite{data2ld} The outer level of optimisation for choosing the trade-off parameter $\lambda$ is not implemented.\footnote{For \texttt{Data2LD}, the smoothing parameter is written in terms of $\rho = \lambda/(1 + \lambda).$ The term $\lambda$ is retained for the sake of simplifying the exposition.}
 
@@ -112,7 +112,7 @@ Only the \texttt{Data2LD.opt} command is  investigated in detail here. The middl
 
 \subsection{How \texttt{Data2LD} Estimates Parameters}
 
-The code for Data2LD can be difficult to understand unfortunately. While software with such powerful features was probably inevitably going to be complex, the authors compound the issue by not heeding best practices recommended for making code easy to read and maintain. For example, Data2LD hardcodes unnamed constants into the code. Allowing such 'Magic Numbers' is strongly discouraged because it makes code more error prone and difficult to understand.\cite{mcconnell2004code}
+The code for\texttt{Data2LD} can be difficult to understand unfortunately. While software with such powerful features was probably inevitably going to be complex, the authors compound the issue by not heeding best practices recommended for making code easy to read and maintain. For example,\texttt{Data2LD} hardcodes unnamed constants into the code. Allowing such 'Magic Numbers' is strongly discouraged because it makes code more error prone and difficult to understand.\cite{mcconnell2004code}
 
 The search directions used by the  \texttt{Data2LD.opt} command are the gradient descent direction:
 
@@ -125,7 +125,7 @@ and the Newton Direction:
     \mathbf{p}_n = - \mathbf{H}_n^{-1}\mathbf{g}_n \tag{\textbf{S2}}
 \end{equation}
 
-Data2LD uses four tests to determine how good a step is:\footnote{\texttt{Data2LD} actually tests for the negation of \ref{eqn:t3} and \ref{eqn:t4}. For the sake of consistency the logical negations of the two tests used by \texttt{Data2LD} are presented  here so that passing a test is consistently a good thing and failing consistently represents unsatisfactory or pathalogical behaviour.}
+\texttt{Data2LD} uses four tests to determine how good a step is:\footnote{\texttt{Data2LD} actually tests for the negation of \ref{eqn:t3} and \ref{eqn:t4}. For the sake of consistency the logical negations of the two tests used by \texttt{Data2LD} are presented  here so that passing a test is consistently a good thing and failing consistently represents unsatisfactory or pathalogical behaviour.}
 
 \begin{align*}
 \end{align*}
@@ -172,15 +172,15 @@ If \ref{eqn:t1} and \ref{eqn:t2} are satisfied, then the line search has converg
 The use of four tests is a little unusual here. The literature suggests that only the Wolfe Conditions \ref{eqn:t1} and \ref{eqn:t2} are needed as discussed in Section \ref{sec:line_search_methods}.  \texttt{Data2LD.opt} is designed to be  robust against the possibility that the objective function mightn't behave as predicted by the computed gradient and Hessian.
 
 
-Depending on the outcome of the tests, Data2LD chooses the stepsize as follows:
+Depending on the outcome of the tests, \texttt{Data2LD} chooses the stepsize as follows:
 
 \begin{itemize}
 
 \item If \ref{eqn:t1}, \ref{eqn:t2}, and \ref{eqn:t3} are passed, the algorithm terminates.
 
-\item If \ref{eqn:t1} and \ref{eqn:t1} are passed, or  \ref{eqn:t4} is passed; but  \ref{eqn:t3} is failed, it means that the slope is satisfactory, but the function has increased rather than decreased. Data2LD reduces the step size.
+\item If \ref{eqn:t1} and \ref{eqn:t1} are passed, or  \ref{eqn:t4} is passed; but  \ref{eqn:t3} is failed, it means that the slope is satisfactory, but the function has increased rather than decreased. \texttt{Data2LD} reduces the step size.
 
-\item If all four tests are failed, then the newest point is unsuitable entirely. Data2LD falls back on interpolation to try to find a critical point of $\phi(\alpha),$ falling back on  quadratic interpolation methods if necessary.\footnote{The line search code for the \texttt{Data2LD} is lightly commented and dense, all that one can be strictly certain of is that the method uses radicals to compute the next value of $\alpha,$ falling back on solving a linear equation if necessary. Getting the root of a quadratic is equivalent to finding a critical point of a cubic, and solving a linear equation is equivalent to finding the critical points of a quadratic.}
+\item If all four tests are failed, then the newest point is unsuitable entirely.\texttt{Data2LD} falls back on interpolation to try to find a critical point of $\phi(\alpha),$ falling back on  quadratic interpolation methods if necessary.\footnote{The line search code for the \texttt{Data2LD} is lightly commented and dense, all that one can be strictly certain of is that the method uses radicals to compute the next value of $\alpha,$ falling back on solving a linear equation if necessary. Getting the root of a quadratic is equivalent to finding a critical point of a cubic, and solving a linear equation is equivalent to finding the critical points of a quadratic.}
 
 \end{itemize}
 
@@ -191,7 +191,7 @@ Depending on the outcome of the tests, Data2LD chooses the stepsize as follows:
 \label{fig:data2ld_line_search_tests}
 \end{figure}
 
-If the line search succeeds in reducing the objective function, Data2LD uses the Newton search direction for the next iteration. If the line search makes the objective function worse, the Gradient Descent direction is used. In the event of the line search making the objective function worse twice in a row, Data2LD returns an error.
+If the line search succeeds in reducing the objective function,\texttt{Data2LD} uses the Newton search direction for the next iteration. If the line search makes the objective function worse, the Gradient Descent direction is used. In the event of the line search making the objective function worse twice in a row,\texttt{Data2LD} returns an error.
 
 Somewhat peculiarly, \texttt{Data2LD} does not make use of $\phi''(\alpha)$ despite being able to compute it easily.\footnote{Differentiating the expression $\phi'(\alpha) =\mathbf{p}_n^\top\nabla f(\mathbf{x}_n + \alpha \mathbf{p}_n)$ with respect to $\alpha$ yields that $\phi''(\alpha) = \mathbf{p}_n^\top \mathbf{H}(\alpha) \mathbf{p}_n,$ where $\mathbf{H}(\alpha)$ denotes the Hessian of $f$ evaluated at $\mathbf{x}_n + \alpha \mathbf{p}_n.$}  One would think that the Newton-Raphson Method would  be the first approach attempted to perform the line search before resorting to interpolation-based methods since it's both simpler to implement and faster to converge. The effort of computing $\phi''(\alpha)$ is mostly a sunk cost because of how the interface of \texttt{Data2LD} is defined.
 

@@ -8,13 +8,13 @@ The derivative-free approch is effective at fitting data using non-smooth loss f
 
 The derivative-free approach further allows problems that are not mainstream within FDA  such as parameterically fitting PDEs to be solved without having to implement a complex solver like \texttt{Data2LD.}
 
-However, the methodology suffers from some weaknessess. It is undeniably slower than derivative-based methods. The MM algorithm for $L_1$ fitting suffers particularly badly from this weakness because it must solve many weighted $PENSSE$ problems in the course of its execution and it is difficult to accelerate. This must be balanced against the MM alogrithm's ease of implemention. 
+However, the methodology suffers from some weaknessess. It is undeniably slower than derivative-based methods. The MM algorithm for $L_1$ fitting suffers particularly badly from this weakness because it must solve many weighted $PENSSE$ problems in the course of its execution and it is difficult to accelerate. This must be balanced against the MM algorithm's ease of implemention. 
 
 \section{Further Subjects for Inquiry}
 
 An obvious topic for further investigation is combining Brent's method with \texttt{Data2LD} so that the latter package can handle the question of parameter estimation, while Brent's method is used to find the optimal value of $\lambda.$
 
-Another question to be asked  is whether the MM alogrithm for $L_1$ fitting can be combined with \texttt{Data2LD} to perform $L_1$ fitting where the parameters of the ODE are time varying functions.
+Another question to be asked  is whether the MM algorithm for $L_1$ fitting can be combined with \texttt{Data2LD} to perform $L_1$ fitting where the parameters of the ODE are time varying functions.
 
 Finally, while  the two level parameter cascade with $L_1$ errors was implemented, no effort was made to implement the three level parameter cascade. It has not been investigated by us whether the GCV is appropriate as a fitting criterion for $\lambda$ in the $L_1$ case. 
 
@@ -53,7 +53,7 @@ Here $f(\cdot)$ is some arbitary function as  before, and $s$ is implicitly defi
 \]
 
 
-Fitting this model is substantially trickier than the Transport Equation. There is no clean seperation between the problem of estimating $f(\cdot)$ and $\beta$ since $u(x,t)$ appears on the righthand side and scales $\beta.$ 
+Fitting this model is substantially trickier than the Transport Equation. There is no clean separation between the problem of estimating $f(\cdot)$ and $\beta$ since $u(x,t)$ appears on the righthand side and scales $\beta.$ 
 
 A further complication is that $u(x,t)$ might only define a \emph{relation}, instead of a function. There might be multiple values of $u$ associated with a given  $(x,t)$ that satisfy the solution equation. Physically speaking, multiple values correspond to shock waves. 
 

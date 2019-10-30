@@ -48,7 +48,7 @@ It's worth noting that the AM-GM inequality is in fact a special case of Jensen'
                                   &= \log{\sqrt{xy}}
 \end{align*}
 
-It is possible  to exploit the AM-GM inequality to majorise an $L_1$ regression problem by a weighted $L_2$  problem. One can represent the $L_1$ norm as a geometric mean, which then allows for the $L_1$ norm to majorised and separated by  a weighted sum of squares. Given an iterate $x_n,$ the AM-GM inequality implies that:
+It is possible  to exploit the AM-GM inequality to majorise an $L_1$ regression problem by a weighted $L_2$  problem. One can represent the $L_1$ norm as a geometric mean, which then allows for the $L_1$ norm to majorised and seperated by  a weighted sum of squares. Given an interate $x_n,$ the AM-GM inequality implies that:
 
 \begin{align*}
     |y - x| &= \sqrt{(y - x)^2} \\
@@ -180,7 +180,7 @@ In Figure \ref{fig:mela_l1_cascade}, the result of fitting a two level $L_1$ Par
 \centering
 \includegraphics[height=9cm]{mela_l1_l2_combinations.pdf} 
 \includegraphics[height=9cm]{mela_l1_l2_combinations_perturbed.pdf}
-\caption{All possible combinations of $L_1$ and $L_2$ loss functions that can be used for the Parameter Cascade. The top plot applies them to the original melanoma data, the bottom to the same perturbed data as in Figures \ref{fig:mela_l1_l2} and \ref{fig:mela_l1_l2_cascade}}
+\caption{All possible combinations of $L_1$ and $L_2$ loss functions that can be used for the Parameter Cascade. The top plot applies them to the orginal melanoma data, the bottom to the same perturbed data as in Figures \ref{fig:mela_l1_l2} and \ref{fig:mela_l1_l2_cascade}}
 \label{fig:mela_l1_l2_combiations} 
 \end{figure}
 
@@ -188,7 +188,7 @@ In Figure \ref{fig:mela_l1_cascade}, the result of fitting a two level $L_1$ Par
 \clearpage
 \section{Accelerating The Rate of Convergence}
 
-The MM Algorithm is very sluggish, and this is a well known weakness of both itself and the EM algorithm. The literature however suggests that this problem could be easily ameliorated in this particular case because of a special feature present.\cite{mclachlan2007algorithm} In practice one doesn't  want to fit the full model, but only wants to compute an associated summary statistic that determines how good a given choice of parameters is. It will often be the case that  only the value of $PENSSAE$ or $GCV$ or $SAE$  associated with a given choice of parameters is required as inputs to an optimisation routine, and it is not desirable to iterate until the full model converges if this effort can be avoided. 
+The MM Alogrithm is very sluggish, and this is a well known weakness of both itself and the EM algorithm. The literature however suggests that this problem could be easily ameliorated in this particular case because of a special feature present.\cite{mclachlan2007algorithm} In practice one doesn't  want to fit the full model, but only wants to compute an associated summary statistic that determines how good a given choice of parameters is. It will often be the case that  only the value of $PENSSAE$ or $GCV$ or $SAE$  associated with a given choice of parameters is required as inputs to an optimisation routine, and it is not desirable to iterate until the full model converges if this effort can be avoided. 
 
 MacLanan and Krishnan\cite{mclachlan2007algorithm} discuss the situation where one only wants to compare the likelihoods between a restricted model and a full model. They suggest the use of sequence acceleration methods to rapidly extract the likelihoods \cite{mclachlan2007algorithm} instead of running the EM algorithm to completion since  the full models aren't needed. The literature on the MM algorithm claims that acceleration methods for the EM algorithm translate quite easily to the MM case \cite{wu2010mm}. On this basis, we explored whether this approach might be applied here.
 
@@ -265,7 +265,7 @@ One can take the process further. For the missing values linear model, these hig
 \begin{figure}
 \centering
    \includegraphics[height=9cm]{anova_accel.pdf}
-   \caption{Log Errors for original sequence of SSE values and the accelerated one}
+   \caption{Log Errors for original sequnce of SSE values and the accelerated one}
    \label{fig:sse_error}
 \end{figure}
 
@@ -315,7 +315,7 @@ $\infty$ & 3203.7829457364 & 3203.7829457364 &  3203.7829457364 & 3203.782945736
 
 \newpage
 \clearpage
-\subsection{Accelerating the $L_1$ Fitting Algorithm}
+\subsection{Accelerating the $L_1$ Fitting Alogrithm}
 
 The $L_1$ fitting algorithm devised in Section \ref{sec:mm_l1_problem} is much more difficult to accelerate as can be seen in Figures \ref{fig:sae_accel} and \ref{fig:sae_multi_accel}. Figure \ref{fig:sae_accel}  shows the result of applying Aitken acceleration to the $SAE$ sequence generated, and Figure \ref{fig:sae_multi_accel} shows the results of attempting an entire battery of acceleration methods, including methods specifically designed for accelerating slowly converging sequences that Aitken acceleration cannot accelerate such as Epsilon Algorithm and Lubkin's W transform. \cite{graves2000epsilon, osada1993acceleration,wimp1981sequence} No method performs substantially better than Aitken acceleration. The $SAE$ sequence is apparently either numerically ill-behaved or of a very unusual form.
 
@@ -325,7 +325,7 @@ To conclude, it is possible to save some time by acceleration, but the scope for
 \begin{figure}
 \centering
    \includegraphics[height=9cm]{l1_accleration_plot.pdf}
-   \caption{Accelerating the SAE sequence generating by the $L_1$ fitting algorithm using Aitken's Method. The improvement in covergence is  mediocre.}
+   \caption{Accelerating the SAE sequence generating by the $L_1$ fitting alogrithm using Aitken's Method. The improvement in covergence is  mediocre.}
 \label{fig:sae_accel}
 \end{figure}
 

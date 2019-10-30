@@ -2,15 +2,15 @@
 
 \chapter{Profiling Non-Linear Regression Models With the Parameter Cascade}
 
-In this chapter we will discuss regression models that can be seperated into an \emph{inner problem} where one attempts to find the best fit given a choice of parameters, and a \emph{middle problem} where one attempts to in turn find the optimal choice of parameters. First a simple nonlinear regression model will be discussed  as an example to introduce the ideas used in this chapter. Then, a Parameter Cascade method for fitting linear ODEs is then devised. Finally, the Parameter Cascade approach will be used to fit PDEs.
+In this chapter we will discuss regression models that can be separated into an \emph{inner problem} where one attempts to find the best fit given a choice of parameters, and a \emph{middle problem} where one attempts to in turn find the optimal choice of parameters. First a simple nonlinear regression model will be discussed  as an example to introduce the ideas used in this chapter. Then, a Parameter Cascade method for fitting linear ODEs is then devised. Finally, the Parameter Cascade approach will be used to fit PDEs.
 
-The approach used in this chapter here is related  to an ODE fitting methodology developed by Ramsay et al. \cite{ramsay2017dynamic, hooker2016collocinfer}. The authors attempt to fit the parameterised ODE $\mathbf{x}'(t) = \mathbf{f}(\mathbf{x}(t), t| \theta)$ using a penalised regression model of the form:
+The approach used in this chapter here is related  to an ODE fitting methodology developed by Ramsay et al.\cite{ramsay2017dynamic, hooker2016collocinfer} The authors attempt to fit a parameterised ODE $\mathbf{x}'(t) = \mathbf{f}(\mathbf{x}(t), t| \theta)$ using a penalised regression model of the form:
 
 \[
     PENSSE(\mathbf{x}(t); \theta,\lambda) = \sum[\mathbf{y}_i - \mathbf{x}(t_i)]^2 + \lambda \int_0^T[\mathbf{x}'(t) - \mathbf{f}(\mathbf{x}(t), t| \theta)]^2dt
 \]
 
-This in turn defines a middle least squares problem for $\theta\colon$
+The first term measures fit to the data, and the second measures fidelity to the ODE. This in turn defines a middle problem for $\theta\colon$
 
 \[
    H(\theta) = \sum[\mathbf{y} - \hat{\mathbf{x}}(t_i|\theta, \lambda)]^2
@@ -18,7 +18,7 @@ This in turn defines a middle least squares problem for $\theta\colon$
 
 Where $\hat{\mathbf{x}}(t_i|\theta, \lambda)$ is the minimiser of  $PENSSE(\mathbf{x}(t); \theta,\lambda)$ for fixed values of $\theta$ and $\lambda.$
 
-The assumption is made that $\mathbf{x}(t)$ can be expanded as a linear combination of basis functions, and the authors then proceed to conduct a traditional parameter cascade.\footnote{Not \emph{entirely} traditional. To perfrom a fit, derivatives of $\mathbf{f}(\cdot)$ with respect to $\mathbf{\theta}$ and $\mathbf{x}$ are required. \texttt{CollocInfer} uses finite differencing to estimate these derivatives if no information is provided by the user.} The authors have developed a sophisticated package called \texttt{CollocInfer} to implement the method in a similar fashion as \texttt{Data2LD}.
+The assumption is made that $\mathbf{x}(t)$ can be expanded as a linear combination of basis functions, and the authors then proceed to conduct a traditional parameter cascade.\footnote{Not \emph{entirely} traditional. To perfrom a fit, derivatives of $\mathbf{f}(\cdot)$ with respect to $\mathbf{\theta}$ and $\mathbf{x}$ are required. \texttt{CollocInfer} uses finite differencing to estimate these derivatives if no information is provided by the user.} A sophisticated package called \texttt{CollocInfer} has been developed to implement the method in a similar fashion as \texttt{Data2LD}.
 
 
 The approach used in this chapter is more in the spirit of symmetry methods used to solve differential equations as described in \cite{hydon2000symmetry}. The aim is to exploit structure in the specific dynamical system being modelled so that the problem of fitting the system is turned into a transformation model of some kind, which can then be fitted using a hierarchial approach. 
@@ -57,15 +57,15 @@ This approach was applied to simulated data with $\alpha = 100, \beta = 4,$ and 
 \label{fig:non_linear_model}
 \end{figure}
 \newpage
-\section{Fitting Linear Homogenous ODEs Using the Parameter Cascade}
+\section{Fitting Linear Homogeneous ODEs Using the Parameter Cascade}
 
-Recall a linear homogenous ODE of order $n$ is given by:
+Recall a linear homogeneous ODE of order $n$ is given by:
 
 \[
    \frac{d^ny}{dt^n} = \sum_{k=0}^{n-1} a_k(t; \theta)\frac{d^ky}{dt^k}
 \]
 
-Under some mild technical conditions, the set of solutions to such an ODE is an $n$ dimensional vector space and has a unique solution for each set of intial conditions. It is often more convieninet to work with  ODEs in matrix form from now on. Any homogenous linear ODE can be represented in matrix form:
+Under some mild technical conditions, the set of solutions to such an ODE is an $n$ dimensional vector space and has a unique solution for each set of intial conditions. It is often more convieninet to work with  ODEs in matrix form from now on. Any homogeneous linear ODE can be represented in matrix form:
 
 \[
    \frac{d\mathbf{y}}{dt} = \mathbf{A}(t; \theta)\mathbf{y}
@@ -105,7 +105,7 @@ To minimise the middle problem, the Nelder-Mead method was used - Brent's method
 
 The advantage of the parameter cascade here over a generic optimisation routine is that it is noticebly faster than trying to optimise everything in one go. The linear regression steps mean that the ODE needs to solved numerically fewer times, so that the algorithm runs arond $30\%$ faster for the ODE in Equation \ref{eqn:ode_model}. However, the \verb|nls| command is faster than the Parameter Cascade for Equation \ref{eqn:nonlinear_model} even when no derivatives are provided.
 
-Compared to \texttt{Data2LD} and \texttt{CollocInfer}, this approach numerically estimates a basis for the solution set of the linear ODE and then projects the observed data onto the approximate solution set using the \texttt{lm} command. On the other hand, \texttt{Data2LD} and \texttt{CollocInfer} add penalties to the least squares criterion to ensure suffcient adherence to the ODE \textit{post hoc}.
+Compared to \texttt{Data2LD} and \texttt{CollocInfer}, this approach numerically estimates a basis for the solution set of the linear ODE and then projects the observed data onto the approximate solution set using the \texttt{lm} command. On the other hand, \texttt{Data2LD} and \texttt{CollocInfer} add penalties to the least squares criterion to ensure suffcient adherence to the ODE \textit{post hoc}. This approach has the advantage of being much easier to implement, but it requires rigid adherence to the ODE, and cannot tackle non-linear problems like \texttt{CollocInfer}.
 
 \begin{figure} 
     \centering

@@ -10,7 +10,7 @@
 \contentsline {section}{\numberline {1.2}Penalised Regression}{9}
 \contentsline {subsection}{\numberline {1.2.1}Smoothing Splines}{9}
 \contentsline {subsection}{\numberline {1.2.2}Piecewise Trigonometric Interpolation}{10}
-\contentsline {section}{\numberline {1.3}Finte Dimensionalisation: the General Case}{12}
+\contentsline {section}{\numberline {1.3}Finite Dimensionalisation: the General Case}{12}
 \contentsline {subsection}{\numberline {1.3.1}FDA With A Quadratic Basis}{15}
 \contentsline {section}{\numberline {1.4}The \texttt {FDA} Package}{17}
 \contentsline {section}{\numberline {1.5}The \texttt {Data2LD} Package}{19}
@@ -31,8 +31,8 @@
 \contentsline {paragraph}{An Extended Definition of Convergence Rates:}{28}
 \contentsline {paragraph}{Linear Convergence and Iterated Mappings:}{28}
 \contentsline {section}{\numberline {1.8}Overview of Appendices}{29}
-\contentsline {chapter}{\numberline {2}Hierarchial Estimation and the Parameter Cascade}{30}
-\contentsline {section}{\numberline {2.1}Hierarchial fitting of a Partial Differential Equation}{30}
+\contentsline {chapter}{\numberline {2}Hierarchical Estimation and the Parameter Cascade}{30}
+\contentsline {section}{\numberline {2.1}Hierarchical fitting of a Partial Differential Equation}{30}
 \contentsline {section}{\numberline {2.2}The Two-Stage Parameter Cascade}{31}
 \contentsline {section}{\numberline {2.3}Three Stage Parameter Cascade}{32}
 \contentsline {section}{\numberline {2.4}Investigating the \texttt {Data2LD} Package}{35}
@@ -46,54 +46,54 @@
 \contentsline {section}{\numberline {3.2}Modifying the \texttt {Data2LD.opt} Routine}{42}
 \contentsline {paragraph}{Approximating the Derivative:}{42}
 \contentsline {paragraph}{Error Analysis:}{43}
-\contentsline {paragraph}{Comparison with the Secant Method and Succesive Parabolic Interpolation:}{44}
+\contentsline {paragraph}{Comparison with the Secant Method and Successive Parabolic Interpolation:}{44}
 \contentsline {paragraph}{Comparing the Modfied Method with the Original Method:}{44}
-\contentsline {paragraph}{Newton Method with Gradient Line Search}{45}
-\contentsline {paragraph}{Newton Method with Secant Approximation To First Derivative}{46}
-\contentsline {section}{\numberline {3.3}Golden-Section Search}{46}
-\contentsline {section}{\numberline {3.4}Brent's Method}{47}
-\contentsline {section}{\numberline {3.5}Estimation Of Parameters For A Standard Cauchy Distribution Using Brent's Method}{48}
-\contentsline {section}{\numberline {3.6}Robust ODE Parameter Estimation}{51}
-\contentsline {section}{\numberline {3.7}The Parameter Cascade and Brent's Method}{54}
-\contentsline {subsubsection}{Melanoma Data}{55}
-\contentsline {chapter}{\numberline {4}A Two Level $L_1$ Parameter Cascade Using the MM Alogrithm.}{59}
-\contentsline {section}{\numberline {4.1}$L_1$ Estimation for the Inner Problem}{59}
-\contentsline {subsection}{\numberline {4.1.1}An MM Algorithm For Computing the Median}{60}
-\contentsline {subsection}{\numberline {4.1.2}Penalised $L_1$ Fitting}{62}
-\contentsline {subsection}{\numberline {4.1.3}Discussion}{63}
-\contentsline {subsection}{\numberline {4.1.4}Testing the Algorithm on the Melanoma Data}{63}
-\contentsline {section}{\numberline {4.2}The Two Level Parameter Cascade with $L_1$ Norm}{68}
-\contentsline {section}{\numberline {4.3}Accelerating The Rate of Convergence}{72}
-\contentsline {subsection}{\numberline {4.3.1}Illustrative Example: Using Imputation to Fit an ANOVA Model With Missing Data}{73}
-\contentsline {subsection}{\numberline {4.3.2}Generalisations}{73}
-\contentsline {paragraph}{Other Approaches:}{75}
-\contentsline {subsection}{\numberline {4.3.3}Accelerating the $L_1$ Fitting Alogrithm}{78}
-\contentsline {chapter}{\numberline {5}Profiling Non-Linear Regression Models With the Parameter Cascade}{80}
-\contentsline {section}{\numberline {5.1}Fitting a Non-Linear Regression Model With the Parameter Cascade}{81}
-\contentsline {section}{\numberline {5.2}Fitting Linear Homogenous ODEs Using the Parameter Cascade}{82}
-\contentsline {section}{\numberline {5.3}Estimation for First Order Linear PDEs}{86}
-\contentsline {subsection}{\numberline {5.3.1}The Transport Equation}{86}
-\contentsline {subsection}{\numberline {5.3.2}The Transport Equation with Space-varying Velocity}{89}
-\contentsline {chapter}{\numberline {6}Conclusion and Further Research}{91}
-\contentsline {section}{\numberline {6.1}Derivative-Free versus Derivative-Based Methods}{91}
-\contentsline {section}{\numberline {6.2}Further Subjects for Inquiry}{91}
-\contentsline {section}{\numberline {6.3}Quasi-linear Differential Problems}{92}
-\contentsline {subsection}{\numberline {6.3.1}Inviscid Burger's Equation}{92}
-\contentsline {subsection}{\numberline {6.3.2}Discussion}{93}
-\contentsline {chapter}{Appendices}{94}
-\contentsline {chapter}{\numberline {A}Overview of Optimisation Methods}{95}
-\contentsline {section}{\numberline {A.1}Gradient Descent and the Newton-Raphson method}{95}
-\contentsline {section}{\numberline {A.2}The Chord Method}{99}
-\contentsline {section}{\numberline {A.3}More Sophisticated Hessian Approximations}{99}
-\contentsline {paragraph}{Linearly Convergent Methods:}{100}
-\contentsline {paragraph}{Quasi-Newton Methods:}{100}
-\contentsline {paragraph}{Finite Differences:}{101}
-\contentsline {section}{\numberline {A.4}Line Search Methods}{103}
-\contentsline {subsection}{\numberline {A.4.1}Wolfe Conditions}{105}
-\contentsline {subsection}{\numberline {A.4.2}More sophisticated Line Search Algorithms}{105}
-\contentsline {chapter}{\numberline {B}Implicit Filtering}{107}
-\contentsline {section}{\numberline {B.1}Description of the Algorithm}{107}
-\contentsline {section}{\numberline {B.2}Convergence Theory}{108}
-\contentsline {section}{\numberline {B.3}Assessment of the Method}{109}
-\contentsline {section}{\numberline {B.4}Using Implicit Filtering to Fit an ODE to the Melanoma Data}{109}
-\contentsline {chapter}{Bibliography}{113}
+\contentsline {paragraph}{Newton Method with Gradient Line Search}{46}
+\contentsline {paragraph}{Newton Method with Secant Approximation To First Derivative}{47}
+\contentsline {section}{\numberline {3.3}Golden-Section Search}{47}
+\contentsline {section}{\numberline {3.4}Brent's Method}{48}
+\contentsline {section}{\numberline {3.5}Estimation Of Parameters For A Standard Cauchy Distribution Using Brent's Method}{49}
+\contentsline {section}{\numberline {3.6}Robust ODE Parameter Estimation}{52}
+\contentsline {section}{\numberline {3.7}The Parameter Cascade and Brent's Method}{55}
+\contentsline {subsubsection}{Melanoma Data}{56}
+\contentsline {chapter}{\numberline {4}A Two Level $L_1$ Parameter Cascade Using the MM Algorithm.}{60}
+\contentsline {section}{\numberline {4.1}$L_1$ Estimation for the Inner Problem}{60}
+\contentsline {subsection}{\numberline {4.1.1}An MM Algorithm For Computing the Median}{61}
+\contentsline {subsection}{\numberline {4.1.2}Penalised $L_1$ Fitting}{63}
+\contentsline {subsection}{\numberline {4.1.3}Discussion}{64}
+\contentsline {subsection}{\numberline {4.1.4}Testing the Algorithm on the Melanoma Data}{64}
+\contentsline {section}{\numberline {4.2}The Two Level Parameter Cascade with $L_1$ Norm}{69}
+\contentsline {section}{\numberline {4.3}Accelerating The Rate of Convergence}{73}
+\contentsline {subsection}{\numberline {4.3.1}Illustrative Example: Using Imputation to Fit an ANOVA Model With Missing Data}{74}
+\contentsline {subsection}{\numberline {4.3.2}Generalisations}{74}
+\contentsline {paragraph}{Other Approaches:}{76}
+\contentsline {subsection}{\numberline {4.3.3}Accelerating the $L_1$ Fitting Algorithm}{79}
+\contentsline {chapter}{\numberline {5}Profiling Non-Linear Regression Models With the Parameter Cascade}{81}
+\contentsline {section}{\numberline {5.1}Fitting a Non-Linear Regression Model With the Parameter Cascade}{82}
+\contentsline {section}{\numberline {5.2}Fitting Linear Homogeneous ODEs Using the Parameter Cascade}{83}
+\contentsline {section}{\numberline {5.3}Estimation for First Order Linear PDEs}{87}
+\contentsline {subsection}{\numberline {5.3.1}The Transport Equation}{87}
+\contentsline {subsection}{\numberline {5.3.2}The Transport Equation with Space-varying Velocity}{90}
+\contentsline {chapter}{\numberline {6}Conclusion and Further Research}{92}
+\contentsline {section}{\numberline {6.1}Derivative-Free versus Derivative-Based Methods}{92}
+\contentsline {section}{\numberline {6.2}Further Subjects for Inquiry}{92}
+\contentsline {section}{\numberline {6.3}Quasi-linear Differential Problems}{93}
+\contentsline {subsection}{\numberline {6.3.1}Inviscid Burger's Equation}{93}
+\contentsline {subsection}{\numberline {6.3.2}Discussion}{94}
+\contentsline {chapter}{Appendices}{95}
+\contentsline {chapter}{\numberline {A}Overview of Optimisation Methods}{96}
+\contentsline {section}{\numberline {A.1}Gradient Descent and the Newton-Raphson method}{96}
+\contentsline {section}{\numberline {A.2}The Chord Method}{100}
+\contentsline {section}{\numberline {A.3}More Sophisticated Hessian Approximations}{100}
+\contentsline {paragraph}{Linearly Convergent Methods:}{101}
+\contentsline {paragraph}{Quasi-Newton Methods:}{101}
+\contentsline {paragraph}{Finite Differences:}{102}
+\contentsline {section}{\numberline {A.4}Line Search Methods}{104}
+\contentsline {subsection}{\numberline {A.4.1}Wolfe Conditions}{106}
+\contentsline {subsection}{\numberline {A.4.2}More sophisticated Line Search Algorithms}{106}
+\contentsline {chapter}{\numberline {B}Implicit Filtering}{108}
+\contentsline {section}{\numberline {B.1}Description of the Algorithm}{108}
+\contentsline {section}{\numberline {B.2}Convergence Theory}{109}
+\contentsline {section}{\numberline {B.3}Assessment of the Method}{110}
+\contentsline {section}{\numberline {B.4}Using Implicit Filtering to Fit an ODE to the Melanoma Data}{110}
+\contentsline {chapter}{Bibliography}{114}
