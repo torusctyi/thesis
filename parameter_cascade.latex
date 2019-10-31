@@ -4,7 +4,7 @@ This chapter opens with a discussion on fitting a semi-parameteric generalisatio
 
 A familiarity with numerical optimisation methods such as Gradient Descent, the Newton-Raphson Mathod, and Line Searches is assumed. Details are provided in Appendix \ref{chap:optimisation_methods}.
 
-\section{Fitting the Reflux Data Semi-Parametrically}
+\section{Fitting the Reflux Data Using a  Semi-Parametric ODE Model}
 
 In Section \ref{sec:reflux_parametric_vs_data2ld} the Reflux data was discussed. An ODE model along the lines of $y' = \beta y + u_0$ as described in Equation \ref{eqn:reflux_ode} was fitted to the data. After pausing to discuss performing a parametric fit by approximating $y(t)$ by basis functions, \texttt{Data2LD} was then used to fit a sophisticated semi-parameteric model where the ODE $y'(t) = \beta(t) + u(t)$ only holds approximately. While the parametric approach was explored in detail, serious discussion of \texttt{Data2LD} was deferred to this chapter.
 

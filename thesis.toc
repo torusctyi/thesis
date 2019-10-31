@@ -33,7 +33,7 @@
 \contentsline {paragraph}{Linear Convergence and Iterated Mappings:}{33}
 \contentsline {section}{\numberline {1.8}Overview of Appendices}{34}
 \contentsline {chapter}{\numberline {2}Hierarchical Estimation and the Parameter Cascade}{35}
-\contentsline {section}{\numberline {2.1}Fitting the Reflux Data Semi-Parametrically}{35}
+\contentsline {section}{\numberline {2.1}Fitting the Reflux Data Using a Semi-Parametric ODE Model}{35}
 \contentsline {section}{\numberline {2.2}The Two-Stage Parameter Cascade}{37}
 \contentsline {section}{\numberline {2.3}The Three-Stage Parameter Cascade}{38}
 \contentsline {section}{\numberline {2.4}Investigating the \texttt {Data2LD} Package}{38}
@@ -97,5 +97,5 @@
 \contentsline {section}{\numberline {B.1}Description of the Algorithm}{113}
 \contentsline {section}{\numberline {B.2}Convergence Theory}{114}
 \contentsline {section}{\numberline {B.3}Assessment of the Method}{115}
-\contentsline {section}{\numberline {B.4}Using Implicit Filtering to Fit an ODE to the Melanoma Data}{115}
+\contentsline {section}{\numberline {B.4}Using Implicit Filtering to Fit an ODE to the Melanoma Data}{116}
 \contentsline {chapter}{Bibliography}{119}

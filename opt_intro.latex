@@ -21,7 +21,7 @@ The fixed parameter $\alpha >0$ controls how big a step the method will take on 
 
 This means that $f(\mathbf{x}_{n+1}) < f(\mathbf{x}_{n})$ so long as $\alpha$ isn't too big. Gradient descent is simple but it only converges linearly under ideal conditions. \cite{nocedalnumerical,chong2013introduction, mathematicsdata2018}. If the objective function isn't sufficiently ideal, gradient descent might only converge sublinearly.\cite{mathematicsdata2018}
 
-Consider the question of minimising the function $f(x) = x^4$ using Gradient Descent, starting at $x = 0.5$ with $\alpha = 0.2.$ The minimum of $f(x)$ is of course at $x=0,$ so the absolute value of the iterates $x_n$ is a measure of the error. Figure \ref{fig:grad_descent} plots the log errors for the first 20,000  iterations, It is readily apparent that the algorithm is converging sublinearly and that the rate of convergence is absolutely and utterly woeful. It takes around 250 iterations before the error falls below $10^{-3},$  around 1900 iterations before the error falls below $10^{-4}$, and 13800 iterations before the error falls below  $10^{-5}.$ The data suggests that the number of iterations needed to reduce the error to $10^{-n-1}$ is approximately $7.4$ times the number of iterations needed to achieve an error of $10^{-n}.$ So it could take over 100,000 iterations to get an error of less than $10^{-6}.$
+Consider the question of minimising the function $f(x) = x^4$ using Gradient Descent, starting at $x = 0.5$ with $\alpha = 0.2.$ The minimum of $f(x)$ is of course at $x=0,$ so the absolute value of the iterates $x_n$ is a measure of the error. Figure \ref{fig:grad_descent} plots the log errors for the first 20,000  iterations, It is readily apparent that the algorithm is converging sublinearly and that the rate of convergence is absolutely and utterly woeful. It takes around 250 iterations before the error falls below $10^{-3},$  around 1900 iterations before the error falls below $10^{-4}$, and 13800 iterations before the error falls below  $10^{-5}.$ The data suggests that the number of iterations needed to reduce the error to $10^{-n-1}$ is approximately $7.4$ times the number of iterations needed to achieve an error of $10^{-n}.$ It could thus take over 100,000 iterations to get an error of less than $10^{-6}.$
 
 
 
@@ -70,7 +70,7 @@ Chord Methods attempt to approximate the Hessian matrix by using a constant matr
 
 The case $\mathbf{Q} = - \alpha\mathbf{I}$ with $\alpha>0$ corresponds to Gradient Descent.
 
-The Chord Method might look crude, but it is useful.  In some cases for example, it is faster to compute the Hessian once at start and stick with it throughout the entire algorithm than to constantly recompute it so that $\mathbf{Q} = \mathbf{H}_0.$.\cite{kelley1995iterative} The Chord Method is  especially likely to be faster than the Newton-Raphson Method  if evaluating the gradient is cheap compared to the cost of computing the Hessian. 
+The Chord Method might look crude, but it is useful.  In some cases for example, it is faster to compute the Hessian once at the start and stick with it throughout the entire algorithm than to constantly recompute it so that $\mathbf{Q} = \mathbf{H}_0$.\cite{kelley1995iterative} The Chord Method is  especially likely to be faster than the Newton-Raphson Method  if evaluating the gradient is cheap compared to the cost of computing the Hessian. 
 
 It is important that the matrix $-\mathbf{Q}$ be positive definite. The derivative of $f(x_n)$ in the direction $\mathbf{Qg}_n$ is proportional to $\mathbf{g_n^\top Qg_n}$ since:
 
@@ -82,7 +82,7 @@ Ensuring that $\mathbf{x^\top Qx} < 0, \forall \mathbf{x} \neq \mathbf{0}$ means
 
 
 
-It can be shown that the Chord Method converges linearly,\cite{kelley1995iterative} an informal argument will be provided here which closely follows the presentation in \cite{isaacson2012analysis}. Let $\mathbf{g}(\mathbf{x})$ denote the mapping $\mathbf{g}(\mathbf{x})  = \mathbf{x} + \mathbf{Q}\nabla f(\mathbf{x}).$ Note that $\mathbf{x}_{n+1} = \mathbf{g}(\mathbf{x}_n).$ Suppose the sequence $\mathbf{x}_n$ converges, to determine how quickly the converge occurs, perform a Taylor expansion about the limit $\mathbf{x}^*:$
+It can be shown that the Chord Method converges linearly,\cite{kelley1995iterative} an informal argument will be provided here which closely follows the presentation in \cite{isaacson2012analysis}. Let $\mathbf{g}(\mathbf{x})$ denote the mapping $\mathbf{g}(\mathbf{x})  = \mathbf{x} + \mathbf{Q}\nabla f(\mathbf{x})$ so that $\mathbf{x}_{n+1} = \mathbf{g}(\mathbf{x}_n).$ Suppose the sequence $\mathbf{x}_n$ converges, to determine how quickly the converge occurs, perform a Taylor expansion about the limit $\mathbf{x}^*:$
 
 \begin{align*} \label{eqn:chord_convergence}
 \mathbf{x}_{n+1} - \mathbf{x^*} &= \mathbf{g'}(\mathbf{x^*})(\mathbf{x}_{n} - \mathbf{x^*})\\
@@ -145,15 +145,15 @@ In one dimension, finding a $B_n$ that satisfies the Secant Condition is equival
 
 When the sequence $x_n$ converges, the denominator in the finite difference approximation converges to zero as well, so the that the rate of convergence is faster than for a finite difference approximimation which uses a fixed denominator $h.$\cite{kelley1995iterative}
 
-For multivariate problems, the second derivative is in the form of a matrix, so there is not enough information to construct a full approximation afresh on each iteration. Rather the approximate Hessian is partially updated using one of several approaches. 
+For multivariate problems, the second derivative is in the form of a matrix, so there is not enough information to construct a full approximation afresh on each iteration. Rather, the approximate Hessian is partially updated using one of several approaches. 
 
-R's \texttt{optim} routine uses the BFGS method to compute the next approximate Hessian\cite{rlanguage}. BFGS finds the symmetric matrix $\mathbf{B}_{n+1}$ satisfying the secant condition such that the inverse $\mathbf{B}^{-1}_{n+1}$ minimises a weighted Frobenius distance  between itself and the previous inverse $\mathbf{B}^{-1}_{n}.$ A low memory variant of BFGS known as L-BFGS is also available in R's standard libary\cite{rlanguage, nocedalnumerical}.
+R's \texttt{optim} routine uses the BFGS method to compute the next approximate Hessian. \cite{rlanguage} BFGS finds the symmetric matrix $\mathbf{B}_{n+1}$ satisfying the secant condition such that the inverse $\mathbf{B}^{-1}_{n+1}$ minimises a weighted Frobenius distance  between itself and the previous inverse $\mathbf{B}^{-1}_{n}.$ A low memory variant of BFGS known as L-BFGS is also available in R's standard libary\cite{rlanguage, nocedalnumerical}.
 
-Quasi-Newton Methods converge superlinearly, but are not quadratically convergent like Newton's Method. \cite{nocedalnumerical} They have the advantage however of avoiding the cost of computing Hessian Matrices, so they can prove faster than Newton's Method in practice despite more iterations being needed to achieve a given degree of accuracy.
+Quasi-Newton Methods converge superlinearly, but are not quadratically convergent like Newton's Method.\cite{nocedalnumerical} They have the advantage however of avoiding the cost of computing Hessian Matrices, so they can prove faster than Newton's Method in practice despite more iterations being needed to achieve a given degree of accuracy.
 
 \paragraph{Finite Differences:} In several places in this thesis  finite difference methods are used to approximate derivatives.\footnote{Refer to \cite{nocedalnumerical, leveque2007finite, kelley1995iterative} for more detail.}
 
-For example, one might wish to use finite difference methods to approximate the elements of $\mathbf{H}_n.$ There are many different ways  of computing finite difference approximations. A straightforward scheme to approximated $\mathbf{H}_n$ that only requires additional function evalutions  is given by:
+For example, one might wish to use finite difference methods to approximate the elements of $\mathbf{H}_n.$ There are many different ways  of computing finite difference approximations. For example, a straightforward scheme to approximated $\mathbf{H}_n$ that only requires two additional function evalutions  is given by:
 
 \begin{align*}
     [\mathbf{H}_n]_{ij} \approx  \frac{f(\mathbf{x}_n + h\mathbf{e}_i) + f(\mathbf{x}_n + h\mathbf{e}_j) - f(\mathbf{x}_n - h\mathbf{e}_i)  - f(\mathbf{x}_n - h\mathbf{e}_j)}{4h^2}
@@ -264,7 +264,7 @@ Restated in terms of $\phi(\alpha),$ the Wolfe conditions are:
    |\phi'(\alpha_n)| &\leq c_2|\phi'(0)| \tag{\textbf{W2\textquotesingle}}
 \end{align*}
 
-The constants $c1$ and $c2$ are required to satisfy $0 < c_1 < c_2.$ \cite{nocedalnumerical}
+The constants $c_1$ and $c_2$ are required to satisfy $0 < c_1 < c_2 < 1.$\cite{nocedalnumerical}
 
 The first condition ensures sufficient decrease in the objective function, the second ensures a sufficent decrease in the gradient between steps. Intuitively, the bigger $|\phi'(0)|$ is, the bigger the decrease in the objective function demanded and the smaller the decrease in slope  demanded, and vice versa.
 
@@ -303,11 +303,11 @@ The weakness of the finite difference approach discussed in Section \ref{sec:hig
 
 So long as $\bar{\epsilon}(h)/h \rightarrow 0$ as $h \rightarrow 0,$ the error in approximating the derivative goes to zero as well. The method might converge properly in this case.
 
-The implicit filtering algorithm is designed for optimising problems where the exact value of the objective function $f(\cdot$) is unavailable. Instead, it is assumed that there is  parameter $h$ which controls the degree of the accuarcy. It is further assumed that the lower $h,$ the lower the error. It is usually the case that getting a higher degree of accuaracy means a higher run time.
+The Implicit Filtering methodology is designed for optimising problems where the exact value of the objective function $f(\cdot$) is unavailable. Instead, it is assumed that there is  parameter $h$ which controls the degree of accuracy. It is further assumed that the lower $h,$ the lower the error. It is usually the case that getting a higher degree of accuracy implies a higher computational running time.
 
 For example, if the objective function is of the form $\mathbb{E}[f(\theta)]$ and the expectation is being  approximated using a Monte Carlo method, it would be reasonable to set $h = 1/\sqrt{N}$ where $N$ is the number of samples used so that the standard deviation  is proportional to $h.$ On the other hand if the expectation were being approximated by numerical integration, it would be reasonable to set  $h$ to the step size used. 
 
-\section{Description of the Algorithm}Let $f(\mathbf{x};h)$ denote the result of approximately evauluating $f(\cdot)$ at the point $\mathbf{x}$ with precision level $h$ and  $\epsilon(\mathbf{x};h)$ be the associated error. To generate a search direction, Implicit Filtering uses an approximation $\nabla_h f(\mathbf{x})$ to the gradient $\nabla f(\mathbf{x})$ that depends on $h.$ The simplest such approximation employs forward differencing to approximate the gradient:
+\section{Description of the Algorithm}Let $f(\mathbf{x};h)$ denote the result of approximately evauluating $f(\cdot)$ at the point $\mathbf{x}$ with precision level $h$ and let  $\epsilon(\mathbf{x};h)$ be the associated error. To generate a search direction, Implicit Filtering uses an approximation $\nabla_h f(\mathbf{x})$ to the gradient $\nabla f(\mathbf{x})$ that depends on $h.$ The simplest such approximation employs forward differencing to approximate the gradient:
 
 \begin{equation}\label{eqn:forward_difference}
   [\nabla_h f(\mathbf{x})]_i  = \frac{f(\mathbf{x} + h\mathbf{e}_i;h) - f(\mathbf{x};h)}{h}
@@ -319,7 +319,7 @@ In the event of any of the following occuring, it is deemed that more precision 
 
 \begin{itemize}
 
-\item A point achieving sufficient reduction cannot be found after a maximum number of  iterations.
+\item A point achieving sufficient reduction cannot be found after a prespecified maximum number of  iterations.
 
 \item A clear descent direction cannot be identified.
 
@@ -332,9 +332,9 @@ If any of these conditions hold, the    value of $h$ is shrunk so that $h \lefta
 The algorithm terminates when the change in the value of the objective function produced by  reducing the value of $h$ and running again is within a chosen tolerance.
 
 
-The sequence of approximate values returned by Implicit Filtering is monotone decreasing so that if $m < n$ then $f(\mathbf{x}_m ;h_1) \geq f(\mathbf{x}_n;h_2),$ where $h_1$ is the precision used with $\mathbf{x}_m$ and $h_2$ is the precision used with $\mathbf{x}_n.$ Bear in mind  however that since Implicit Filtering only ever approximately evaluates the objective function, it is not necessarily the case that $m < n$ implies $f(\mathbf{x}_m) \geq f(\mathbf{x}_n).$
+The sequence of approximate values returned by Implicit Filtering is monotone decreasing so that if $m < n$ then $f(\mathbf{x}_m ;h_1) \geq f(\mathbf{x}_n;h_2),$ where $h_1$ is the precision used with $\mathbf{x}_m$ and $h_2$ is the precision used with $\mathbf{x}_n.$ Bear in mind  however that since Implicit Filtering only ever approximately evaluates the objective function, it is not necessarily the case that $m < n$ implies that $f(\mathbf{x}_m) \leq f(\mathbf{x}_n).$
 
-A variation of the Gauss-Newton algoritm of the Implicit Filtering has been developed, and was used to fit parameters to an harmonic oscillator of the form $y'' + cy' + ku = 0$ where the initial conditions are known and $c$ and $k$ must be estimated.\cite{kelley2001implicit}
+An variation of the Gauss-Newton algorithm based on the Implicit Filtering has been developed, and was used to fit parameters to an harmonic oscillator of the form $y'' + cy' + ku = 0,$ where the initial conditions are known and $c$ and $k$ must be estimated.\cite{kelley2001implicit}
 
 \section{Convergence Theory}For Implicit filtering to converge, the error needs to decrease sufficiently rapidly relative to sequence of precision parameters $h_n.$ The specific condtions depend on the specific variation of Implicit Filtering used.\cite{nocedalnumerical, kelly2002filtering, kelley2011implicit, kelley2001implicit} The convergence criteria are similar to:
 
@@ -342,7 +342,7 @@ A variation of the Gauss-Newton algoritm of the Implicit Filtering has been deve
    \lim_{n \rightarrow \infty} \left[\frac{\epsilon(\mathbf{x};h_n)}{h_n} + h_n \right]= 0
 \end{equation}
 
-In a statistical context, being too naive and failing to treat the convergence criteria with respect risks a failure of convergence. Consider again the question of minimising $\mathbb{E}[f(\theta)].$ For the Monte Carlo method that sets $h_n = 1/\sqrt{n},$ the associated error is approximately equal to $\sigma/\sqrt{n}$ for some $\sigma >0,$ Substituting this into (\ref{eqn:implicit_filtering_convergence_criterion}) gives that 
+In a Statistical context, being too naive and failing to treat the convergence criteria with respect risks a failure of convergence. Consider again the question of minimising $\mathbb{E}[f(\theta)].$ For the Monte Carlo method that sets $h_n = 1/\sqrt{n},$ the associated error is approximately equal to $\sigma/\sqrt{n}$ for some $\sigma >0,$ Substituting this into (\ref{eqn:implicit_filtering_convergence_criterion}) gives that:
 
 \begin{align*}
      \lim_{n \rightarrow \infty} \left[\frac{\epsilon(\mathbf{x};h_n)}{h_n} + h_n \right] &=  \lim_{n \rightarrow \infty} \left[\frac{\left(\frac{\sigma}{\sqrt{n}}\right)}{\left(\frac{1}{\sqrt{n}}\right)}  + \frac{1}{\sqrt{n}} \right]\\
