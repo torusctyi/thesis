@@ -2,7 +2,7 @@
 
 \chapter{Profiling Non-Linear Regression Models With the Parameter Cascade}
 
-In this chapter we will discuss regression models that can be separated into an \emph{inner problem} where one attempts to find the best fit given a choice of parameters, and a \emph{middle problem} where one attempts to in turn find the optimal choice of parameters. First a simple nonlinear regression model will be discussed  as an example to introduce the ideas used in this chapter. Then, a Parameter Cascade method for fitting linear ODEs is then devised. Finally, the Parameter Cascade approach will be used to fit PDEs.
+In this chapter we will discuss regression models that can be separated into an \emph{inner problem} where one attempts to find the best fit given a choice of parameters, and a \emph{middle problem} where one attempts to in turn find the optimal choice of parameters. First a simple nonlinear regression model will be discussed  as an example to introduce the ideas used in this chapter. Then, a Parameter Cascade method for fitting linear ODEs is devised. Finally, the Parameter Cascade approach will be used to fit PDEs.
 
 The approach used in this chapter here is related  to an ODE fitting methodology developed by Ramsay et al.\cite{ramsay2017dynamic, hooker2016collocinfer} The authors attempt to fit a parameterised ODE $\mathbf{x}'(t) = \mathbf{f}(\mathbf{x}(t), t| \theta)$ using a penalised regression model of the form:
 
@@ -18,7 +18,7 @@ The first term measures fit to the data, and the second measures fidelity to the
 
 Where $\hat{\mathbf{x}}(t_i|\theta, \lambda)$ is the minimiser of  $PENSSE(\mathbf{x}(t); \theta,\lambda)$ for fixed values of $\theta$ and $\lambda.$
 
-The assumption is made that $\mathbf{x}(t)$ can be expanded as a linear combination of basis functions, and the authors then proceed to conduct a traditional parameter cascade.\footnote{Not \emph{entirely} traditional. To perfrom a fit, derivatives of $\mathbf{f}(\cdot)$ with respect to $\mathbf{\theta}$ and $\mathbf{x}$ are required. \texttt{CollocInfer} uses finite differencing to estimate these derivatives if no information is provided by the user.} A sophisticated package called \texttt{CollocInfer} has been developed to implement the method in a similar fashion as \texttt{Data2LD}.
+The assumption is made that $\mathbf{x}(t)$ can be expanded as a linear combination of basis functions, and the authors then proceed to conduct a traditional parameter cascade.\footnote{Not \emph{entirely} traditional. To perform a fit, derivatives of $\mathbf{f}(\cdot)$ with respect to $\mathbf{\theta}$ and $\mathbf{x}$ are required. \texttt{CollocInfer} uses finite differencing to estimate these derivatives if no information is provided by the user.} A sophisticated package called \texttt{CollocInfer} has been developed to implement the method in a similar fashion as \texttt{Data2LD}.
 
 
 The approach used in this chapter is more in the spirit of symmetry methods used to solve differential equations as described in \cite{hydon2000symmetry}. The aim is to exploit structure in the specific dynamical system being modelled so that the problem of fitting the system is turned into a transformation model of some kind, which can then be fitted using a hierarchial approach. 
@@ -123,7 +123,7 @@ As discussed in Chapter 2, a similar framework can be used to perform estimation
 
 
 \subsection{The Transport Equation}
-In Chapter 2, the Transport equation was introduced. The Transport Equation is defined by:
+In Section \ref{sec:pde_fitting_strategy} the Transport Equation was introduced and a fitting strategy was sketched out. Recall that the Transport Equation is defined by:
 
 \begin{equation}
 \begin{cases}
@@ -132,9 +132,7 @@ In Chapter 2, the Transport equation was introduced. The Transport Equation is d
 \end{cases}
 \end{equation}
 
-In Chapter 2, a middle objective function $H(\beta)$ to estimate the parameter $\beta$ was defined, but no effort was made to actually fit the model. 
-
-Recall that $H(\beta)$ was defined as the sum of squares:
+In Chapter 2, a middle objective function $H(\beta)$ to estimate the parameter $\beta$ was defined, but no effort was made to actually fit the model. The objective function $H(\beta)$ was defined as the sum of squares:
 
 \[
     H(\beta) = \sum [y_i - \hat{f}(x_i - \beta t_i)]^2
@@ -157,7 +155,7 @@ Estimating $f(x)$ is harder than estimating $\beta$ as can be seen in Figure \re
 \begin{figure}
 \centering
 \includegraphics[height=9cm]{/home/padraig/latex/nonlinear_regression/transport_equation_profile.pdf}
-\caption{Plot of outer optimisation for the transport equation. Blue line denotes original parameter, red line denotes fitted estimate} \label{fig:transport_profile}
+\caption{Plot of middle optimisation for the transport equation. Blue line denotes original parameter, red line denotes fitted estimate} \label{fig:transport_profile}
 \end{figure}
 
 \begin{figure}

@@ -75,6 +75,12 @@ Peter~E Hydon and Peter~Ellsworth Hydon.
   guide}, volume~22.
 \newblock Cambridge University Press, 2000.
 
+\bibitem{iacus2009simulation}
+Stefano~M Iacus.
+\newblock {\em Simulation and inference for stochastic differential equations:
+  with R examples}.
+\newblock Springer Science \& Business Media, 2009.
+
 \bibitem{isaacson2012analysis}
 Eugene Isaacson and Herbert~Bishop Keller.
 \newblock {\em Analysis of numerical methods}.
@@ -109,6 +115,12 @@ Jack Kiefer.
 \newblock Sequential minimax search for a maximum.
 \newblock {\em Proceedings of the American mathematical society},
   4(3):502--506, 1953.
+
+\bibitem{kloeden2013numerical}
+Peter~E Kloeden and Eckhard Platen.
+\newblock {\em Numerical solution of stochastic differential equations},
+  volume~23.
+\newblock Springer Science \& Business Media, 2013.
 
 \bibitem{lange2004optimization}
 Kenneth Lange.
@@ -204,6 +216,11 @@ Walter Rudin et~al.
 \newblock {\em Principles of mathematical analysis}, volume~3.
 \newblock McGraw-hill New York, 1964.
 
+\bibitem{schilling2017measures}
+Ren{\'e}~L Schilling.
+\newblock {\em Measures, integrals and martingales}.
+\newblock Cambridge University Press, 2017.
+
 \bibitem{schumaker2007spline}
 Larry Schumaker.
 \newblock {\em Spline functions: basic theory}.
@@ -221,10 +238,20 @@ Christopher~G Small.
 \newblock {\em International Statistical Review/Revue Internationale de
   Statistique}, pages 263--277, 1990.
 
+\bibitem{soetaert2012solving}
+Karline Soetaert, Jeff Cash, and Francesca Mazzia.
+\newblock {\em Solving differential equations in R}.
+\newblock Springer Science \& Business Media, 2012.
+
 \bibitem{desolve}
 Karline Soetaert, Thomas Petzoldt, and R.~Woodrow Setzer.
 \newblock Solving differential equations in {R}: Package de{S}olve.
 \newblock {\em Journal of Statistical Software}, 33(9):1--25, 2010.
+
+\bibitem{strauss2007partial}
+Walter~A Strauss.
+\newblock {\em Partial differential equations: An introduction}.
+\newblock John Wiley \& Sons, 2007.
 
 \bibitem{tamir1976line}
 Arie Tamir.

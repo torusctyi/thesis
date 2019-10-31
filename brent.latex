@@ -1,7 +1,7 @@
 
 \chapter{Derivative-Free Optimisation and the Parameter Cascade} \label{chap:brent}
 
-The Parameter Cascade requires the computation of derivatives perform optimisation. However, computing these can be a time-consuming and complex task. This is especially the case for the higher levels of the Parameter Cascade.\cite{cao2007parameter} In some cases the derivatives might not even exist, such as when the loss function used to measure goodness of fit is non-differentiable.
+The Parameter Cascade as presented in the previous chapter requires the computation of derivatives to perform optimisation. However, computing the necessary derivatives can be a time-consuming and complex task. This is especially the case for the higher levels of the Parameter Cascade.\cite{cao2007parameter} In some cases the derivatives might not even exist, such as when the loss function used to measure goodness of fit is non-differentiable.
 
 In this chapter, the use of derivative-free methods for fitting FDA problems is explored. Derivative-free methods are used to tackle a series of increasingly complex problems, culminating in fitting one level of the Parameter Cascade without derivatives.
 
@@ -71,7 +71,7 @@ All three approaches are governed by the same fundamental theory of approximatin
 
 On the other hand, the methods all share the same fundamental handicap as well; these methods  are not guaranteed to converge unless the starting point is close to the optimal value. Local convergence does not necessarily imply global convergence. The error terms in the quadratic approximations are all something like $(\theta-\theta_n)^3.$ If $|(\theta-\theta_n)|$ and any other error terms are small, the error in the approximation will be much smaller since it is proportional to the product of three such errors. If however the errors are  large, their product might be so large that the method fails to converge. \cite{nocedalnumerical, isaacson2012analysis, lange2010numerical}
 
-This is less academic than it might seem. Suppose one had a complicated likelihood function $L(\theta).$ Perhaps to evaluate the likelihood one must numerically integrate some kind of complex marginal distribution that depends on $\theta.$ Instead of attempting to find explicit formulae for  the score and information functions,  if one could produce a crude estimate $\hat{\theta}$ and crude estimate of the error $\hat{\sigma}_{\theta},$ then one could use successive parabolic interpolation with $\{\hat{\theta}, \hat{\theta} - 2\hat{\sigma}_{\theta},\hat{\theta} + 2\hat{\sigma}_\theta\}$ as a set of starting points. If $L(\theta)$ is in fact a well behaved smooth function, then parabolic interpolation will find the value of $\theta$ that maximises $L(\theta)$ fairly quickly. It is necessary to provide plausible starting values for $\theta$ because the quadratic model is only certain to be valid if one is already near the optimal value.
+This is less academic than it might seem. Suppose one had a complicated likelihood function $L(\theta).$ Perhaps to evaluate the likelihood one must numerically integrate a complex marginal distribution that depends on $\theta.$ Instead of attempting to find explicit formulae for  the score and information functions,  if one could produce a crude estimate $\hat{\theta}$ and crude estimate of the error $\hat{\sigma}_{\theta},$ then one could use successive parabolic interpolation with $\{\hat{\theta}, \hat{\theta} - 2\hat{\sigma}_{\theta},\hat{\theta} + 2\hat{\sigma}_\theta\}$ as a set of starting points. If $L(\theta)$ is in fact a well behaved smooth function, then parabolic interpolation will find the value of $\theta$ that maximises $L(\theta)$ fairly quickly. It is necessary to provide plausible starting values for $\theta$ because the quadratic model is only certain to be valid if one is already near the optimal value.
 
 \section{Modifying the \texttt{Data2LD.opt} Routine}
 
@@ -138,18 +138,16 @@ Neglecting the quadratic $ e_n^2$ term, and letting $M = KCf''(\theta^*),$ we ge
 
 Since $e_n \geq 0$ for all $n$ and $M >0,$ this recurrence inequality implies that $e_n \leq a_n$ for all $n,$ where $a_{n+1} = M(a_n + a_{n-1}), a_0 = e_0$ and  $a_1 = e_1.$ The method thus converges linearly (in the extended sense) provided $M$ is not too big and provided the starting position is not too far away from the optimal point.
 
-\paragraph{Comparison with the Secant Method and Successive Parabolic Interpolation:}This method only converges linearly while Success iv Parabolic interpolation and the usual secant method both converge superlinearly. A crude explanation for this behaviour is that the Secant method and Parabolic Interpolation methods both effectively use three points to construct a quadratic approximation, while this method only uses two points to construct a linear approximation. While an exact second derivative is used, the gains from this are nonetheless dwarfed by the error introduced by approximating the first derivative with two points.
+\paragraph{Comparison with the Secant Method and Successive Parabolic Interpolation:}This method only converges linearly while Successive Parabolic interpolation and the usual secant method both converge superlinearly. A crude explanation for this behaviour is that the Secant method and Parabolic Interpolation methods both effectively use three points to construct a quadratic approximation, while this method only uses two points to construct a linear approximation. While an exact second derivative is used, the gains from this are nonetheless dwarfed by the error introduced by approximating the first derivative with two points.
 
 For the Secant Method, one finds that $e_{n+1} \leq \bar{M}e_{n}e_{n-1}.$ For successive parabolic interpolation, one ends up with a recurrence relation of the form $e_{n+1} \leq \tilde{M}[e_{n}e_{n-1} + e_{n}e_{n-2} + e_{n-1}e_{n-2}]$ It can be shown that these inequalities become equalities as the method converges, and this implies superlinear convergence subject to some mild technical conditions. \cite{vandebogart2017method}
 
 \paragraph{Comparing the Modfied Method with the Original Method:}The fitting algorithm used by \texttt{Data2LD.opt} is hierarchial because there are two levels of optimisation, an outer level that computes search directions, and an inner level that conducts line searches. This makes charting the course of the method a little tricky. The easiest approach is to  simply reproduce verbatim the output of \texttt{Data2LD.opt}. 
 
-Below the output for the original method and the modified method when applied to fitting the Melanoma data are presented.  The workings of the two different levels can be seen. At the top level, \texttt{Data2LD.opt} computes the value of the objective function and the magnitude of the gradient used for the search direction. It then reports the values of the objective function and directional derivatives along the search direction computed in the course of conducting a line search. For the modified method, the computed gradients and directions are approximate of course.
+Below the output for the original method and the modified method when applied to fitting the Melanoma data are presented.  The workings of the two different levels can be seen. At the top level, \texttt{Data2LD.opt} computes the value of the objective function and the magnitude of the gradient used for the search direction. It then reports the values of the objective function and directional derivatives along the search direction computed in the course of conducting a line search. For the modified method, the computed gradients and directions are approximate.
 
-Both methods achieve a similar value of the objective function, but the estimated values of $\theta$ differ somewhat. The modified method is clearly much slower than the original, which is congruent with our theoretical analysis. The associated values of the objective function for the two estimates are so similar it is difficult to conclusively say which computed estimate is better, the fact that both are negative suggests neither should be taken too seriously as valid.
+Both methods achieve a similar value of the objective function, but the estimated values of $\theta$ differ somewhat. The modified method is clearly much slower than the original, which is congruent with our theoretical analysis. The associated values of the objective function for the two estimates are so similar it is difficult to conclusively say which computed estimate is better.
 
-
-\newpage
 \paragraph{Newton Method with Gradient Line Search}
 \begin{verbatim}
 Iter.    Criterion   Grad Length
@@ -165,7 +163,7 @@ Iter.    Criterion   Grad Length
 Convergence reached.
 
 \end{verbatim}
-\newpage
+
 \paragraph{Newton Method with Secant Approximation To First Derivative}
 
 
@@ -231,13 +229,13 @@ Brent's Method is a hybrid of successive parabolic interpolation and golden-sect
 The hybrid method is robust as a result of the golden section steps, and the parabolic steps ensure it performs well when applied to smooth functions along with a decent starting value.
 
 \section{Estimation Of Parameters For A Standard Cauchy Distribution Using Brent's Method} \label{sec:cauchy_estimation}
-To illustrate how Brent's metthod is employed in practice it will be used on a straightforwards estimation problem first. Consider the ques ion of fitting a Cauchy distribution to some data. Given $n$ observations $x_1,\dots, x_n$ from an unknown  Cauchy distribution, the likelihood function is given by:
+To illustrate how Brent's metthod is employed in practice it will be used on a straightforwards estimation problem first. Consider the question of fitting a Cauchy distribution to some data. Given $n$ observations $x_1,\dots, x_n$ from an unknown  Cauchy distribution, the likelihood function is given by:
 
 \[
 	L(\mu, \sigma) = \prod_{i=1}^n\frac{1}{\pi\sigma\left[1 + \left(\frac{x - \mu}{\sigma}\right)^2\right]}
 \]
 
-Attempting to maximise this likelihood by the usual method entails solving a fairly complex system of rational equations in $\mu$ and $\sigma.$ Our purpose is to demonstrate that Brent's Method can tackle this problem without much difficulty.
+Attempting to maximise this likelihood by the usual method entails solving a fairly complex system of equations in $\mu$ and $\sigma.$ Our purpose is to demonstrate that Brent's Method can tackle this problem without much difficulty.
 
 Brent's Method can only optimise a function in one dimension at a time, so it is necessary to attempt to optimise for $\mu$ and $\sigma$ separately. The profile log-likelihood of $\sigma$ is computed:
 
@@ -245,7 +243,7 @@ Brent's Method can only optimise a function in one dimension at a time, so it is
 	\ell(\sigma) = \sup_\mu \log(L(\mu, \sigma))
 \]
 
-R can evaluate $\ell(\sigma)$ straightforwardly by using Brent's method to optimise $L(\mu, \sigma)$ with respect to  $\mu$ and holding $\sigma$ constant. The function $\ell(\sigma)$ can then be in turn optimised with respect to $\sigma$ to find the optimal value of $\sigma.$ This procedure is illustrated in Figure \ref{fig:cauchy_likelihood}.
+R can evaluate $\ell(\sigma)$ straightforwardly by using Brent's method to optimise $L(\mu, \sigma)$ with respect to  $\mu$ and holding $\sigma$ constant. The function $\ell(\sigma)$ can then in turn be  optimised to find the optimal value of $\sigma.$ This procedure is illustrated in Figure \ref{fig:cauchy_likelihood}.
 
 One subtlety with optimising a Cauchy likelihood is that the likelihood function can have multiple local maxima since the likelihood function is the ratio of two multivariate polynomials in $\mu$ and $\sigma.$ To ensure that the algorithm was sufficiently close to the MLE, the median was used as an initial estimate of $\mu,$ and half the interquartile range was used as an initial estimate for $\sigma.$ Given these somewhat crude estimates $\tilde{\mu}$ and $\tilde{\sigma},$ the the standard error of the median $\sigma_{\tilde{\mu}}$ is approximately given by:
 
@@ -255,9 +253,9 @@ One subtlety with optimising a Cauchy likelihood is that the likelihood function
 
 Where $f(x; \mu, \sigma)$ is the Cauchy density function with location parameter $\mu$ and scale parameter $\sigma.$ The values $\tilde{\mu} \pm 2\hat{\sigma}_{\tilde{\mu}}$ are then used to provide the initial lower and upper bounds for the optimiser. The aim is to  construct a confidence interval that is highly likely to contain the MLE for $\mu$ (rather than the actual true parameter), but isn't so wide that the interval is in danger of containing multiple local maxima for the likelihood.
 
-Not only can the likelihood be maximised without derivatives, but asymptotic inference can be done without derivatives as well. Given  the score function and the Fisher  information at the maximum likelihood estimates, it is possible in principle to compute an approximate confidence interval for $\sigma$ and $\mu$\cite{pawitan2001all}. Instead of analytic methods, one can use finite differences to approximately compute the necessary derivatives to the desired degree of accuracy\cite{leveque2007finite, fornberg1988generation}. This was successful at producing a valid approximation for the profile likelihood, shown as a red dotted parabola in Figure \ref{fig:cauchy_likelihood}. 
+Not only can the likelihood be maximised without derivatives, but asymptotic inference can be done without derivatives as well. Given  the score function and the Fisher  information at the maximum likelihood estimates, it is possible to compute an approximate confidence interval for $\sigma$ and $\mu.$\cite{pawitan2001all} Instead of analytic methods, one can use finite differences to approximately compute the necessary derivatives to the desired degree of accuracy\cite{leveque2007finite, fornberg1988generation}. This was successful at producing a valid approximation for the profile likelihood, shown as a red dotted parabola in Figure \ref{fig:cauchy_likelihood}. 
 
-It is thus possible to compute a confidence interval using the Score test.  The test statistic $S(\sigma)^2/I(\sigma)$ could be accurately approximated using finite differences. One takes the value of $\sigma$ for which the test statistic is less than or equal to the appropriate critical value  from a chi-squared distribution. By inspecting the plot in Figure \ref{fig:profile_score_statistic} and then solving for $\sigma$, an approximate confidence interval for $\sigma$ can be computed. It is approximately the case that  $\sigma$ lies in $(0, 2.20)$ with 95 percent confidence. 
+It is thus possible to compute a confidence interval using the Score test.  The test statistic $S(\sigma)^2/I(\sigma)$ could be accurately approximated using finite differences. One takes the value of $\sigma$ for which the test statistic is less than or equal to the appropriate critical value  from a chi-squared distribution. By inspecting the plot in Figure \ref{fig:profile_score_statistic} and then solving for $\sigma$, an approximate confidence interval for $\sigma$ can be computed such that  $\sigma$ lies in $(0, 2.20)$ with 95 percent confidence. 
 
 An important assumption underpinning such asymptotic confidence  intervals is that the two term quadratic Taylor expansion based on the score and information functions is valid over the range of interest. This is not necessarily the case here as can bee seen in Figure \ref{fig:profile_score_statistic}. There is a  spike in the score statistic on the right caused by the Fisher information changing sign at approximately $\sigma = 2.35$.  This indicates that the confidence interval might be wider than the range of for which a quadratic approximation around the MLE is valid, and should perhaps be treated with some scepticism.
 
@@ -306,7 +304,7 @@ The \verb|desolve| package \cite{desolve} was used to numerically  find the valu
    SAE(\beta) = \sum_{i=1}^K \sum_{j=1}^N |y(t_{i};\beta) - y_{ij}|
 \]
 
-Here $y(t;\beta)$ denotes the solution of Equation \ref{eqn:nonlinear_ode} for a given choice of $\beta.$ To evaluate $SAE(\beta)$ at a given value of $\beta,$ it is necessary to use \verb|desolve| to numerically find the values of $y(t_{i}|\beta).$ Brent's method was used to find the number $\hat{\beta}$ that minimised $SAE(\beta).$  Figure \ref{fig:cauchy_ode} shows the original curve, the generated points, the realisation of $SAE(\beta),$ and the fitted curve generated by $\hat{\beta}$
+Here $y(t;\beta)$ denotes the solution of Equation \ref{eqn:nonlinear_ode} for a given choice of $\beta.$ To evaluate $SAE(\beta)$ at a given value of $\beta,$ it is necessary to use \verb|desolve| to numerically find the values of $y(t_{i}|\beta).$ Brent's method was used to find the number $\hat{\beta}$ that minimised $SAE(\beta).$  Figure \ref{fig:cauchy_ode} shows the original curve, the generated points, the realisation of $SAE(\beta),$ and the fitted curve generated by $\hat{\beta}.$ Both the  original curve and the original value of $\beta$ are recovered with reasonable accuracy.
 
 \begin{figure}
 \centering

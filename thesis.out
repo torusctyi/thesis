@@ -1,0 +1,72 @@
+\BOOKMARK [0][-]{chapter.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.1.1}{Preliminaries}{chapter.1}% 2
+\BOOKMARK [2][-]{subsection.1.1.1}{Functional Data Analysis}{section.1.1}% 3
+\BOOKMARK [1][-]{section.1.2}{Penalised Regression}{chapter.1}% 4
+\BOOKMARK [2][-]{subsection.1.2.1}{Smoothing Splines}{section.1.2}% 5
+\BOOKMARK [2][-]{subsection.1.2.2}{Piecewise Trigonometric Interpolation}{section.1.2}% 6
+\BOOKMARK [1][-]{section.1.3}{Finite Dimensionalisation: the General Case}{chapter.1}% 7
+\BOOKMARK [2][-]{subsection.1.3.1}{FDA With A Quadratic Basis}{section.1.3}% 8
+\BOOKMARK [1][-]{section.1.4}{The FDA Package}{chapter.1}% 9
+\BOOKMARK [1][-]{section.1.5}{The Data2LD Package}{chapter.1}% 10
+\BOOKMARK [1][-]{section.1.6}{Modelling the Reflux Data: A Parametric Approach vs Data2LD}{chapter.1}% 11
+\BOOKMARK [2][-]{subsection.1.6.1}{Parametric Approach}{section.1.6}% 12
+\BOOKMARK [2][-]{subsection.1.6.2}{Fitting the Reflux Data with Data2LD}{section.1.6}% 13
+\BOOKMARK [1][-]{section.1.7}{Rates Of Convergence}{chapter.1}% 14
+\BOOKMARK [1][-]{section.1.8}{Overview of Appendices}{chapter.1}% 15
+\BOOKMARK [0][-]{chapter.2}{Hierarchical Estimation and the Parameter Cascade}{}% 16
+\BOOKMARK [1][-]{section.2.1}{Fitting the Reflux Data Numerically Using a Collocation Method}{chapter.2}% 17
+\BOOKMARK [1][-]{section.2.2}{Fitting the Reflux Data Semi-Parametrically}{chapter.2}% 18
+\BOOKMARK [1][-]{section.2.3}{The Two-Stage Parameter Cascade}{chapter.2}% 19
+\BOOKMARK [1][-]{section.2.4}{The Three-Stage Parameter Cascade}{chapter.2}% 20
+\BOOKMARK [1][-]{section.2.5}{Investigating the Data2LD Package}{chapter.2}% 21
+\BOOKMARK [2][-]{subsection.2.5.1}{How Data2LD Estimates Parameters}{section.2.5}% 22
+\BOOKMARK [1][-]{section.2.6}{Hierarchical fitting of a Partial Differential Equation}{chapter.2}% 23
+\BOOKMARK [0][-]{chapter.3}{Derivative-Free Optimisation and the Parameter Cascade}{}% 24
+\BOOKMARK [1][-]{section.3.1}{Overview of Quadratic Optimisation Methods}{chapter.3}% 25
+\BOOKMARK [2][-]{subsection.3.1.1}{Newton's Method}{section.3.1}% 26
+\BOOKMARK [2][-]{subsection.3.1.2}{Secant Method}{section.3.1}% 27
+\BOOKMARK [2][-]{subsection.3.1.3}{Successive Parabolic Interpolation}{section.3.1}% 28
+\BOOKMARK [2][-]{subsection.3.1.4}{Discussion}{section.3.1}% 29
+\BOOKMARK [1][-]{section.3.2}{Modifying the Data2LD.opt Routine}{chapter.3}% 30
+\BOOKMARK [1][-]{section.3.3}{Golden-Section Search}{chapter.3}% 31
+\BOOKMARK [1][-]{section.3.4}{Brent's Method}{chapter.3}% 32
+\BOOKMARK [1][-]{section.3.5}{Estimation Of Parameters For A Standard Cauchy Distribution Using Brent's Method}{chapter.3}% 33
+\BOOKMARK [1][-]{section.3.6}{Robust ODE Parameter Estimation}{chapter.3}% 34
+\BOOKMARK [1][-]{section.3.7}{The Parameter Cascade and Brent's Method}{chapter.3}% 35
+\BOOKMARK [0][-]{chapter.4}{A Two Level L1 Parameter Cascade Using the MM Algorithm.}{}% 36
+\BOOKMARK [1][-]{section.4.1}{L1 Estimation for the Inner Problem}{chapter.4}% 37
+\BOOKMARK [2][-]{subsection.4.1.1}{An MM Algorithm For Computing the Median}{section.4.1}% 38
+\BOOKMARK [2][-]{subsection.4.1.2}{Penalised L1 Fitting}{section.4.1}% 39
+\BOOKMARK [2][-]{subsection.4.1.3}{Discussion}{section.4.1}% 40
+\BOOKMARK [2][-]{subsection.4.1.4}{Testing the Algorithm on the Melanoma Data}{section.4.1}% 41
+\BOOKMARK [1][-]{section.4.2}{The Two Level Parameter Cascade with L1 Norm}{chapter.4}% 42
+\BOOKMARK [1][-]{section.4.3}{Accelerating The Rate of Convergence}{chapter.4}% 43
+\BOOKMARK [2][-]{subsection.4.3.1}{Illustrative Example: Using Imputation to Fit an ANOVA Model With Missing Data}{section.4.3}% 44
+\BOOKMARK [2][-]{subsection.4.3.2}{Generalisations}{section.4.3}% 45
+\BOOKMARK [2][-]{subsection.4.3.3}{Accelerating the L1 Fitting Algorithm}{section.4.3}% 46
+\BOOKMARK [0][-]{chapter.5}{Profiling Non-Linear Regression Models With the Parameter Cascade}{}% 47
+\BOOKMARK [1][-]{section.5.1}{Fitting a Non-Linear Regression Model With the Parameter Cascade}{chapter.5}% 48
+\BOOKMARK [1][-]{section.5.2}{Fitting Linear Homogeneous ODEs Using the Parameter Cascade}{chapter.5}% 49
+\BOOKMARK [1][-]{section.5.3}{Estimation for First Order Linear PDEs}{chapter.5}% 50
+\BOOKMARK [2][-]{subsection.5.3.1}{The Transport Equation}{section.5.3}% 51
+\BOOKMARK [2][-]{subsection.5.3.2}{The Transport Equation with Space-varying Velocity}{section.5.3}% 52
+\BOOKMARK [0][-]{chapter.6}{Conclusion and Further Research}{}% 53
+\BOOKMARK [1][-]{section.6.1}{Derivative-Free versus Derivative-Based Methods}{chapter.6}% 54
+\BOOKMARK [1][-]{section.6.2}{Further Subjects for Inquiry}{chapter.6}% 55
+\BOOKMARK [1][-]{section.6.3}{Quasi-linear Differential Problems}{chapter.6}% 56
+\BOOKMARK [2][-]{subsection.6.3.1}{Inviscid Burger's Equation}{section.6.3}% 57
+\BOOKMARK [2][-]{subsection.6.3.2}{Discussion}{section.6.3}% 58
+\BOOKMARK [0][-]{section*.82}{Appendices}{}% 59
+\BOOKMARK [0][-]{Appendix.1.A}{Overview of Optimisation Methods}{}% 60
+\BOOKMARK [1][-]{section.1.A.1}{Gradient Descent and the Newton-Raphson method}{Appendix.1.A}% 61
+\BOOKMARK [1][-]{section.1.A.2}{The Chord Method}{Appendix.1.A}% 62
+\BOOKMARK [1][-]{section.1.A.3}{More Sophisticated Hessian Approximations}{Appendix.1.A}% 63
+\BOOKMARK [1][-]{section.1.A.4}{Line Search Methods}{Appendix.1.A}% 64
+\BOOKMARK [2][-]{subsection.1.A.4.1}{Wolfe Conditions}{section.1.A.4}% 65
+\BOOKMARK [2][-]{subsection.1.A.4.2}{More sophisticated Line Search Algorithms}{section.1.A.4}% 66
+\BOOKMARK [0][-]{Appendix.1.B}{Implicit Filtering}{}% 67
+\BOOKMARK [1][-]{section.1.B.1}{Description of the Algorithm}{Appendix.1.B}% 68
+\BOOKMARK [1][-]{section.1.B.2}{Convergence Theory}{Appendix.1.B}% 69
+\BOOKMARK [1][-]{section.1.B.3}{Assessment of the Method}{Appendix.1.B}% 70
+\BOOKMARK [1][-]{section.1.B.4}{Using Implicit Filtering to Fit an ODE to the Melanoma Data}{Appendix.1.B}% 71
+\BOOKMARK [0][-]{chapter*.101}{Bibliography}{}% 72
