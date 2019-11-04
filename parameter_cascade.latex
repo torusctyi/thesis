@@ -62,6 +62,8 @@ y(t) = \frac{u_0}{\beta}\left(1 - e^{\beta(t - t_0)}\right)\mathbf{1}(t-t_0)
 
 This is the same solution as was found at the start of Section \ref{sec:reflux_parametric_vs_data2ld}, except that the ODE is of the form $y' = \beta y + u_0$ for $t \geq t_0$ here instead of being of the form $y' = -\beta y + u_0$ as in Section \ref{sec:reflux_parametric_vs_data2ld}.
 
+For the sake of illustration, Figure \ref{fig:reflux_ode_arbitary} plots a solution with $\beta = -1, t_0 = 4,$ and $u(t) = 1 + 0.2*\sin(10t).$ In this situation, the constant forcing term is perturbed by high frequency, low amplitude noise. It can be seen that the solution resembles the constant case where $u(t) = u_0$ except that $y(t)$ converges to a sinusoidal function instead of a constant.
+
 Let $I$ denote the set of indices for which $t_i > t_0.$
 If $\beta$ were known, $v(t)$ could estimated by non-parameterically\footnote{There is nothing in principle stopping one from attempting to fit $v(t)$ to $y/e^{\beta t}$ using a more basic methodology such as polynomial regression, but it is difficult to concieve of circumstances where this would be a good idea. Even if $u(t)$ were assumed to be some unknown polynomial, the same would not be true of $v(t).$ } regressing 
 the values $y_i/e^{\beta t_i}$ against  $t_i$ where $i \in I.$ The forcing function $u(t)$ could then be estimated by differentiating the estimate for $v(t)$ and multiplying it by $e^{\beta t}.$
@@ -83,6 +85,13 @@ The sketch presented here fails to address two important questions: how to  to e
 
 \texttt{Data2LD} similarly employs a powerful hierarchical fitting methodology for FDA problems known as the Parameter Cascade, which will be introduced in the next section.
 
+
+\begin{figure}
+\centering
+\includegraphics[height = 12cm]{/home/padraig/latex/high_frequency_perturbation.pdf}
+\caption{A solution to the general Reflux ODE with a constant plus sinusoidal  forcing function.}
+\label{fig:reflux_ode_arbitary}
+\end{figure}
 
 \section{The Two-Stage Parameter Cascade}
 

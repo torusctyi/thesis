@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.10.17)  4 NOV 2019 11:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.10.17)  4 NOV 2019 12:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -589,122 +589,133 @@ Overfull \hbox (11.58015pt too wide) in paragraph at lines 7--7
 
 [34
 
-] [35] [36]
-</home/padraig/programming/R/latex/chapter_2/2_stage_parameter.pdf, id=234, 845
+] [35]
+</home/padraig/latex/high_frequency_perturbation.pdf, id=231, 505.89pt x 505.89
+pt>
+File: /home/padraig/latex/high_frequency_perturbation.pdf Graphic file (type pd
+f)
+<use /home/padraig/latex/high_frequency_perturbation.pdf>
+Package pdftex.def Info: /home/padraig/latex/high_frequency_perturbation.pdf  u
+sed on input line 91.
+(pdftex.def)             Requested size: 341.43785pt x 341.43306pt.
+ [36] [37 </home/padraig/latex/high_frequency_perturbation.pdf>]
+</home/padraig/programming/R/latex/chapter_2/2_stage_parameter.pdf, id=243, 845
 .01837pt x 1194.98729pt>
 File: /home/padraig/programming/R/latex/chapter_2/2_stage_parameter.pdf Graphic
  file (type pdf)
 <use /home/padraig/programming/R/latex/chapter_2/2_stage_parameter.pdf>
 Package pdftex.def Info: /home/padraig/programming/R/latex/chapter_2/2_stage_pa
-rameter.pdf  used on input line 124.
+rameter.pdf  used on input line 133.
 (pdftex.def)             Requested size: 369.88582pt x 523.07918pt.
-</home/padraig/programming/R/latex/chapter_2/2_stage_parameter_full.pdf, id=235
+
+[38]
+</home/padraig/programming/R/latex/chapter_2/2_stage_parameter_full.pdf, id=247
 , 845.01837pt x 1194.98729pt>
 File: /home/padraig/programming/R/latex/chapter_2/2_stage_parameter_full.pdf Gr
 aphic file (type pdf)
 <use /home/padraig/programming/R/latex/chapter_2/2_stage_parameter_full.pdf>
 Package pdftex.def Info: /home/padraig/programming/R/latex/chapter_2/2_stage_pa
-rameter_full.pdf  used on input line 131.
+rameter_full.pdf  used on input line 140.
 (pdftex.def)             Requested size: 369.88582pt x 523.07918pt.
- [37] [38 </home/padraig/programming/R/latex/chapter_2/2_stage_parameter.pdf>] 
-[39 </home/padraig/programming/R/latex/chapter_2/2_stage_parameter_full.pdf>] [
-40] [41]
-<data2ld_tests.pdf, id=277, 505.89pt x 505.89pt>
+ [39] [40 </home/padraig/programming/R/latex/chapter_2/2_stage_parameter.pdf>] 
+[41 </home/padraig/programming/R/latex/chapter_2/2_stage_parameter_full.pdf>] [
+42]
+<data2ld_tests.pdf, id=286, 505.89pt x 505.89pt>
 File: data2ld_tests.pdf Graphic file (type pdf)
 <use data2ld_tests.pdf>
-Package pdftex.def Info: data2ld_tests.pdf  used on input line 244.
+Package pdftex.def Info: data2ld_tests.pdf  used on input line 253.
 (pdftex.def)             Requested size: 284.53154pt x 284.52756pt.
- [42] [43 <./data2ld_tests.pdf>]
-Overfull \hbox (11.80208pt too wide) in paragraph at lines 254--254
+ [43] [44 <./data2ld_tests.pdf>]
+Overfull \hbox (11.80208pt too wide) in paragraph at lines 263--263
 []\OT1/cmr/bx/n/17.28 Hierarchical fit-ting of a Par-tial Dif-fer-en-tial Equa-
 
  []
 
-[44]) (./brent.latex [45]
+[45]) (./brent.latex [46]
 Chapter 3.
-[46
+[47
 
-] [47] [48] [49] [50] [51] [52]
-<golden_section.pdf, id=320, 318.3132pt x 341.68051pt>
+] [48] [49] [50] [51] [52] [53]
+<golden_section.pdf, id=330, 318.3132pt x 341.68051pt>
 File: golden_section.pdf Graphic file (type pdf)
 <use golden_section.pdf>
 Package pdftex.def Info: golden_section.pdf  used on input line 218.
 (pdftex.def)             Requested size: 238.57402pt x 256.0748pt.
- [53]
+ [54]
 Overfull \hbox (17.14807pt too wide) in paragraph at lines 231--231
 []\OT1/cmr/bx/n/17.28 Estimation Of Pa-ram-e-ters For a Stan-dard Cauchy
  []
 
-[54 <./golden_section.pdf>]
-<profile.pdf, id=336, 505.89pt x 505.89pt>
+[55 <./golden_section.pdf>]
+<profile.pdf, id=346, 505.89pt x 505.89pt>
 File: profile.pdf Graphic file (type pdf)
 <use profile.pdf>
 Package pdftex.def Info: profile.pdf  used on input line 265.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-<contour.pdf, id=337, 505.89pt x 505.89pt>
+<contour.pdf, id=347, 505.89pt x 505.89pt>
 File: contour.pdf Graphic file (type pdf)
 <use contour.pdf>
 Package pdftex.def Info: contour.pdf  used on input line 266.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
- [55]
-<test.pdf, id=341, 505.89pt x 505.89pt>
+ [56]
+<test.pdf, id=351, 505.89pt x 505.89pt>
 File: test.pdf Graphic file (type pdf)
 <use test.pdf>
 Package pdftex.def Info: test.pdf  used on input line 274.
 (pdftex.def)             Requested size: 284.53154pt x 284.52756pt.
- [56] [57 <./profile.pdf> <./contour.pdf>]
-[58 <./test.pdf>]
-<cauchy_fit.pdf, id=370, 505.89pt x 505.89pt>
+ [57] [58 <./profile.pdf> <./contour.pdf>]
+[59 <./test.pdf>]
+<cauchy_fit.pdf, id=380, 505.89pt x 505.89pt>
 File: cauchy_fit.pdf Graphic file (type pdf)
 <use cauchy_fit.pdf>
 Package pdftex.def Info: cauchy_fit.pdf  used on input line 311.
 (pdftex.def)             Requested size: 284.53154pt x 284.52756pt.
-<MAE.pdf, id=371, 505.89pt x 505.89pt>
+<MAE.pdf, id=381, 505.89pt x 505.89pt>
 File: MAE.pdf Graphic file (type pdf)
 <use MAE.pdf>
 Package pdftex.def Info: MAE.pdf  used on input line 312.
 (pdftex.def)             Requested size: 284.53154pt x 284.52756pt.
- [59] [60 <./cauchy_fit.pdf> <./MAE.pdf>] [61] [62]
-<mela_omega_plot.pdf, id=397, 505.89pt x 505.89pt>
+ [60] [61 <./cauchy_fit.pdf> <./MAE.pdf>] [62] [63]
+<mela_omega_plot.pdf, id=406, 505.89pt x 505.89pt>
 File: mela_omega_plot.pdf Graphic file (type pdf)
 <use mela_omega_plot.pdf>
 Package pdftex.def Info: mela_omega_plot.pdf  used on input line 391.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-<mela_lambda_plot.pdf, id=398, 505.89pt x 505.89pt>
+<mela_lambda_plot.pdf, id=407, 505.89pt x 505.89pt>
 File: mela_lambda_plot.pdf Graphic file (type pdf)
 <use mela_lambda_plot.pdf>
 Package pdftex.def Info: mela_lambda_plot.pdf  used on input line 392.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
- [63]
-[64 <./mela_omega_plot.pdf> <./mela_lambda_plot.pdf>]
-<mela_omega_MAD_plot.pdf, id=419, 505.89pt x 505.89pt>
+ [64]
+[65 <./mela_omega_plot.pdf> <./mela_lambda_plot.pdf>]
+<mela_omega_MAD_plot.pdf, id=429, 505.89pt x 505.89pt>
 File: mela_omega_MAD_plot.pdf Graphic file (type pdf)
 <use mela_omega_MAD_plot.pdf>
 Package pdftex.def Info: mela_omega_MAD_plot.pdf  used on input line 400.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-<mela_l2_mad_plot.pdf, id=420, 505.89pt x 505.89pt>
+<mela_l2_mad_plot.pdf, id=430, 505.89pt x 505.89pt>
 File: mela_l2_mad_plot.pdf Graphic file (type pdf)
 <use mela_l2_mad_plot.pdf>
 Package pdftex.def Info: mela_l2_mad_plot.pdf  used on input line 407.
 (pdftex.def)             Requested size: 284.53154pt x 284.52756pt.
-) (./mm.latex [65 <./mela_omega_MAD_plot.pdf> <./mela_l2_mad_plot.pdf>]
+) (./mm.latex [66 <./mela_omega_MAD_plot.pdf> <./mela_l2_mad_plot.pdf>]
 Chapter 4.
-[66
+[67
 
-] [67] [68] [69] [70]
-<mela_l1_l2_plot.pdf, id=453, 505.89pt x 505.89pt>
+] [68] [69] [70] [71]
+<mela_l1_l2_plot.pdf, id=463, 505.89pt x 505.89pt>
 File: mela_l1_l2_plot.pdf Graphic file (type pdf)
 <use mela_l1_l2_plot.pdf>
 Package pdftex.def Info: mela_l1_l2_plot.pdf  used on input line 114.
 (pdftex.def)             Requested size: 284.53154pt x 284.52756pt.
-</home/padraig/latex/mela_l1_convergence_plot.pdf, id=454, 505.89pt x 505.89pt>
+</home/padraig/latex/mela_l1_convergence_plot.pdf, id=464, 505.89pt x 505.89pt>
 
 File: /home/padraig/latex/mela_l1_convergence_plot.pdf Graphic file (type pdf)
 <use /home/padraig/latex/mela_l1_convergence_plot.pdf>
 Package pdftex.def Info: /home/padraig/latex/mela_l1_convergence_plot.pdf  used
  on input line 122.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-</home/padraig/latex/mela_l1_convergence_log_plot.pdf, id=455, 505.89pt x 505.8
+</home/padraig/latex/mela_l1_convergence_log_plot.pdf, id=465, 505.89pt x 505.8
 9pt>
 File: /home/padraig/latex/mela_l1_convergence_log_plot.pdf Graphic file (type p
 df)
@@ -712,60 +723,60 @@ df)
 Package pdftex.def Info: /home/padraig/latex/mela_l1_convergence_log_plot.pdf  
 used on input line 123.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-<mela_coef_convergence_plot.pdf, id=456, 505.89pt x 505.89pt>
+<mela_coef_convergence_plot.pdf, id=466, 505.89pt x 505.89pt>
 File: mela_coef_convergence_plot.pdf Graphic file (type pdf)
 <use mela_coef_convergence_plot.pdf>
 Package pdftex.def Info: mela_coef_convergence_plot.pdf  used on input line 130
 .
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-<mela_pensae_plot.pdf, id=457, 505.89pt x 505.89pt>
+<mela_pensae_plot.pdf, id=467, 505.89pt x 505.89pt>
 File: mela_pensae_plot.pdf Graphic file (type pdf)
 <use mela_pensae_plot.pdf>
 Package pdftex.def Info: mela_pensae_plot.pdf  used on input line 137.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
- [71] [72 <./mela_l1_l2_plot.pdf>] [73 </home/padraig/latex/mela_l1_convergence
-_plot.pdf> </home/padraig/latex/mela_l1_convergence_log_plot.pdf>] [74 <./mela_
+ [72] [73 <./mela_l1_l2_plot.pdf>] [74 </home/padraig/latex/mela_l1_convergence
+_plot.pdf> </home/padraig/latex/mela_l1_convergence_log_plot.pdf>] [75 <./mela_
 coef_convergence_plot.pdf> <./mela_pensae_plot.pdf>]
 Overfull \hbox (14.67691pt too wide) in paragraph at lines 146--146
 []\OT1/cmr/bx/n/17.28 The Two-Stage Pa-ram-e-ter Cas-cade with $\OML/cmm/m/it/1
 7.28 L[]$ \OT1/cmr/bx/n/17.28 Norm 
  []
 
-</home/padraig/latex/mela_omega_mae_profile.pdf, id=502, 505.89pt x 505.89pt>
+</home/padraig/latex/mela_omega_mae_profile.pdf, id=511, 505.89pt x 505.89pt>
 File: /home/padraig/latex/mela_omega_mae_profile.pdf Graphic file (type pdf)
 <use /home/padraig/latex/mela_omega_mae_profile.pdf>
 Package pdftex.def Info: /home/padraig/latex/mela_omega_mae_profile.pdf  used o
 n input line 164.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-</home/padraig/latex/mela_omega_mae_fit.pdf, id=503, 505.89pt x 505.89pt>
+</home/padraig/latex/mela_omega_mae_fit.pdf, id=512, 505.89pt x 505.89pt>
 File: /home/padraig/latex/mela_omega_mae_fit.pdf Graphic file (type pdf)
 <use /home/padraig/latex/mela_omega_mae_fit.pdf>
 Package pdftex.def Info: /home/padraig/latex/mela_omega_mae_fit.pdf  used on in
 put line 165.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-</home/padraig/latex/mela_l1_l2_cascade_plot.pdf, id=504, 505.89pt x 505.89pt>
+</home/padraig/latex/mela_l1_l2_cascade_plot.pdf, id=513, 505.89pt x 505.89pt>
 File: /home/padraig/latex/mela_l1_l2_cascade_plot.pdf Graphic file (type pdf)
 <use /home/padraig/latex/mela_l1_l2_cascade_plot.pdf>
 Package pdftex.def Info: /home/padraig/latex/mela_l1_l2_cascade_plot.pdf  used 
 on input line 172.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-[75
+[76
 
-] [76 </home/padraig/latex/mela_omega_mae_profile.pdf> </home/padraig/latex/mel
+] [77 </home/padraig/latex/mela_omega_mae_profile.pdf> </home/padraig/latex/mel
 a_omega_mae_fit.pdf>]
-<mela_l1_l2_combinations.pdf, id=524, 505.89pt x 505.89pt>
+<mela_l1_l2_combinations.pdf, id=534, 505.89pt x 505.89pt>
 File: mela_l1_l2_combinations.pdf Graphic file (type pdf)
 <use mela_l1_l2_combinations.pdf>
 Package pdftex.def Info: mela_l1_l2_combinations.pdf  used on input line 181.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-<mela_l1_l2_combinations_perturbed.pdf, id=525, 505.89pt x 505.89pt>
+<mela_l1_l2_combinations_perturbed.pdf, id=535, 505.89pt x 505.89pt>
 File: mela_l1_l2_combinations_perturbed.pdf Graphic file (type pdf)
 <use mela_l1_l2_combinations_perturbed.pdf>
 Package pdftex.def Info: mela_l1_l2_combinations_perturbed.pdf  used on input l
 ine 182.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
- [77 </home/padraig/latex/mela_l1_l2_cascade_plot.pdf>] [78 <./mela_l1_l2_combi
-nations.pdf> <./mela_l1_l2_combinations_perturbed.pdf>] [79
+ [78 </home/padraig/latex/mela_l1_l2_cascade_plot.pdf>] [79 <./mela_l1_l2_combi
+nations.pdf> <./mela_l1_l2_combinations_perturbed.pdf>] [80
 
 ]
 Overfull \hbox (11.42845pt too wide) in paragraph at lines 208--208
@@ -780,41 +791,41 @@ nce $\OMS/cmsy/m/n/12 f\OML/cmm/m/it/12 SSE[]; SSE[]; [] ; SSE[]; [] \OMS/cmsy/
 m/n/12 g\OML/cmm/m/it/12 :$
  []
 
-[80] [81]
-<anova_accel.pdf, id=561, 505.89pt x 505.89pt>
+[81] [82]
+<anova_accel.pdf, id=570, 505.89pt x 505.89pt>
 File: anova_accel.pdf Graphic file (type pdf)
 <use anova_accel.pdf>
 Package pdftex.def Info: anova_accel.pdf  used on input line 267.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-<anova_double_accel.pdf, id=562, 505.89pt x 505.89pt>
+<anova_double_accel.pdf, id=571, 505.89pt x 505.89pt>
 File: anova_double_accel.pdf Graphic file (type pdf)
 <use anova_double_accel.pdf>
 Package pdftex.def Info: anova_double_accel.pdf  used on input line 275.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
- [82 <./anova_accel.pdf>]
+ [83 <./anova_accel.pdf>]
 
 LaTeX Warning: No positions in optional float specifier.
                Default added (so using `tbp') on input line 280.
 
-[83 <./anova_double_accel.pdf>] [84]
-<l1_accleration_plot.pdf, id=585, 505.89pt x 505.89pt>
+[84 <./anova_double_accel.pdf>] [85]
+<l1_accleration_plot.pdf, id=594, 505.89pt x 505.89pt>
 File: l1_accleration_plot.pdf Graphic file (type pdf)
 <use l1_accleration_plot.pdf>
 Package pdftex.def Info: l1_accleration_plot.pdf  used on input line 327.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-<multi_accleration_plot.pdf, id=586, 505.89pt x 505.89pt>
+<multi_accleration_plot.pdf, id=595, 505.89pt x 505.89pt>
 File: multi_accleration_plot.pdf Graphic file (type pdf)
 <use multi_accleration_plot.pdf>
 Package pdftex.def Info: multi_accleration_plot.pdf  used on input line 334.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-) (./nonlinear_regress.latex [85
+) (./nonlinear_regress.latex [86
 
- <./l1_accleration_plot.pdf>] [86 <./multi_accleration_plot.pdf>]
+ <./l1_accleration_plot.pdf>] [87 <./multi_accleration_plot.pdf>]
 Chapter 5.
-[87
+[88
 
-] [88]
-</home/padraig/latex/exp_param_cascade_profile.pdf, id=611, 505.89pt x 505.89pt
+] [89]
+</home/padraig/latex/exp_param_cascade_profile.pdf, id=621, 505.89pt x 505.89pt
 >
 File: /home/padraig/latex/exp_param_cascade_profile.pdf Graphic file (type pdf)
 
@@ -822,21 +833,21 @@ File: /home/padraig/latex/exp_param_cascade_profile.pdf Graphic file (type pdf)
 Package pdftex.def Info: /home/padraig/latex/exp_param_cascade_profile.pdf  use
 d on input line 54.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-</home/padraig/latex/exp_param_cascade_fit.pdf, id=612, 505.89pt x 505.89pt>
+</home/padraig/latex/exp_param_cascade_fit.pdf, id=622, 505.89pt x 505.89pt>
 File: /home/padraig/latex/exp_param_cascade_fit.pdf Graphic file (type pdf)
 <use /home/padraig/latex/exp_param_cascade_fit.pdf>
 Package pdftex.def Info: /home/padraig/latex/exp_param_cascade_fit.pdf  used on
  input line 55.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
- [89] [90 </home/padraig/latex/exp_param_cascade_profile.pdf> </home/padraig/la
+ [90] [91 </home/padraig/latex/exp_param_cascade_profile.pdf> </home/padraig/la
 tex/exp_param_cascade_fit.pdf>]
-</home/padraig/latex/ode_param_cascade_fit.pdf, id=633, 505.89pt x 505.89pt>
+</home/padraig/latex/ode_param_cascade_fit.pdf, id=643, 505.89pt x 505.89pt>
 File: /home/padraig/latex/ode_param_cascade_fit.pdf Graphic file (type pdf)
 <use /home/padraig/latex/ode_param_cascade_fit.pdf>
 Package pdftex.def Info: /home/padraig/latex/ode_param_cascade_fit.pdf  used on
  input line 112.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-</home/padraig/latex/ode_param_cascade_contour.pdf, id=634, 505.89pt x 505.89pt
+</home/padraig/latex/ode_param_cascade_contour.pdf, id=644, 505.89pt x 505.89pt
 >
 File: /home/padraig/latex/ode_param_cascade_contour.pdf Graphic file (type pdf)
 
@@ -844,17 +855,17 @@ File: /home/padraig/latex/ode_param_cascade_contour.pdf Graphic file (type pdf)
 Package pdftex.def Info: /home/padraig/latex/ode_param_cascade_contour.pdf  use
 d on input line 113.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
- [91] [92 </home/padraig/latex/ode_param_cascade_fit.pdf> </home/padraig/latex/
+ [92] [93 </home/padraig/latex/ode_param_cascade_fit.pdf> </home/padraig/latex/
 ode_param_cascade_contour.pdf>]
-</home/padraig/latex/nonlinear_regression/transport_equation_profile.pdf, id=65
-5, 505.89pt x 505.89pt>
+</home/padraig/latex/nonlinear_regression/transport_equation_profile.pdf, id=66
+4, 505.89pt x 505.89pt>
 File: /home/padraig/latex/nonlinear_regression/transport_equation_profile.pdf G
 raphic file (type pdf)
 <use /home/padraig/latex/nonlinear_regression/transport_equation_profile.pdf>
 Package pdftex.def Info: /home/padraig/latex/nonlinear_regression/transport_equ
 ation_profile.pdf  used on input line 157.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-</home/padraig/latex/nonlinear_regression/transport_200_samples.pdf, id=656, 50
+</home/padraig/latex/nonlinear_regression/transport_200_samples.pdf, id=665, 50
 5.89pt x 505.89pt>
 File: /home/padraig/latex/nonlinear_regression/transport_200_samples.pdf Graphi
 c file (type pdf)
@@ -862,7 +873,7 @@ c file (type pdf)
 Package pdftex.def Info: /home/padraig/latex/nonlinear_regression/transport_200
 _samples.pdf  used on input line 165.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-</home/padraig/latex/nonlinear_regression/transport_2000_samples.pdf, id=657, 5
+</home/padraig/latex/nonlinear_regression/transport_2000_samples.pdf, id=666, 5
 05.89pt x 505.89pt>
 File: /home/padraig/latex/nonlinear_regression/transport_2000_samples.pdf Graph
 ic file (type pdf)
@@ -874,12 +885,12 @@ Package pdftex.def Info: /home/padraig/latex/nonlinear_regression/transport_200
 
 LaTeX Warning: Float too large for page by 11.68896pt on input line 173.
 
-[93
+[94
 
-] [94 </home/padraig/latex/nonlinear_regression/transport_equation_profile.pdf>
-] [95 </home/padraig/latex/nonlinear_regression/transport_200_samples.pdf> </ho
+] [95 </home/padraig/latex/nonlinear_regression/transport_equation_profile.pdf>
+] [96 </home/padraig/latex/nonlinear_regression/transport_200_samples.pdf> </ho
 me/padraig/latex/nonlinear_regression/transport_2000_samples.pdf>]
-</home/padraig/latex/nonlinear_regression/transport_mod_profile.pdf, id=685, 50
+</home/padraig/latex/nonlinear_regression/transport_mod_profile.pdf, id=694, 50
 5.89pt x 505.89pt>
 File: /home/padraig/latex/nonlinear_regression/transport_mod_profile.pdf Graphi
 c file (type pdf)
@@ -887,7 +898,7 @@ c file (type pdf)
 Package pdftex.def Info: /home/padraig/latex/nonlinear_regression/transport_mod
 _profile.pdf  used on input line 191.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-</home/padraig/latex/nonlinear_regression/mod_transport_plot.pdf, id=686, 505.8
+</home/padraig/latex/nonlinear_regression/mod_transport_plot.pdf, id=695, 505.8
 9pt x 505.89pt>
 File: /home/padraig/latex/nonlinear_regression/mod_transport_plot.pdf Graphic f
 ile (type pdf)
@@ -896,14 +907,14 @@ Package pdftex.def Info: /home/padraig/latex/nonlinear_regression/mod_transport
 _plot.pdf  used on input line 197.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
 )
-(./conclusion.latex [96
+(./conclusion.latex [97
 
- </home/padraig/latex/nonlinear_regression/transport_mod_profile.pdf>] [97 </ho
+ </home/padraig/latex/nonlinear_regression/transport_mod_profile.pdf>] [98 </ho
 me/padraig/latex/nonlinear_regression/mod_transport_plot.pdf>]
 Chapter 6.
-[98
+[99
 
-] [99]) [100] [101
+] [100]) [101] [102
 
 
 ] (./opt_intro.latex
@@ -919,34 +930,34 @@ Overfull \hbox (41.32806pt too wide) in paragraph at lines 5--5
 []\OT1/cmr/bx/n/17.28 Gradient De-scent and the Newton-Raphson method 
  []
 
-[102
+[103
 
-] [103]
-<gradient_sublinear_extended.pdf, id=725, 505.89pt x 505.89pt>
+] [104]
+<gradient_sublinear_extended.pdf, id=734, 505.89pt x 505.89pt>
 File: gradient_sublinear_extended.pdf Graphic file (type pdf)
 <use gradient_sublinear_extended.pdf>
 Package pdftex.def Info: gradient_sublinear_extended.pdf  used on input line 48
 .
 (pdftex.def)             Requested size: 426.7973pt x 426.79134pt.
- [104 <./gradient_sublinear_extended.pdf>]
-<newton_gradient.pdf, id=735, 505.89pt x 505.89pt>
+ [105 <./gradient_sublinear_extended.pdf>]
+<newton_gradient.pdf, id=744, 505.89pt x 505.89pt>
 File: newton_gradient.pdf Graphic file (type pdf)
 <use newton_gradient.pdf>
 Package pdftex.def Info: newton_gradient.pdf  used on input line 56.
 (pdftex.def)             Requested size: 426.7973pt x 426.79134pt.
- [105 <./newton_gradient.pdf>] [106
+ [106 <./newton_gradient.pdf>] [107
 
 
-] [107] [108]
-<finite_difference_converge_plot.pdf, id=756, 505.89pt x 505.89pt>
+] [108] [109]
+<finite_difference_converge_plot.pdf, id=765, 505.89pt x 505.89pt>
 File: finite_difference_converge_plot.pdf Graphic file (type pdf)
 <use finite_difference_converge_plot.pdf>
 Package pdftex.def Info: finite_difference_converge_plot.pdf  used on input lin
 e 200.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
- [109] [110 <./finite_difference_converge_plot.pdf>]
-[111]
-</home/padraig/programming/R/latex/local_min/quadratic_fail.pdf, id=773, 505.89
+ [110] [111 <./finite_difference_converge_plot.pdf>]
+[112]
+</home/padraig/programming/R/latex/local_min/quadratic_fail.pdf, id=782, 505.89
 pt x 505.89pt>
 File: /home/padraig/programming/R/latex/local_min/quadratic_fail.pdf Graphic fi
 le (type pdf)
@@ -954,39 +965,39 @@ le (type pdf)
 Package pdftex.def Info: /home/padraig/programming/R/latex/local_min/quadratic_
 fail.pdf  used on input line 287.
 (pdftex.def)             Requested size: 256.0748pt x 256.07838pt.
- [112] [113 </home/padraig/programming/R/latex/local_min/quadratic_fail.pdf>]
+ [113] [114 </home/padraig/programming/R/latex/local_min/quadratic_fail.pdf>]
 Appendix B.
-[114
+[115
 
 
-] [115] [116] [117]
-<implicit_filtering_0_7.pdf, id=801, 505.89pt x 505.89pt>
+] [116] [117] [118]
+<implicit_filtering_0_7.pdf, id=810, 505.89pt x 505.89pt>
 File: implicit_filtering_0_7.pdf Graphic file (type pdf)
 <use implicit_filtering_0_7.pdf>
 Package pdftex.def Info: implicit_filtering_0_7.pdf  used on input line 408.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-<implicit_filtering_0_9.pdf, id=802, 505.89pt x 505.89pt>
+<implicit_filtering_0_9.pdf, id=811, 505.89pt x 505.89pt>
 File: implicit_filtering_0_9.pdf Graphic file (type pdf)
 <use implicit_filtering_0_9.pdf>
 Package pdftex.def Info: implicit_filtering_0_9.pdf  used on input line 412.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-<implicit_filtering_no_penalty.pdf, id=803, 505.89pt x 505.89pt>
+<implicit_filtering_no_penalty.pdf, id=812, 505.89pt x 505.89pt>
 File: implicit_filtering_no_penalty.pdf Graphic file (type pdf)
 <use implicit_filtering_no_penalty.pdf>
 Package pdftex.def Info: implicit_filtering_no_penalty.pdf  used on input line 
 420.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
-) (./thesis.bbl [118 <./implicit_filtering_0_7.pdf> <./implicit_filtering_0_9.p
-df>] [119 <./implicit_filtering_no_penalty.pdf>]
-[120
+) (./thesis.bbl [119 <./implicit_filtering_0_7.pdf> <./implicit_filtering_0_9.p
+df>] [120 <./implicit_filtering_no_penalty.pdf>]
+[121
 
 
-] [121] [122]) [123] (./thesis.aux) ) 
+] [122] [123]) [124] (./thesis.aux) ) 
 Here is how much of TeX's memory you used:
- 6414 strings out of 494847
- 102703 string characters out of 6179079
- 153154 words of memory out of 5000000
- 9542 multiletter control sequences out of 15000+600000
+ 6420 strings out of 494847
+ 103006 string characters out of 6179079
+ 153165 words of memory out of 5000000
+ 9547 multiletter control sequences out of 15000+600000
  23774 words of font info for 91 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
  44i,15n,49p,1705b,443s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1019,10 +1030,10 @@ ype1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
 ublic/amsfonts/cm/cmtt12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
 amsfonts/symbols/msam10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
 msfonts/symbols/msbm10.pfb>
-Output written on thesis.pdf (125 pages, 1358228 bytes).
+Output written on thesis.pdf (126 pages, 1365015 bytes).
 PDF statistics:
- 941 PDF objects out of 1000 (max. 8388607)
- 657 compressed objects within 7 object streams
+ 950 PDF objects out of 1000 (max. 8388607)
+ 663 compressed objects within 7 object streams
  0 named destinations out of 1000 (max. 500000)
- 276 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 281 words of extra memory for PDF output out of 10000 (max. 10000000)
 
