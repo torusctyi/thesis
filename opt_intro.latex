@@ -336,7 +336,7 @@ The sequence of approximate values returned by Implicit Filtering is monotone de
 
 An variation of the Gauss-Newton algorithm based on the Implicit Filtering has been developed, and was used to fit parameters to an harmonic oscillator of the form $y'' + cy' + ku = 0,$ where the initial conditions are known and $c$ and $k$ must be estimated.\cite{kelley2001implicit}
 
-\section{Convergence Theory}For Implicit filtering to converge, the error needs to decrease sufficiently rapidly relative to sequence of precision parameters $h_n.$ The specific condtions depend on the specific variation of Implicit Filtering used.\cite{nocedalnumerical, kelly2002filtering, kelley2011implicit, kelley2001implicit} The convergence criteria are similar to:
+\section{Convergence Theory}For Implicit Filtering to converge, the error needs to decrease sufficiently rapidly relative to the sequence of precision parameters $h_n.$ The specific condtions depend on the specific variation of Implicit Filtering used.\cite{nocedalnumerical, kelly2002filtering, kelley2011implicit, kelley2001implicit} The convergence criteria are similar to:
 
 \begin{equation} \label{eqn:implicit_filtering_convergence_criterion}
    \lim_{n \rightarrow \infty} \left[\frac{\epsilon(\mathbf{x};h_n)}{h_n} + h_n \right]= 0
@@ -380,7 +380,7 @@ The objective function used was a penalised sum of squared errors of the form:
 
 The value of $PENSSE$ is influenced by $\omega$ and $\mu$ because  $f(t)$ is required to be a solution of (\ref{eqn:quasi_linear_oscillator}) with given values of $\omega$ and $\mu.$  The Implicit Filtering algorithm will not converge correctly without the penalty term as illustrated in Figure \ref{fig:implicit_filtering_no_penalty}.
 
-To compute $PENSSE,$ the package \verb|deSolve| was used to numerically solve (\ref{eqn:quasi_linear_oscillator}) with appropriate values of $\omega$ and $\mu.$ The precision factor $h$ determined the stepsize used. The $\int|f''(t)|^2 dt$ term was approximated by taking the vector of computed values of $f''(t)$ returned by \verb|deSolve|, and then finding the sum of squared values. As $h \rightarrow 0,$ this approximation becomes more and more accurate.
+To compute $PENSSE,$ the package \texttt{deSolve} was used to numerically solve (\ref{eqn:quasi_linear_oscillator}) with appropriate values of $\omega$ and $\mu.$ The precision factor $h$ determined the stepsize used. The $\int|f''(t)|^2 dt$ term was approximated by taking the vector of computed values of $f''(t)$ returned by \verb|deSolve|, and then finding the sum of squared values. As $h \rightarrow 0,$ this approximation becomes more and more accurate.
 
  As can be seen in Table \ref{tab:run_times}, the algorithm takes a long time to run. It can be seen in both the table and Figure \ref{fig:implicit_filtering} that changing the value of $\delta$ can introduce qualitative changes in behaviour. The algorithm is much quicker for $\delta = 0.9,$ presumably because the algorithm is converging to a different fit than for the other cases. For the fastest case where $\delta = 0.9,$  200 values of the $PENSSE$ sequence are generated before the sequence converges to within a tolerance of  $10^{-4}.$ This statistic substantially underestimates the actual amount of work done since Implicit Filtering rejects many evaluations as being inadaquate in the course of its execuction and further evaluations are needed to compute the approximate gradients $\nabla_hf(\cdot).$ For case where  $\delta = 0.9, PENSSE$ was computed over $3700$ times with various values of $h$ used. 
 

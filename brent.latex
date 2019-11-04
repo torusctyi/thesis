@@ -7,19 +7,19 @@ In this chapter, the use of derivative-free methods for fitting FDA problems is 
 
 \section{Overview of Quadratic Optimisation Methods} \label{sec:quad_methods}
 
-A large class of numerical optimisation methods rely on constructing a quadratic approximation to objective function $f(\theta).$ Given an iterate $\theta_n$ and possibly some associated data, a quadratic approximation $m_n(\theta)$ to the objective function is constructed. The next iterate $\theta_{n+1}$ is then found by minimising $m_n(\theta).$ Constructing the approximate quadratic and then minimising it tends to be straightforward. If the next iterate $\theta_{n+1}(\theta)$ is unsatisfactory, a new quadratic model function $m_{n+1}(\theta)$ is minimised, producing a new iterate $\theta_{n+2}.$ Ideally, the $\theta_n$ will approach the optimal point and the sequence of quadratic models will become increasingly accurate approximations so that the process can be repeated until convergence. \cite{nocedalnumerical}
+A large class of numerical optimisation methods rely on constructing a quadratic approximation to objective function $f(\theta).$ Given an iterate $\theta_n$ and possibly some associated data, a quadratic approximation $m_n(\theta)$ to the objective function is constructed. The next iterate $\theta_{n+1}$ is then found by minimising $m_n(\theta).$ Constructing the approximate quadratic and then minimising it tends to be straightforward. If the next iterate $\theta_{n+1}(\theta)$ is unsatisfactory, a new quadratic model function $m_{n+1}(\theta)$ is again minimised, producing the next iterate $\theta_{n+2}.$ Ideally, the $\theta_n$ will approach the optimal point as the sequence of quadratic models become increasingly accurate approximations to $f(\theta)$ in the neighbourhood of  the optimal point, so that the process can be repeated until convergence.\cite{nocedalnumerical}
 
 \subsection{Newton's Method}
 
-The Newton-Raphson Method is a well-known member of this class. Newton's method constructs the approximation using a second-order Taylor expansion around $\theta_n:$
+The Newton-Raphson Method is a well-known member of this class. Newton's method constructs a quadratic approximation using a second-order Taylor expansion around $\theta_n:$
 
 \[
 	f(\theta) \approx m_n(\theta) = f(\theta_n) + f'(\theta_n)(\theta - \theta_n) + \frac{1}{2}f''(\theta_n)(\theta - \theta_n)^2
 \]
 
-It is not difficult to show that the critical point of $m_n(\theta)$ is given by $\theta_{n+1} = \theta_n - f'(\theta)/f''(\theta),$ which is the usual Newton formula \cite{nocedalnumerical, isaacson2012analysis, lange2004optimization, lange2010numerical}.
+It is not difficult to show that the critical point of $m_n(\theta)$ is given by $\theta_{n+1} = \theta_n - f'(\theta_n)/f''(\theta_n),$ which is the usual Newton formula.\cite{nocedalnumerical, isaacson2012analysis, lange2004optimization, lange2010numerical}
 
-For a point close to $\theta_n,$ the difference between $f(\theta)$ and $m_n(\theta)$ is roughly equal to $[f'''(\theta_n)/3!](\theta-\theta_n)^3$ so long as $f(\theta)$ is sufficiently well behaved\cite{isaacson2012analysis}. This formula suggests that if $\theta_n$ is close to the optimal point $\theta^*$ so that $|\theta^* -\theta_n|$ is sufficiently small, then $|\theta_n - \theta^*|^3$ will be very small indeed and so the quadratic model will be a very accurate approximation of $f(\theta)$ around $\theta^*.$ As a result, $\theta_{n+1}$ will be quite close to $\theta^*.$ The next model $m_{n+1}(\theta)$ will thus be substantially better than $m_{n}(\theta)$ at approximating $f(\theta)$ around $\theta^*,$ and so $\theta_{n+2}$ will be much closer to $\theta^*$ than $\theta_{n+1}.$ Newton's method converges very rapidly so long as one is sufficiently close to $\theta^*$ to start with.  Newton's method converges quadratically, as discussed in Section \ref{sec:newton_gradient}
+For a point close to $\theta_n,$ the difference between $f(\theta)$ and $m_n(\theta)$ is roughly equal to $[f'''(\theta_n)/3!](\theta-\theta_n)^3$ so long as $f(\theta)$ is sufficiently well behaved\cite{isaacson2012analysis}. This formula suggests that if $\theta_n$ is close to the optimal point $\theta^*$ so that $|\theta^* -\theta_n|$ is sufficiently small, then $|\theta_n - \theta^*|^3$ will be very small indeed and so the quadratic model will be a very accurate approximation of $f(\theta)$ around $\theta^*.$ As a result, $\theta_{n+1}$ will be quite close to $\theta^*.$ The next model $m_{n+1}(\theta)$ will thus be substantially better than $m_{n}(\theta)$ at approximating $f(\theta)$ around $\theta^*,$ and so $\theta_{n+2}$ will be much closer to $\theta^*$ than $\theta_{n+1}.$ Newton's method converges very rapidly so long as one is sufficiently close to $\theta^*$ to start with. In fact, Newton's method converges quadratically, as discussed in Section \ref{sec:newton_gradient}.
 
 Newton's method is a very effective estimation algorithm so long as the derivatives $f'(\theta)$ and $f''(\theta)$ can be computed, and so long as the initial starting value is not too far from the optimal value. Choosing a good initial value is thus very important. For maximum likelihood  estimation for example, a method of moments estimator or the median could be used  to provide an initial starting value. 
 
@@ -228,7 +228,7 @@ Brent's Method is a hybrid of successive parabolic interpolation and golden-sect
 
 The hybrid method is robust as a result of the golden section steps, and the parabolic steps ensure it performs well when applied to smooth functions along with a decent starting value.
 
-\section{Estimation Of Parameters For A Standard Cauchy Distribution Using Brent's Method} \label{sec:cauchy_estimation}
+\section{Estimation Of Parameters For a Standard Cauchy Distribution Using Brent's Method} \label{sec:cauchy_estimation}
 To illustrate how Brent's metthod is employed in practice it will be used on a straightforwards estimation problem first. Consider the question of fitting a Cauchy distribution to some data. Given $n$ observations $x_1,\dots, x_n$ from an unknown  Cauchy distribution, the likelihood function is given by:
 
 \[

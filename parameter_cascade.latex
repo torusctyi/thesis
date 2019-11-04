@@ -12,60 +12,76 @@ To introduce some of the ideas behind \texttt{Data2LD,} a semi-parametric ODE mo
 
 \[\begin{cases}
    y'(t) &= \begin{cases}
-              \beta_1 y(t)         & t < t_0 \\
-              \beta_1 y(t) +  u(t) & t \geq t_0
+              \beta y(t)         & t < t_0 \\
+              \beta y(t) +  u(t) & t \geq t_0
              \end{cases}\\
       \\
-   y(0)  &= \beta_0
+   y(0)  &= 0
 \end{cases}\]
 
 
-The  forcing function $u(t)$ is unknown and must be estimated alongside $\beta_0$  and $\beta_1,$ so this is a semi-parametric model. The introduction of the $\beta_0$ parameter means that the $y(t)$ doesn't have to be identically zero before the forcing function is switched on.
+The  forcing function $u(t)$ is unknown and must be estimated alongside $\beta,$ so this is a semi-parametric model. As in Section \ref{sec:reflux_parametric_vs_data2ld}, the breakpoint at $t_0$ will be assumed to be known in advance.
 
-How would one go about fitting this model?
 
-The general solution to this ODE given by:
+The solution to the  homogeneous ODE $y'(t) = \beta y(t)$ is given by $y(t) = Ce^{\beta t}$ where $C$ is an unknown constant. Since $y(0) = 0$, this implies that $y(t) = 0$ if $t < t_0.$ To take into account the forcing function that is turned on for $t \geq t_0,$ variation of parameters will be employed. Assume that the solution for the case with the forcing function can be written as  $y(t) = e^{\beta t} v(t),$ with the time-varying coefficient $v(t)$ to be determined. Substitute this ansatz into the case  for $t \geq t_0\colon$
+\begin{align*}
+   e^{\beta t}v'(t) + \beta e^{\beta t}v(t)  &= \beta e^{\beta t}v(t) + u(t)\\
+                             \therefore \qquad  v'(t) &= e^{-\beta t}u(t) \\
+                             \therefore  \qquad v(t)  &= \int_{t_0}^t e^{-\beta t}u(t) dt
+\end{align*}
+
+
+Setting the limits of integration from $t_0$ to $t$ ensures that $v(t_0) = 0$ so that the solution for $t \geq t_0$ is matched continously with the solution for $t < t_0.$ The solution will not  be differentiable at $t_0$ however unless\footnote{The left derivative at $t_0$ is identically zero. The right derivative at $t_0$ is found by substituting  $y'(t_0) = \beta y(t_0) 
++ u(t_0) =u(t_0),$ recall that  $v(t)$ is choosen so that $y(t_0) = 0.$ The left and right derivatives will not match unless $u(t_0) = 0.$} $u(t_0) = 0,$ so there will generally be a kink at the breakpoint in a similar fashion as in Figures \ref{fig:constituentMaxFunctions} and \ref{fig:reflux_ode_fit}.
+
+The general solution can be conveniently written as:\footnote{One couldn't write the solution as $\tilde{y}(t) = \max[0, e^{\beta t}v(t)]$ as was done in Section \ref{sec:reflux_parametric_approach} because it might be the case that $v(t) >0$ for a substantial proportion of the interval $0 \leq t<t_0,$ so that the breakpoint would be substantially shifted and the fitted model would be plain wrong. As noted in Section \ref{sec:reflux_data2ld_fit}, the FDA methodology is generally employed because it allows one to avoid relatively `low level' considerations such as which matching strategy to use. In any case,  the maximum operator was only ever used for matching because the \texttt{nls} command was behaving erroneously for the exact solution.}
 
 \[
-   y(t) = \beta_0 + e^{\beta_1 t}\int_{t_0}^{\min(t, t_0)} u(s) ds
+   y(t) =   e^{\beta t}v(t)\mathbf{1}(t-t_0)
 \]
 
-
-As in Section \ref{sec:reflux_parametric_vs_data2ld}, the breakpoint at $t_0$ will be assumed to be known in advance. Letting $U(t) = \int u(s)ds,$ the general solution can be more conveniently written as:
-
-\[
-   y(t) = \beta_0 +  e^{\beta_1 t}U(t)\mathbb{I}(t-t_0)
-\]
-
-Here $\mathbb{I}(t)$ denotes the Heaviside step function:
+Here $\mathbf{1}(t)$ denotes the Heaviside step function:
 
 \[
-    \mathbb{I}(t) = \begin{cases}
-                0 & t \leq 0 \\
-                1 & t >  0
+    \mathbf{1}(t) = \begin{cases}
+                0 & t < 0 \\
+                1 & t \geq 0
            \end{cases}
 \]
 
-Let $I$ denote the set of observations for which $t_i > t_0.$
-If $\beta$ were known, $U(t)$ could estimated by non-parameterically regressing 
-the values $(y_i - \beta_0)/e^{\beta_1 t_i}$ against  $t_i$ where $i \in I.$ The forcing function $u(t)$ could then be estimated by differentiating the estimate for $U(t).$
-
-If $U(t)$ were known on the other hand, $\beta_0$ and $\beta_1$ could be estimated by minimising the following non-linear least squares criterion:
+For the special case discussed in Section \ref{sec:reflux_parametric_vs_data2ld} where $u(t) = u_0$ for all $t,$ we find that:
 
 \[
-   SSE[\beta_0, \beta_1 ;U(t)] = \sum_{i \not\in I}(y_i - \beta_0)^2 + \sum_{i \in I} [y_i  - \beta_0 -  e^{\beta_1 t_i}U(t_i)]^2
+v(t) = -\frac{u_0}{\beta}(e^{-\beta t} - e^{-\beta t_0})
 \]
 
-A hierarchical estimation strategy seems natural. For a given choice of $\beta,$ let $U(t|\beta_0, \beta_1)$ denote the estimate of $U(t)$ produced by regressing the $(y_i - \beta_0)/e^{\beta_1 t_i}$ against $t_i.$ Define the associated least squares error by:
+The solution can then be straightforwardly found:
+\[
+y(t) = \frac{u_0}{\beta}\left(1 - e^{\beta(t - t_0)}\right)\mathbf{1}(t-t_0)
+\]
+
+This is the same solution as was found at the start of Section \ref{sec:reflux_parametric_vs_data2ld}, except that the ODE is of the form $y' = \beta y + u_0$ for $t \geq t_0$ here instead of being of the form $y' = -\beta y + u_0$ as in Section \ref{sec:reflux_parametric_vs_data2ld}.
+
+Let $I$ denote the set of indices for which $t_i > t_0.$
+If $\beta$ were known, $v(t)$ could estimated by non-parameterically\footnote{There is nothing in principle stopping one from attempting to fit $v(t)$ to $y/e^{\beta t}$ using a more basic methodology such as polynomial regression, but it is difficult to concieve of circumstances where this would be a good idea. Even if $u(t)$ were assumed to be some unknown polynomial, the same would not be true of $v(t).$ } regressing 
+the values $y_i/e^{\beta t_i}$ against  $t_i$ where $i \in I.$ The forcing function $u(t)$ could then be estimated by differentiating the estimate for $v(t)$ and multiplying it by $e^{\beta t}.$
+
+If $v(t)$ were known on the other hand, $\beta$ could be estimated by minimising the following non-linear least squares criterion:
+
+\[
+   SSE[ \beta ;v(t)] =  \sum_{i \in I} [y_i   -  e^{\beta t_i}v(t_i)]^2
+\]
+
+A hierarchical estimation strategy thus seems natural. For a given choice of $\beta,$ let $v(t| \beta)$ denote the estimate of $v(t)$ produced by regressing $y_i/e^{\beta t_i}$ against $t_i$ for $i \in I.$ Define the associated least squares error by:
 
 \begin{align*}
-   H(\beta_0, \beta_1) &= SSE[\beta; U(t| \beta_0, \beta_1)] \\
-            &= \sum_{i \not\in I}(y_i - \beta_0)^2 + \sum_{i\in I} [y_i  - \beta_0 - e^{\beta_1 t_i}U(t_i| \beta_0, \beta_1)]^2
+   H( \beta) &= SSE[\beta; v(t|  \beta)] \\
+            &=  \sum_{i\in I} [y_i  - e^{\beta t_i}v(t_i|  \beta)]^2
 \end{align*}
 
-The sketch presented here fails to address two important questions: how to  to estimate $U(t)$ given $\beta_0$ and $\beta_1,$ and how to optimise $H(\beta_0, \beta_1).$ Using the nomenclature of the field, the \emph{inner problem} entails estimating $U(t)$ given the parameters $\beta_0$ and $\beta_1,$ and the \emph{middle problem} entails minimising $H(\beta_0, \beta_1).$
+The sketch presented here fails to address two important questions: how to  to estimate $v(t)$ given  $\beta,$ and how to optimise $H(\beta).$ Using the nomenclature of the field, the \emph{inner problem} entails estimating $v(t)$ given the parameters and $\beta,$ and the \emph{middle problem} entails minimising $H( \beta).$
 
-\texttt{Data2LD} similarly employs a powerful hierarchical fitting methodology for FDA problems known as the \emph{Parameter Cascade,} which will be introduced in the next section.
+\texttt{Data2LD} similarly employs a powerful hierarchical fitting methodology for FDA problems known as the Parameter Cascade, which will be introduced in the next section.
 
 
 \section{The Two-Stage Parameter Cascade}
@@ -128,7 +144,7 @@ A common choice for the outer criterion is  Generalised Cross Validation.\cite{c
 
 Just as the problem of fitting a function $f(\cdot|\theta)$ can generate an optimisation subproblem, that of fitting a third level in the cascade can generate a series of subproblems to find the best parameter choice associated with a given value of $\lambda,$ which in turn generates a series of subproblems to find the fitted function as the parameter space is explored.
 
-As stated in Chapter 1, neither the \texttt{FDA} nor \texttt{Data2LD} packages  implement the three stage parameter cascade. They instead require practioners to find the best choice of $\lambda$ by cycling through a set of predetermined values or even just employing manual adjustment. There is no guarantee that the optimal choice of $\lambda$ would lie in a finite set of predetemined values. Manual adjustment is slow and cumbersome compared to an automated optimisation routine.
+As stated in Chapter 1, neither the \texttt{FDA} nor \texttt{Data2LD} packages  implement the three stage parameter cascade. They instead require practioners to find the best choice of $\lambda$ by cycling through a set of predetermined values or even just employing manual adjustment. There is no guarantee that the optimal choice of $\lambda$ would lie in a finite set of predetermined values. Manual adjustment is slow and cumbersome compared to an automated optimisation routine.
 
 \section{Investigating the \texttt{Data2LD} Package} \label{sec:data2ld_investigation}
 
@@ -219,7 +235,7 @@ Depending on the outcome of the tests, \texttt{Data2LD} chooses the stepsize as 
 
 \item If \ref{eqn:t1} and \ref{eqn:t1} are passed, or  \ref{eqn:t4} is passed; but  \ref{eqn:t3} is failed, it means that the slope is satisfactory, but the function has increased rather than decreased. \texttt{Data2LD} reduces the step size.
 
-\item If all four tests are failed, then the newest point is unsuitable entirely.\texttt{Data2LD} falls back on interpolation to try to find a critical point of $\phi(\alpha),$ falling back on  quadratic interpolation methods if necessary.\footnote{The line search code for the \texttt{Data2LD} is lightly commented and dense, all that one can be strictly certain of is that the method uses radicals to compute the next value of $\alpha,$ falling back on solving a linear equation if necessary. Getting the root of a quadratic is equivalent to finding a critical point of a cubic, and solving a linear equation is equivalent to finding the critical points of a quadratic.}
+\item If all four tests are failed, then the newest point is unsuitable entirely .\texttt{Data2LD} falls back on interpolation to try to find a critical point of $\phi(\alpha),$ falling back on  quadratic interpolation methods if necessary.\footnote{The line search code for the \texttt{Data2LD} is lightly commented and dense, all that one can be strictly certain of is that the method uses radicals to compute the next value of $\alpha,$ falling back on solving a linear equation if necessary. Getting the root of a quadratic is equivalent to finding a critical point of a cubic, and solving a linear equation is equivalent to finding the critical points of a quadratic.}
 
 \end{itemize}
 
@@ -232,7 +248,7 @@ Depending on the outcome of the tests, \texttt{Data2LD} chooses the stepsize as 
 
 If the line search succeeds in reducing the objective function, \texttt{Data2LD} uses the Newton search direction for the next iteration. If the line search makes the objective function worse, the Gradient Descent direction is used. In the event of the line search making the objective function worse twice in a row, \texttt{Data2LD} returns an error.
 
-Somewhat peculiarly, \texttt{Data2LD} does not make use of $\phi''(\alpha)$ despite being able to compute it easily.\footnote{Differentiating the expression $\phi'(\alpha) =\mathbf{p}_n^\top\nabla f(\mathbf{x}_n + \alpha \mathbf{p}_n)$ with respect to $\alpha$ yields that $\phi''(\alpha) = \mathbf{p}_n^\top \mathbf{H}(\alpha) \mathbf{p}_n,$ where $\mathbf{H}(\alpha)$ denotes the Hessian of $f$ evaluated at $\mathbf{x}_n + \alpha \mathbf{p}_n.$}  One would think that the Newton-Raphson Method would  be the first approach attempted to perform the line search before resorting to interpolation-based methods since it's both simpler to implement and faster to converge. The effort of computing $\phi''(\alpha)$ is mostly a sunk cost because of how the interface of \texttt{Data2LD} is defined.
+Somewhat peculiarly, \texttt{Data2LD} does not make use of $\phi''(\alpha)$ despite being able to compute it easily.\footnote{Differentiating the expression $\phi'(\alpha) =\mathbf{p}_n^\top\nabla f(\mathbf{x}_n + \alpha \mathbf{p}_n)$ with respect to $\alpha$ yields that $\phi''(\alpha) = \mathbf{p}_n^\top \mathbf{H}(\alpha) \mathbf{p}_n,$ where $\mathbf{H}(\alpha)$ denotes the Hessian of $f$ evaluated at $\mathbf{x}_n + \alpha \mathbf{p}_n.$}  One would think that the Newton-Raphson Method would  be the first approach  to perform the line search attempted before resorting to interpolation-based methods since it's both simpler to implement and faster to converge. The effort required to  compute $\phi''(\alpha)$ is mostly a sunk cost because  \texttt{Data2LD} will return the Hessian matrix on each iteration whether it is wanted or not.
 
 
 \section{Hierarchical fitting of a Partial Differential Equation} \label{sec:pde_fitting_strategy}

@@ -1,0 +1,9240 @@
+Fitting Functional Data Using Derivative-Free
+Methods
+
+November 3, 2019
+
+Abstract
+Traditional algorithms for modelling functional data use derivative-based optimisation
+methods to fit parameters. The process of finding the derivatives of the fitting criterion
+with respect to the parameters is complex. In some cases, the derivatives might not
+even exist everywhere, as is the case when the Mean Absolute Deviation criterion is
+used instead of the usual Least Squares approach. Accordingly, the use of derivativefree methods for Functional Data Analysis was investigated in this thesis. It was found
+that the derivative-free methods perform satisfactorily on simple FDA problems and
+that the implementation effort was much less than for the derivative based methods.
+Furthermore, it is possible to fit models non-smooth loss functions such as the Mean
+Absolute Deviation criterion using derivative-free methods. It was also possible to
+fit a variety of parametric problems using a modified version of the derivative-free
+methodology developed in this thesis.
+
+Contents
+1 Introduction
+1.1 Preliminaries . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1.1.1 Functional Data Analysis . . . . . . . . . . . . . . . . . . . . . .
+1.2 Penalised Regression . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1.2.1 Smoothing Splines . . . . . . . . . . . . . . . . . . . . . . . . .
+1.2.2 Piecewise Trigonometric Interpolation . . . . . . . . . . . . . . .
+1.3 Finite Dimensionalisation: the General Case . . . . . . . . . . . . . . .
+1.3.1 FDA With A Quadratic Basis . . . . . . . . . . . . . . . . . . .
+1.4 The FDA Package . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1.5 The Data2LD Package . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1.6 Modelling the Reflux Data: A Parametric Approach vs Data2LD . . . .
+1.6.1 Fitting the Reflux Data Parametrically by Solving the ODE Model
+1.6.2 Fitting the Reflux Data Parametrically Using a Collocation Method
+1.6.3 Fitting the Reflux Data with Data2LD . . . . . . . . . . . . . .
+1.7 Rates Of Convergence . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1.8 Overview of Appendices . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+4
+4
+4
+9
+9
+10
+12
+15
+17
+19
+19
+21
+26
+29
+29
+33
+
+2 Hierarchical Estimation and the Parameter Cascade
+2.1 Fitting the Reflux Data Using a Semi-Parametric ODE Model
+2.2 The Two-Stage Parameter Cascade . . . . . . . . . . . . . . .
+2.3 The Three-Stage Parameter Cascade . . . . . . . . . . . . . .
+2.4 Investigating the Data2LD Package . . . . . . . . . . . . . . .
+2.4.1 How Data2LD Estimates Parameters . . . . . . . . . .
+2.5 Hierarchical fitting of a Partial Differential Equation . . . . .
+
+.
+.
+.
+.
+.
+.
+
+34
+34
+36
+37
+37
+40
+43
+
+.
+.
+.
+.
+.
+.
+.
+
+45
+45
+45
+46
+47
+48
+48
+52
+
+3 Derivative-Free Optimisation and the Parameter
+3.1 Overview of Quadratic Optimisation Methods . .
+3.1.1 Newton’s Method . . . . . . . . . . . . . .
+3.1.2 Secant Method . . . . . . . . . . . . . . .
+3.1.3 Successive Parabolic Interpolation . . . . .
+3.1.4 Discussion . . . . . . . . . . . . . . . . . .
+3.2 Modifying the Data2LD.opt Routine . . . . . . .
+3.3 Golden-Section Search . . . . . . . . . . . . . . .
+1
+
+Cascade
+. . . . . .
+. . . . . .
+. . . . . .
+. . . . . .
+. . . . . .
+. . . . . .
+. . . . . .
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+3.4
+3.5
+3.6
+3.7
+
+Brent’s Method . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Estimation Of Parameters For A Standard Cauchy Distribution
+Brent’s Method . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Robust ODE Parameter Estimation . . . . . . . . . . . . . . . .
+The Parameter Cascade and Brent’s Method . . . . . . . . . . .
+
+. . . .
+Using
+. . . .
+. . . .
+. . . .
+
+52
+53
+57
+60
+
+4 A Two Level L1 Parameter Cascade Using the MM Algorithm.
+4.1 L1 Estimation for the Inner Problem . . . . . . . . . . . . . . . . . . .
+4.1.1 An MM Algorithm For Computing the Median . . . . . . . . .
+4.1.2 Penalised L1 Fitting . . . . . . . . . . . . . . . . . . . . . . . .
+4.1.3 Discussion . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+4.1.4 Testing the Algorithm on the Melanoma Data . . . . . . . . . .
+4.2 The Two Level Parameter Cascade with L1 Norm . . . . . . . . . . . .
+4.3 Accelerating The Rate of Convergence . . . . . . . . . . . . . . . . . .
+4.3.1 Illustrative Example: Using Imputation to Fit an ANOVA Model
+With Missing Data . . . . . . . . . . . . . . . . . . . . . . . . .
+4.3.2 Generalisations . . . . . . . . . . . . . . . . . . . . . . . . . . .
+4.3.3 Accelerating the L1 Fitting Algorithm . . . . . . . . . . . . . .
+
+65
+65
+66
+68
+69
+69
+74
+78
+79
+79
+84
+
+5 Profiling Non-Linear Regression Models With the Parameter Cascade
+5.1 Fitting a Non-Linear Regression Model With the Parameter Cascade .
+5.2 Fitting Linear Homogeneous ODEs Using the Parameter Cascade . . .
+5.3 Estimation for First Order Linear PDEs . . . . . . . . . . . . . . . . .
+5.3.1 The Transport Equation . . . . . . . . . . . . . . . . . . . . . .
+5.3.2 The Transport Equation with Space-varying Velocity . . . . . .
+
+86
+87
+88
+92
+92
+95
+
+6 Conclusion and Further Research
+6.1 Derivative-Free versus Derivative-Based
+6.2 Further Subjects for Inquiry . . . . . .
+6.3 Quasi-linear Differential Problems . . .
+6.3.1 Inviscid Burger’s Equation . . .
+6.3.2 Discussion . . . . . . . . . . . .
+
+97
+97
+97
+98
+98
+99
+
+Methods
+. . . . . .
+. . . . . .
+. . . . . .
+. . . . . .
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+Appendices
+
+100
+
+A Overview of Optimisation Methods
+A.1 Gradient Descent and the Newton-Raphson method
+A.2 The Chord Method . . . . . . . . . . . . . . . . . .
+A.3 More Sophisticated Hessian Approximations . . . .
+A.4 Line Search Methods . . . . . . . . . . . . . . . . .
+A.4.1 Wolfe Conditions . . . . . . . . . . . . . . .
+A.4.2 More sophisticated Line Search Algorithms .
+
+101
+101
+105
+105
+109
+111
+111
+
+2
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+B Implicit Filtering
+B.1 Description of the Algorithm . . . . . . . . . . . . . . . . . . .
+B.2 Convergence Theory . . . . . . . . . . . . . . . . . . . . . . .
+B.3 Assessment of the Method . . . . . . . . . . . . . . . . . . . .
+B.4 Using Implicit Filtering to Fit an ODE to the Melanoma Data
+Bibliography
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+113
+113
+114
+115
+116
+119
+
+3
+
+Chapter 1
+Introduction
+1.1
+1.1.1
+
+Preliminaries
+Functional Data Analysis
+
+Functional data analysis (FDA) is a field of statistics where it is assumed that the data
+observed at a given set of independent observation times (or coordinates etc.) represent
+noisy observations of some underlying function.[34]
+The approach taken here is to assume that an unknown differential equation can
+adequately - though not necessarily exactly - describe the process producing the data.
+Specification of Function Spaces
+The functions in question are generally all assumed to be members of some countably infinite dimensional vector space, such as the set of all functions f (·) such that
+R T 00 2
+|f (t)| dt < ∞ over some interval [0, T ].
+0
+This assumption implies that any given function can be represented as a countably
+infinite combination of basis elements, which are themselves functions. This means for
+a chosen set of basis elements {φ1 (t), φ2 (t), . . . } and any given function f (t), there is a
+set of coefficients {a1 , a2 , . . . } such that:
+f (t) = a1 φ1 (t) + a2 φ2 (t) + . . .
+Functional Data Analysis can thus be regarded as a generalisation of multivariate
+statistics where the number of dimensions is potentially infinite.1
+1
+
+More formally, a vector space of functions is said to be separable if there is a countable subspace
+such that any element of the vector space can be approximated to arbitrary accuracy by taking
+linear combinations from this subspace. In texts on Measure Theory and Functional Analysis, it is
+common to show a space of functions is seperable by showing that any element can be approximated
+to arbitrary accuracy by linear combinations of step functions. In more applied texts, one would show
+generally that any element of the function space in question can be approximated by a Fourier Series,
+a Wavelet series, or polynomials. [40] is an introductory and highly accessible text that engages with
+both approaches from a unified perspective.
+
+4
+
+Substantial complications are introduced into the statistical analysis because functions are generally much richer objects than real numbers or vectors. A function will
+generally have a different value for each input value, and the number of non-integer
+numbers on any interval - and hence potential inputs - is infinite. Functions cannot
+be trivially represented on paper or in computer memory in a similar fashion as real
+numbers or vectors.
+For the purposes of this thesis, it is assumed that the functions in question are
+continuous mappings.
+In practice one attempts to resolve the problem of potential infinite-dimensionality
+by constructing a discrete problem that resembles the functional problem, and then
+solving this approximate problem instead.
+Statistical problems that involve differential equations are particularly difficult. A
+naive approach is to force the practitioner to solve the ordinary differential equation
+(ODE) numerically every time it is desired to evaluate the goodness of fit for a given
+choice of parameters. For these situations, it is necessary by definition to use numerical
+analytic techniques to construct a proxy problem that resembles the original problem
+sufficiently well and that is sufficiently easy to tackle computationally.
+For example, consider the problem of parametric estimation for a stochastic differential equation (SDE) of the form:
+dX = f (X; θ)dt + σdW.
+Here X(t) is the stochastic process being modelled, f (·; θ) is a known function with
+a parameter θ to be estimated, σ is a volatility parameter, and W (t) is a standard
+Brownian motion.
+This SDE is equivalent to asserting for any time t and increment h that:
+Z t+h
+X(t + h) = X(t) +
+f (X(s); θ)ds + σ[W (t + h) − W (t)].
+t
+
+Suppose there are observations X1 , X2 , . . . , XN of X(t) at evenly spaced times, and
+that h is the distance between the time points. The integral formulation of the SDE
+suggests that if h is small enough, then
+√
+Xk+1 ≈ Xk + hf (Xk ; θ) + σ hZk .
+
+√
+The Zk here are i.i.d standard Normal random variables. The h term appears
+because W (t + h) − W (t) has a variance of h. This is known as the Euler-Maruyama
+Approximation.[22]
+Instead of attempting to estimate parameters for the SDE, we can fit parameters
+for a non-linear AR(1) process that acts as a proxy problem for the original SDE. This
+is a much more tractable problem than the original SDE.2
+In FDA, the assumption is usually made that all the functions can be represented
+as a linear combination from some chosen finite set of basis functions. Rather than
+2
+
+Those interested in more detail are referred to [15].
+
+5
+
+discretise the differential operator as in the above example, the space of functions is
+discretised instead.
+A differential equation (or a similar problem) over some finite dimensional space of
+functions with n dimensions can be represented as a problem over the Euclidean space
+Rn , this is a discrete problem.
+The modelling process for functional data as described in Figure 1.1 can be more
+complex than for standard statistical problems.
+Formulate a Model: As is the case for any statistical problem, the first step is
+to formulate a model. In the context of FDA, this often entails specifying an ODE
+model.[34, 38] One must be certain that the model at used is sufficiently broad or
+well-specified to be able to actually capture the phenomenon under investigation.
+Construct a Discretised Model that Approximates the Original Model: Unless the statistical model is trivial, the next step is to construct a proxy model. This
+generally requires ideas from Numerical Analysis.
+Conduct Statistical Analysis Using the Discretised Model: While the discretised model tends to be simpler than the original model, this task is not necessarily
+trivial. For FDA problems, R packages such as FDA3 and Data2LD4 that are designed
+to conduct such analysis are complex.
+Check the Approximation Error in Discretised Model: If the discretised model
+is too poor an approximation, then the results of any statistical analysis conducted
+could be biased as a result of the approximation error introduced, even if the original
+model were perfectly sound. If the original model is biased, then the approximate one
+might be even more so.5
+Therefore, one should consider conducting post hoc checks. For example, running
+the analysis again with an alternative approximate model and comparing the results
+with the original model. If both agree, it is evidence the approximate models are both
+reasonably accurate.
+In the context of FDA, this generally entails increasing the number of basis functions
+so that the associated approximation error is smaller.
+For example, suppose that one were attempting to estimate the parameters of an
+ODE by means of least squares, and one was using a finite difference solver to compute
+the fitted values, and hence to determine the goodness-of-fit.
+3
+
+Discussed in Section 1.4
+Discussed in Section 1.5
+5
+A discussion of how numerical approximation error can introduce bias into parameter estimates
+for SDE models is provided in [15]. As a rule, the coarser the stepsize, the greater the asymptotic
+bias in parameter estimation for SDEs as the sample size goes to infinity.
+4
+
+6
+
+Formulate Model
+
+Construct Discretised Model
+That Approximates Original
+
+Conduct Statistical Analysis
+Using Discretised Model
+
+Check Approximation Error
+In Fitted Discretised Model
+
+Check if Results of Statistical
+Analysis Are Consistent
+With Discretised Model
+
+Figure 1.1: Statistcal Modelling Process For Functions
+
+7
+
+Once the fitting algorithm had converged, one might run the solver again with a
+smaller stepsize (or more basis functions) and the same parameters and check if this
+has made a substantial change in the goodness-of-fit statistic.
+Suppose that there has been a substantial change as a result of the stepsize reduction. One would have to consider running the entire fitting procedure again starting
+from the previously computed parameter estimate, except with the smaller stepsize.
+If reducing the stepsize a second time doesn’t produce a substantial change in the
+goodness-of-fit statistic, one can be confident that no further reductions in the stepsize
+are necessary.
+This procedure can be automated. The Implicit Filtering algorithm which is sometimes used for parameteric ODE fitting and is discussed in Section B is an example of
+such automation. On each iteration, Implicit Filtering computes an approximate gradient using finite differences and uses this to perform optimisation.[20] If the Implicit
+Filtering algorithm cannot produce a decrease in the objective function, or it cannot be
+certain that the true gradient isn’t in fact zero, it reduces the stepsize. The algorithm
+terminates when the change in the objective function between changes in the stepsize
+has fallen below a chosen tolerance level.
+If the fitting method used is slow however, then these such approaches can potentially be very slow due to the need to solve the same problem over and over again at
+increasing levels of precision.
+Fortunately, Functional Data Analysis does not always require the re-computation
+of the curve in such a fashion whenever the parameters are changed. Instead of being
+implicitly represented as solutions of an ODE, functions are explicitly represented as
+elements in some finite dimensional vector space. As shall be seen, the objective function is generally a mapping from some vector space Rn to R that can often be evaluated
+reasonably easily, or at least more easily than having to run an ODE solver.
+Check If Results of Statistical Analysis Are Consistent With Discretised
+Model. In the previous step, one checked that the approximate model was actually
+acting as a proxy for the original model. One must then check that the statistical
+analysis conducted using the approximate model is valid in its own right. For example,
+it will be seen throughout this thesis that many statistical problems involving functions
+can be approximated by non-linear regression models. These constructed non-linear
+regression models should be checked for statistical validity.
+
+8
+
+1.2
+
+Penalised Regression
+
+Suppose we have N noisy observations yi at times ti from some function f (t), and we
+wish to estimate f (t), from the data. A naive approach would be to estimate f (t) by
+minimising a least squares criterion:
+SSE(f ) =
+
+N
+X
+
+[yi − f (ti )]2
+
+i=1
+
+Here, SSE(·) is a function that assigns a real number to every real-valued function
+that is defined for all the ti .
+There is an obvious problem with this criterion - it does not have a unique minimiser.
+Any function g(t) such that g(ti ) = yi is will minimise SSE(·). There are an infinite
+number of degrees of freedom, but only a finite number of observations.
+To ensure uniqueness, it is necessary to impose further conditions to discriminate
+between different candidate functions, a way to choose between different functions that
+interpolate a given set of points.
+
+1.2.1
+
+Smoothing Splines
+
+One potential criterion is to introduce a second order penalty. If two functions fit the
+observed data equally well, the more regular or less ‘wiggly’ function is chosen. There
+are several ways of translating this intuition into a formal fitting procedure.
+A common choice is to measure the degree of irregularity by using the integral of
+the second derivative over a chosen interval [0, T ]. The upper limit T should be chosen
+to allow for all observation times to be included.
+Z T
+|f 00 (t)|2 dt.
+0
+
+For a given set of points, the smooth interpolating curve that minimises the energy
+integral above is given by an interpolating cubic spline.
+Choosing the most regular interpolating curve is not necessarily a very good estimation strategy however because it strongly prioritises goodness-of-fit above all other
+considerations. If the data is noisy, there is a risk of overfitting and poor predictive
+power. There is a trade-off between bias and variance.
+In practice, a joint estimation strategy is pursued that attempts to find a good
+balance between fidelity to the observed data and reasonably regular behaviour. This
+involves minimising the following penalised least squares criterion:
+Z
+N
+X
+2
+P EN SSE(f ; λ) =
+[yi − f (ti )] + λ
+
+T
+
+|f 00 (t)|2 dt
+
+0
+
+i=1
+
+The λ term dictates the trade-off between fidelity to the data and regularity.
+
+9
+
+(1.1)
+
+Suppose there were a candidate function g(t), then by taking the cubic spline such
+that its value at ti is equal to g(ti ), we
+s(t) that has the same
+R 00can 2produce
+R a00curve
+2
+least-squares error as g(t), but with [s (t)] dt ≤ [g (t)] dt. Thus, the curve that
+minimises P EN SSE can be assumed to be a cubic spline.
+To find the minimiser of P EN SSE(·; λ) first, assume that f (t) can be represented
+as a linear combination of K cubic spline functions φi (t) that can represent any cubic
+spline with knots at the ti . This implies that
+f (t) =
+
+K
+X
+
+ci φi (t).
+
+i=1
+
+Let the design matrix Φ be defined by Φij = φi (tj ), where i indexes the basis
+functions and j indexes the observations. Let the weight matrix R be defined by Rij =
+R T 00
+φi (t)φ00j (t)dt. Then P EN SSE can be written in terms of the vector of coefficients
+0
+c and observations y as:
+P EN SSE(c; λ) = ky − Φck2 + λc> Rc
+The problem of minimising (1.1) has been replaced with a discretised problem over
+R .
+The optimal value of c is given by
+K
+
+ĉ = (Φ0 Φ + λR)−1 Φ> y
+This is an exact solution to the original problem because the span of the {φi (t)}
+contains the function that minimises P EN SSE. The coefficient vector ĉ is the set of
+coordinates of the optimal function within this finite-dimensional vector space.
+
+1.2.2
+
+Piecewise Trigonometric Interpolation
+
+Consider a more difficult penalised regression problem:
+Z
+N
+X
+2
+P EN SSE(f ; λ) =
+[yi − f (ti )] + λ
+
+T
+
+|f 00 (t) − f (t)|2 dt
+
+0
+
+i=1
+
+The penalty f 00 (t) has been replaced with a penalty f 00 (t) − f (t). Whearas the
+second derivative penalty ignores functions of the form a + bt, this penalty term ignores
+functions of the form a sin(t) + b cos(t).
+P EN SSE can be minimised in this case taking by a piecewise function consisting of linear combinations of sin(t) and cos(t) over each interval between ti and ti+1 ,
+and requring that the points (yi , ti ) are interpolated exactly so that f (ti ) = yi . This
+interpolation condition only eliminates half of the degrees of freedom available. To
+specify the curve exactly, a further condition imposed is that the piecewise curve must
+be continous.
+Note that a function of the form
+10
+
+1.0
+
+●
+
+0.5
+
+●
+
+−1.0
+
+−0.5
+
+0.0
+
+f(t)
+
+●
+
+●
+
+0
+
+1
+
+2
+
+3
+
+4
+
+5
+
+t
+
+Figure 1.2: Plot of a Piecewise Trigonometric Curve. Note the kinks between
+segments.
+
+a0 + a1 cos(t) + b1 sin(t) + a2 cos(2t) + b2 sin(2t) + . . .
+can be written as a polynomial in eit and e−it . For this reason, such a piecewise
+trigonometric function can also be referred to as a piecewise trigonometric polynomial
+or a piecewise trigonometric spline.[41]
+As can be seen in Figure 1.2, a piecewise trigonometric polynomial of second degree
+generally fails to be smooth at the boundary points, and thus has a kinked appearance.
+For the purposes of statistical modelling, it is strongly desirable to impose the additional constraint that f (t) must be everywhere differentiable. This cannot be achieved
+for a piecewise basis formed from the functions {sin(t), cos(t)} because there are only
+two free parameters on each segment and they are needed to ensure continuity.
+
+11
+
+1.3
+
+Finite Dimensionalisation: the General Case
+
+To find an exact solution to the two problems in Sections 1.2.1 and 1.2.2, it was
+necessary in both cases to construct a finite dimensional function space that contained
+the optimal function. However it is not guaranteed that this is always possible. In
+practice, one would hope that the optimal function can be approximated sufficiently
+well by a linear combination from some chosen set of functions. Spline bases tend to be
+a reliable workhorse that are effectively the default choice. They provide a good balance
+between being well behaved as objects for regression and having good approximating
+power.
+For comparison, Chebyshev Polynomials can often provide better approximation
+power for a given number of basis functions.[2] Unfortunately, it was found that they
+can be poorly behaved statistically because they consist of high order polynomials that
+are difficult to fit to data.
+Functional Data Analysis thus consists of the following steps, illustrated in Figures
+1.3 and 1.4:
+1. Formulate a model for f (t). Usually, this takes the form of a penalised regression
+model, where f (t) is defined as the function that minimises some kind of penalised
+error.
+2. Assume that f (t) can be written as a finite combination of chosen basis functions.
+In practice a finite basis can only ever approximate f (t), so it is important to
+ensure the basis is large enough to approximate the optimal f (t) sufficiently well.
+The function f (t) can thus be written:
+
+f (t) =
+
+K
+X
+
+ci φi (t)
+
+i=1
+
+= [c1 , . . . , cK ]> [φ1 (t), . . . , φK (t)]
+= c> φ(t)
+Note that f (t) is now defined by the coefficient vector c.
+3. Formulate the model in terms of the coefficient vector c. A Statistical problem
+over some given functional space has been transformed into a Statistical problem
+over RK .
+For every valid choice of c, a statistic that measures the goodness of fit to the
+data can be computed. One desires the value of c that maximises the goodness-of-fit
+statistic under consideration. The problem of finding the coefficient vector c can thus
+be thought of as being a non-linear regression problem since c is finite-dimensional.
+Besides formulating an FDA model, one needs to consider the questions of constructing a finite dimensional approximation and then solving the associated non-linear
+regression. The situation is sketched in Figure 1.4.
+12
+
+Formulate Model For Function f(t)
+
+Assume That f(t) Can Be Written
+As Finite Linear combination Of
+Basis Functions
+
+Fit Statisitical Model For Coefficients
+Associated With Basis Functions
+
+Figure 1.3: Statistical Modelling Process For Functional Data Analysis
+
+13
+
+Functional Data
+Analysis
+
+Finite Dimensional
+Approximation
+
+Nonlinear Regression
+
+Figure 1.4: Elements of Functional Data Analysis
+
+14
+
+1.3.1
+
+FDA With A Quadratic Basis
+
+As carried out in [2], we will provide an example with a very small basis to illustrate
+these steps. Consider the following penalised regression problem:
+P EN SSE(f ; λ) =
+
+N
+X
+
+2
+
+Z
+
+[yi − f (ti )] + λ
+
+1
+
+|t2 f 00 − 0.5f |2 dt
+
+0
+
+i=1
+
+The differential equation associated with the penalty term is known as an Euler’s
+Equation. The solution is given by f (t) = atr1 + btr2 , where r1 and r2 are the roots of
+the quadratic equation r2 − r − 0.5 = 0. Thus, r1 ≈ −0.36 and r2 ≈ 1.36.
+For the sake of illustration it will be assumed that that f (t) can be written as a
+quadratic - a linear combination of the basis functions {1, t, t2 }:
+f (t) = at2 + bt + c
+Then:
+Z
+
+1
+2 00
+
+Z
+
+2
+
+1
+
+|t f − 0.5f | dt =
+0
+
+0
+
+Z
+=
+0
+
+2
+
+1
+at − (at2 + bt + c) dt
+2
+2
+1
+at2 − bt − c dt
+2
+2
+
+1
+
+Z
+1 1 2
+=
+|at − bt − c|2 dt
+4 0
+1
+= [a − b − c]> H[a − b − c]
+4
+1
+= [a b c]> (A0 HA)[a b c]
+4
+= [a b c]> K[a b c]
+Here K = 41 A0 HA, the elements of the matrix H are defined by Hij =
+1/(i + j + 1), and elements of the matrix A are given by:
+
+
+1 0
+0
+A = 0 −1 0 
+0 0 −1
+
+R1
+0
+
+ti tj dt =
+
+Thus, the penalised error is given by:
+P EN SSE(a, b, c; λ) =
+
+N
+X
+
+(yi − at2i − bti − c)2 + λ[a b c]> K[a b c]
+
+(1.2)
+
+i=1
+
+We have now gone from a problem specified in terms of functions, to a penalised
+least squares problem in the three coefficients a, b and c. The quality of this approximate
+15
+
+model as λ gets larger and larger depends on how well the functions t−0.36 and t1.36 can
+be respectively approximated by quadratics over the interval [0, 1].
+To illustrate this example further, the method was fitted to simulated data. A
+solution to the ODE t2 f 00 − f = 0 was generated over the interval [0, 1], and samples
+were taken at various points before being corrupted by Gaussian noise. The quadratic
+that minimised (1.2) with λ = 100 was then found. For comparison, the data was
+also fitted to a quadratic using ordinary least squares. The original function f (t), the
+perturbed data, and the two fitted functions are all shown in Figure 1.5
+It’s already been noted that the quality of the model depends partially on how well
+f (t) can ever beRapproximated by a quadratic over [0, 1]. Therefore, the quadratic q(t)
+1
+that minimises 0 |f (t) − q(t)|dt was found numerically and is also plotted in Figure
+1.5.
+Figure 1.5 suggests that f (t) can be approximated reasonably well by quadratics
+so long as one stays away from the point t = 0. The ODE t2 f 00 − f = 0 behaves
+degenerately at the origin. When t = 0, the ODE has a singular point, the term in
+front of f 00 becomes zero so that the ODE reduces to (0)2 f 00 − f = 0. Additionally, it
+is always the case that the second derivative diverges to infinity at 0 if f (t) is of the
+form at−0.36 + bt1.36 . As a result of both the singular point and infinite curvature at
+t = 0, polynomial approximation is predicted to be execptionally tricky around this
+point.[16, 48]
+Comparing the two fits in Figure 1.5, it is fair to argue that the penalised regression
+model captures the shape of f (t) better than ordinary least squares away from t = 0.
+Both models seem to have similar predictive power on average. The penalised fit is
+being heavily influenced by the singularity at t = 0 and probably would have performed
+better if a more robust loss function than least squares were used.
+
+16
+
+●
+
+●
+
+−8
+
+−6
+
+f(t)
+
+−4
+
+−2
+
+0
+
+2
+
+Original Function
+Best Possible Quadratic
+Quadratic Using Penalised Least Squares
+Quadratic Using Ordinary Least Squares
+
+●
+
+●
+
+−10
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+−12
+
+●
+
+●
+
+●
+
+●
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+t
+
+Figure 1.5: Performing FDA with the differential operator Lf = t2 f 00 − 0.5f and the
+basis set {1, t, t2 }.
+
+1.4
+
+The FDA Package
+
+Section 1.3 developed FDA algorithms for penalised fitting from scratch. However the
+FDA package in R was developed[33, 38] to tackle penalised problems of the form:
+Z
+N
+X
+2
+P EN SSE(f ) =
+[yi − f (ti )] + λ |Lf (t)|2 dt
+
+(1.3)
+
+i=1
+
+P
+Here Lf is a parameterised linear differential operator of the form nj=0 βj Dj where
+the βj are constants. The authors of the FDA package introduce the Melanoma dataset,
+which describes the incidence of skin cancer per 100,000 people in the state of Connectict from 1936 to 1972.[34] The result of smoothing the melanoma data with the
+differential operator Lf = f − ω 2 f (4) with ω = 0.65 is shown in Figure 1.6. This
+operator was choosen because a penalty of the form f − ω 2 f (4) ignores functions of the
+form c1 + c2 t + c3 sin(ωt) + c4 cos(ωt).
+The FDA packages is not as powerful as the Data2LD package, which will be introduced in Section 1.5. It has the advantage of simplicity and ease of use, and is used
+throughout this thesis to fit FDA models unless Data2LD is essential. A deficiency of
+the FDA package is that it provides no guidance on the best choice of the parameters
+βi nor the smoothing parameter λ.6
+6
+
+The FDA package has a command called lambda2gcv whose documentation claims it ‘[finds] the
+
+17
+
+● ● ●
+●
+●
+●
+
+4
+
+●
+●
+
+●
+
+●
+
+●
+●
+
+●
+●
+●
+
+3
+
+Melanoma Rate
+
+●
+
+●
+
+●
+
+●
+●
+●
+
+●
+
+●
+●
+●
+
+2
+
+●
+●
+●
+●
+● ●
+●
+●
+
+1
+
+●
+●
+● ●
+
+1935
+
+1940
+
+1945
+
+1950
+
+1955
+
+1960
+
+1965
+
+1970
+
+Year
+
+Figure 1.6: Using the FDA package to smooth the melanoma data with the differential
+operator Lf = f − ω 2 f (4) .
+
+smoothing parameter that minimises GCV’. [33] Inspection of the code for this function shows that
+it only performs a fit based on the value of λ passed and then reports the GCV. Incorrect or unclear
+documentation is unfortunately not an uncommon problem with FDA codes.
+
+18
+
+1.5
+
+The Data2LD Package
+
+The Data2LD package is an R package intended to perform smoothing using general
+linear differential operators with a forcing function, that is, ODEs of the form:
+X
+βi (t)Di f (t) = u(t)
+(1.4)
+The βi (t) are parameter functions for the linear differential opertor on the lefthand
+side, and u(t) is a forcing function.
+More generally, Data2LD can model a system of inhomogeneous linear differential
+equations:
+df (t)
++ B(t)f (t) = u(t)
+(1.5)
+dt
+Each element of B(t) is a time-varying linear parameter function of the the form
+βij (t) and each element of u(t) denotes the forcing function applied to the ith equation.
+A further advantage of Data2LD over the FDA package is that not only can it smooth
+ODEs with functional parameters, but it can estimate the associated parameters even
+if they are functions.
+While Data2LD can estimate parameters for the differential operator, it does not
+provide a means for finding the optimal smoothing parameter.7
+
+1.6
+
+Modelling the Reflux Data: A Parametric Approach vs Data2LD
+
+The Reflux data, plotted in Figure 1.7, describes the output of an oil refining system.
+A given fraction of oil is being distilled into a specific tray, at which point it flows
+out through a valve. At a given time, the valve is switched off, and distillate starts to
+accumulate in the tray.[34] The Reflux data was taken from the Data2LD package used
+for FDA, which will be discussed in more detail later. The authors of the Data2LD
+package model the data using the following ODE:
+
+0
+
+t ≤ t0
+y (t) = −βy(t)
+0
+(1.6)
+y (t) = −βy(t) + u0 t ≥ t0
+
+
+y(0) = 0
+Up until the point t0 , the function satisfies the ODE y 0 = −βy. At the breakpoint,
+a constant forcing function u0 is turned on to model the valve being switched off, so
+that the ODE then becomes y 0 = −βy + u0 .
+This ODE admits an exact solution. Letting γ = u0 /β and C be an arbitray
+constant, then the solution is given by:
+7
+
+For Data2LD, the smoothing parameter is written in terms of ρ = λ/(1 + λ).
+
+19
+
+3
+
+4
+
+●
+●●●●●●
+●
+●●●
+●●●●●●●
+● ●
+●●●
+●
+●
+● ●●●●●●●●●●●●
+●
+●
+●
+●
+●
+●
+● ●●●●
+●
+●●●●
+●●●
+●
+●
+●●●
+●
+●
+●
+●●●
+● ●
+●
+●
+●●
+●● ●
+●●
+● ●
+●●●●●●
+
+●
+●
+●
+
+2
+
+Tray
+
+●
+●
+●
+●●●●●
+●●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+
+1
+
+●●●
+●
+●
+●● ●
+●
+● ●
+●
+●
+
+0
+
+●●●●
+
+●
+●
+●●●●●●●● ● ●
+●
+●
+●●●●●
+●●●●●●●●●●●●●
+●●
+●●●●●●●
+●
+● ●
+●●●●●●
+●
+●
+●
+
+●●●●●●●●●
+●
+●
+●●●●
+
+0
+
+50
+
+100
+
+150
+
+200
+
+Time
+
+●
+●
+●
+●
+●
+●
+●●
+●
+●
+● ●
+●
+●
+●
+●
+●
+● ● ● ●
+●●
+●
+●
+● ●●●● ●
+●
+● ●
+●
+●●
+● ● ●●
+● ●
+●
+●
+●●
+● ●
+●●●
+●
+●
+●
+● ●
+●
+●
+●
+●
+●
+●
+●
+●
+●●● ●
+●
+●
+●●
+●●
+●
+●
+●
+● ● ●●
+●●
+●●●
+● ●
+●
+● ●
+● ●
+●● ●
+●
+● ● ● ●● ●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●●
+●
+●
+
+0.5
+
+●
+●●
+●
+
+●
+
+●
+
+0.4
+
+●
+
+0.2
+0.1
+
+●
+
+0.0
+
+●
+● ●●
+●
+●
+●
+●
+
+●
+● ● ●●
+●
+
+● ●
+●
+●
+
+●
+
+●● ● ●●●●
+●
+● ●
+●
+
+●
+●
+
+●●
+●
+● ●
+●●
+●●
+●●
+●●
+●
+●
+● ●●
+●●
+● ● ●
+●
+●
+●
+●
+
+●
+
+● ●
+● ●
+
+●
+
+●
+
+●
+
+−0.1
+
+Valve
+
+0.3
+
+●
+
+0
+
+50
+
+100
+Time
+
+Figure 1.7: Reflux Data
+
+20
+
+150
+
+200
+
+(
+0
+y(t) =
+γ + Ce−β(t−t0 )
+
+t < t0
+t ≥ t0
+
+Without loss of generality the exponential term Ce−β(t−t0 ) can be replaced with
+one that is of the form Ce−βt . This is the case because Ce−β(t−t0 ) = Ce−βt e−βt0 =
+[Ce−βt0 ]e−βt , the e−βt0 term is thus absorbed into the constant term.
+In order to ensure that y(t) is continuous at t0 and monotone increasing, we require
+that γ + C = 0 and that β > 0.
+
+1.6.1
+
+Fitting the Reflux Data Parametrically by Solving the
+ODE Model
+
+Instead of approximately solving an associated problem as discussed in Section 1.3, a
+purely parametric approach to fitting the ODE (1.6) will be employed. The question
+of modelling the Reflux data using FDA will not be discussed in detail until the next
+chapter.
+It turns out that the constraint C = −γ is unsuitable from the point of view of
+numerical parameter estimation because R’s nls command reports errors when this
+constraint is imposed.
+However, if we allow t0 to vary, we can allow C to assume any negative value while
+preserving monotonicity and continuity.
+Assume that y(t) is instead given by:
+ỹ(t) = max(0, γ + Ce−β(t−t0 ) )
+This change does not substantially effect the statistical model. The function ỹ(t)
+satisfies the same ODE and initial conditions as y(t) except that the change point t0
+is shifted to t00 defined by:
+
+
+
+−γ
+1
+0
+t0 = max t0 , t0 − ln
+β
+C
+It shall be seen when the model is fitted that t00 and t0 are very close to each other in
+practice. The function ỹ(t) is a combination of two simpler functions, joined together
+using the maximum operator instead of the addition operator as can be seen Figure
+1.8.
+
+21
+
+4
+3
+2
+−1
+
+0
+
+1
+
+y(t)
+
+0
+
+50
+
+100
+
+150
+
+200
+
+t
+
+Figure 1.8: The fitted curve is constructed by combining two functions together using
+the maximum operator.
+
+22
+
+Parametric Fitting
+Assume that the breakpoint t0 is known in advance. Then our model for y(t) is:
+(
+0
+t ≤ t0
+(1.7)
+y(t) =
+β0 + β1 eβ2 t t ≥ t0
+Note that this function might not be well defined at t0 , we will address the question
+of matching later on. It will not generally be the case that β0 +β1 eβ2 t0 = 0, so ultimately
+a model of the form y(t) = max(0, β0 + β1 eβ2 t ) will be used to ensure continuity at the
+breakpoint.
+We must estimate the three unknown coefficients β0 , β1 , β2 .
+Estimating β0 from the data: Figure 1.7 suggests that β2 < 0, and β1 < 0, under
+this assumption, we have that:
+lim y(t) = β0
+
+t→∞
+
+Where the convergence happens monotonically from below.
+An initial estimate for β0 is thus given by β̂0 = max(yi ).
+Estimating β1 and β2 from β0 and the data: For t ≥ t0 , the model in Equation
+1.7 can be rearranged so that:
+log[β0 − y(t)] = log |β1 | + β2 t
+
+(1.8)
+
+This equation is only valid so long as the left hand side is well defined however. It
+is necessary to exclude the largest observed value of y, because β0 is estimated to be
+the largest observation at this point. If the largest value were included, there would be
+a term of the form log(0) in the rearranged model.
+The values of log |β1 | and β2 can be estimated by performing simple linear regression
+of t against log[β0 −y(t)], with the largest value of y observed excluded. It was assumed
+that β1 < 0, so βˆ1 can be found from the estimate of log |β1 |.
+Simulataneous Estimation of Parameters: Now that we have reasonable estimates for β0 , β1 , and β2 , we can use non linear regression to estimate all three jointly.
+Matching: For t < t0 , it is estimated that ŷ(t) = 0. For t ≥ t0 . the estimate is given
+ˆ
+by ŷ(t) = βˆ0 + βˆ1 eβ2 t . There are distinct estimates for y(t) at t ≤ t0 and t ≥ t0 , which
+do not necessarily agree at t = t0 . This is the case for the estimates produce here since
+ŷ(t0 ) = 0.029.
+ˆ
+To stitch the two functions together, let ŷ(t) = max(0, βˆ0 + βˆ1 eβ2 t ). This is a continuous function that entirely satisfies the original ODE, except for the precise location
+of the breakpoint.
+The resulting fit is presented in Figure 1.9.
+23
+
+Breakpoint Estimation: The value of t0 used for the fit is given by t0 = 68. A
+statistical estimate of the breakpoint can be found from finding the point where β̂0 +
+β̂1 eβ̂2 t is zero:
+!
+1
+β̂0
+t̂0 =
+log −
+β̂2
+β̂1
+Using this formula, it was estimated that t0 = 67.71. This new value will produce
+the same results as for t0 = 68 because it doesn’t change the set of observation points
+used to estimate β0 , β1 , and β2 .
+Discussion
+The parametric approach taken to estimation here is somewhat ad hoc. Instead of
+devising a formal estimation strategy in advance, the fitting approach evolved organically alongside the problems of solving the ODE and fitting the data. Use was made
+of properties unique to the specific ODE model to compute estimates. While this has
+produced an effective fit, there are obvious concerns about generalising this approach
+to other ODEs. Futhermore, since the fitting model was devised by peeking at the
+data, it is not obvious that one can find a valid p-value for the fit without applying the
+methodology to an entirely new set of data.
+This issue is difficult to resolve if we restrict ourselves to solving ODE models
+explicitly and then fitting them by parametric methods. It is often the case in Applied
+Mathematics that one can’t fully investigate an ODE model until one has a rough
+grasp of its behaviour. It has been demonstrated that the associated Statistical fitting
+problem inherits this tendency.
+
+24
+
+3
+
+4
+
+●
+●●●●●●
+●
+●●●
+●●●●●●●
+● ●
+●
+●●
+● ●
+● ●●●●●●●●●●●●
+● ●
+●●●●
+● ●●●●
+●
+●●●●
+●●●
+●
+●●●●
+●
+●
+●
+●●●
+● ●
+●
+●
+●●
+●● ●
+●●
+● ●
+●●●●●●
+
+●
+●
+●
+
+2
+
+Tray
+
+●
+●
+●
+●●●●●
+●●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+
+1
+
+●●●
+●
+●
+●● ●
+●
+● ●
+●
+●
+
+0
+
+●●●●
+
+●●●●●●●●●
+●
+●
+●●●●
+
+0
+
+●
+●
+●●●●●●●● ● ●
+●
+●
+●●
+●●●●●●●
+●
+●●●●●●
+
+●●●●●
+●●●●●●●●●●●●●
+● ●
+●
+●●
+
+50
+
+100
+
+150
+
+200
+
+Time
+
+Figure 1.9: Plot of the parameteric fit to the the Reflux data.
+
+25
+
+1.6.2
+
+Fitting the Reflux Data Parametrically Using a Collocation Method
+
+In order to bridge between the parametric approach used in Section 1.6.1 and Data2LD,
+this section will briefly discuss fitting the ODE model parametrically, but by approximating y(t) by a basis functions instead of finding an explicit solution to Equation
+1.6.
+The Reflux ODE model given in Equation 1.6 can be written in the form:
+dy
+= f (y(t), t; β0 , β1 )
+dt
+Where f (y, t; β0 , β1 ) is defined by:
+(
+β1 y(t)
+f (y(t), t; β0 , β1 ) =
+β1 y(t) + β0
+
+t < t0
+t ≥ t0
+
+The breakpoint t0 is held fixed as usual.
+Divide the interval of interest [0, T ] into knots t0 = 0 < t1 < · · · < tN = T, and
+require that the observation points are included amongst the knots.
+Assume that over each knot interval [ti , ti+1 ) the function y(t) can be approximated
+by a quadratic function qi (t). Furthermore, assume for the time being that the values
+of y(t) are known at all the knot points, not just the knot points for which empirical observations are available. Let yi = y(ti ), and impose the following collocation
+conditions on each qi (t) :
+q(ti ) = yi
+q 0 (ti ) = f (yi , ti ; β0 , β1 )
+q 0 (ti+1 ) = f (yi+1 , ti+1 ; β0 , β1 )
+
+(1.9)
+(1.10)
+(1.11)
+
+Write qi (t) in the form:
+qi (t) = ai (t − ti )2 + bi (t − ti ) + ci
+Letting hi = ti+1 − ti , the collocation conditions then become:
+ci = y i
+bi = f (yi , ti ; β0 , β1 )
+2ai hi + bi = f (yi+1 , ti+1 ; β0 , β1 )
+
+(1.12)
+(1.13)
+(1.14)
+
+These equations can be solved for ai , bi , and ci :
+1
+[f (yi+1 , ti+1 ; β0 , β1 ) − f (yi , ti ; β0 , β1 )]
+2hi
+bi = f (yi , ti ; β0 , β1 )
+ci = yi
+
+ai =
+
+26
+
+(1.15)
+(1.16)
+(1.17)
+
+Evaluating qi (t) at ti+1 yields that:
+yi+1 ≈ qi (ti+1 )
+1
+=
+[f (yi+1 , ti+1 ; β0 , β1 ) − f (yi , ti ; β0 , β1 )] h2i + f (yi , ti ; β0 , β1 )hi + yi
+2hi
+hi
+= yi + [f (yi+1 , ti+1 ; β0 , β1 ) + f (yi , ti ; β0 , β1 )]
+2
+Note that yi+1 appears on both sides of the equation.
+Let S denote the set of indices for which there is an emperical observation. The
+discussion so far suggests the Reflux data can be fitted by solving the following optimisation problem:
+
+minimise:
+
+H(β0 , β1 ) =
+
+X
+
+[yi − ŷi ]2
+
+i∈S
+
+subject to:
+
+ŷi+1 = ŷi +
+
+hi
+[f (ŷi+1 , ti+1 ; β0 , β1 ) + f (ŷi , ti ; β0 , β1 )]
+2
+
+While useful for illustrating the use of basis approximations for fitting ODEs, the
+methodology described here was found to not perform very well in practice. In addition, solving the optimisation problem would be quite difficult. As a result of these
+considerations, this approach was not applied to the Reflux data.
+Figure 1.10 plots the result of smoothing the Melanoma data with a second derivative penalty approximated using a finite difference method. The results are fairly poor.
+
+27
+
+5
+
+● ● ●
+●
+
+●
+●
+
+4
+
+●
+●
+
+●
+
+●
+
+●
+●
+
+●
+●
+
+3
+
+●
+●
+
+●
+
+●
+●
+●
+
+●
+
+●
+●
+●
+
+2
+
+Melanoma Rate
+
+●
+
+●
+●
+●
+●
+● ●
+●
+●
+
+1
+
+●
+
+●
+
+0
+
+● ●
+
+1940
+
+1950
+
+1960
+
+1970
+
+Year
+
+Figure 1.10: Smoothing the Melanoma data using a finite difference approximation
+does not produce a particularly smooth fit.
+
+28
+
+1.6.3
+
+Fitting the Reflux Data with Data2LD
+
+While the parametric approaches employed so far require a considerable amount of
+domain-specific knowledge or solving complex constrained optimisation problems, the
+functional model can be more generally employed. The FDA approach doesn’t rely on
+individual features of the specific differential equation at hand,8 and produces a similar
+fit to the Reflux data as the parametric approach in Section 1.6.1.
+The functional model asserts that
+y 0 (t) ≈ −βy(t) + u(t)
+Where y(·) and u(·) are functions to be estimated, and β is a single scalar parameter.
+It is assumed that u(t) is a step function of the form
+u(t) = aI[0,t0 ) (t) + bI[t0 ,∞) (t)
+As in the parametric case, the breakpoint t0 is fixed in advance. It is further
+assumed that y(t) can be expanded as a linear combination of B-Splines. The knots
+are duplicated at t0 so that the first derivative at the breakpoint is discontinuous.
+This model was fitted using the Data2LD package, and the results are plotted in
+Figure 1.11. It can be seen that the fit is quite similar to the parametric one presented
+in Figure 1.9. The main disadvantage of the FDA approach compared to the parametric
+one is that Data2LD can be complex and unintuitive to use.
+
+1.7
+
+Rates Of Convergence9
+
+Throughout this thesis, it will sometimes be desirable to consider the rates of convergence of different fitting and estimation methods. For the purposes of this section, it is
+assumed that there is a vector-valued sequence x0 , x1 , x2 , . . . that converges to a value
+x∗ .
+Linear Convergence: A convergent sequence is said to converge linearly 10 to x∗
+(with convergence rate µ) if there is a 0 < µ < 1 such that:
+kxn+1 − x∗ k
+=µ
+lim
+n→∞ kxn − x∗ k
+
+(1.18)
+
+If a sequence xn converges linearly with constant µ, then kxn+1 − x∗ k ≈ µkxn − x∗ k
+for n sufficiently large. A simple example of a linearly converging sequence is given by
+8
+The FDA approach does rely on more general features of course, such as whether or not the
+differential equation is linear.
+9
+There are slightly different definitions of convergence rates from text to text, but all capture the
+same basic meaning. Refer to [7, 29].
+10
+In [29], the case µ = 0 is considered to be a case of linear convergence as well. This definition
+makes it harder to sharply discriminate between linear and superlinear convergence.
+
+29
+
+4
+
+●
+●●●●●●
+●
+●●●
+●●●●●●●
+● ●
+●
+●●
+● ●
+● ●●●●●●●●●●●●
+●●●
+● ●
+●
+●
+● ●●●
+●
+●●●●
+●●●
+●
+●●●●
+●
+
+3
+
+●
+●
+●●●
+● ●
+●
+●
+●
+●
+●● ●
+●●
+● ●
+●●●●●●
+
+●
+
+2
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+1
+
+●●●
+●
+●
+●● ●
+●
+● ●
+●
+●
+●●●●
+
+0
+
+Tray
+
+●
+●
+●
+●●●●●
+●●
+●
+●
+
+●●●●●●●●●
+●
+●
+●●●●
+
+0
+
+●
+●
+●●●●●●●● ● ●
+●
+●
+●●●●●
+●●●●●●●●●●●●●
+●●
+●●●●●●●
+●
+●●●●●
+●
+
+● ●
+●
+●●
+
+50
+
+100
+
+150
+
+200
+
+Time
+
+Figure 1.11: Modelling the Reflux data using Data2LD.
+
+30
+
+1, 12 , 14 , 81 , . . . If plotted on a log scale, the error terms kxn+1 − x∗ k will tend to lie on
+a straight line. A linearly convergent sequence has the property that if the number of
+iterations is doubled, then the number of digits of precision achieved is roughly doubled
+as well.
+Sublinear Convergence: A sequence is said to converge sublinearly to x∗ if:
+kxn+1 − x∗ k
+=1
+lim
+n→∞ kxn − x∗ k
+Sublinear convergence is very slow. Every reduction in the order of magnitude of the
+error achieved takes more iterations than the previous reduction. The ur-example of a
+sublinearly convergent sequence is the reciprocals of the natural numbers: 1, 12 , 13 , 41 , . . . .
+Superlinear and Quadratic Convergence: A sequence is said to converge superlinearly if:
+kxn+1 − x∗ k
+=0
+n→∞ kxn − x∗ k
+lim
+
+A sequence is said to converge superlinearly with order p if there exist positive
+constants p > 1 and µ > 0 such that:
+kxn+1 − x∗ k
+lim
+=µ
+n→∞ kxn − x∗ kp
+
+(1.19)
+
+If p = 2, the sequence is said to converge quadratically. Note that there is no
+requirement that µ < 1 in this case. The µ term will be dominated if kxn − x∗ k is
+small enough in magnitude.
+Taking logs of (1.19) yields that if n is sufficiently large, then:
+log(kxn+1 − x∗ k) ≈ log(µ) + p log(kxn − x∗ k)
+If kxn − x∗ k < 1 then log(kxn − x∗ k) < 0. As already indicated in the previous
+paragraph, the log(µ) term will be become increasingly negligible as the error kxn −x∗ k
+becomes smaller and smaller.
+For a linearly convergent sequence, the magnitude of the error declines exponentially, and the number of digits of precision gained increases linearly with the number
+of iterations. But for a superlinearly convergent sequence, the order of magnitude of
+the error declines exponentially, and the number of digits of precision gained grows
+geometrically with the number of iterations.
+For a quadratically converging sequence, each iteration tends to roughly double
+the number of digits of precision. For example, if the error in the first iterate is
+approximately 0.1, the next iterate will have error on the order of 10−2 , the next again
+will have error on the order of 10−4 , and so on.
+
+31
+
+Convergence Class Example
+Sublinear
+xn = n1
+Linear
+xn = 2−n
+n
+Superlinear
+xn = 2−2
+
+Iterations until < 10−6
+106 + 1
+20
+5
+
+Iterations until < 10−12
+1012 + 1
+40
+6
+
+Table 1.1: Illustrating the different classes of convergence.
+Note that if log(µ)+p log(kxn −x∗ k) is large enough then kxn+1 −x∗ k > kxn −x∗ k, so
+that there is a failure to converge.11 Methods that converge superlinearly are generally
+more sensitive to a poor starting point than methods that converge linearly.
+n
+An example of superlinear convergence is given by the sequence xn = 2−2 .
+An Extended Definition of Convergence Rates: The above approach to defining
+rates of convergence can’t handle every sequence however. For example, the sequence
+1, 1, 12 , 12 , 14 , 14 , . . . does not converge linearly in the sense of (1.18). To cover these
+situations, a sequence is also said to converge linearly/sublinearly/superlinearly if there
+is an associated auxiliary sequence n such that kxn − x∗ k ≤ n for all n ≥ 0, and the
+sequence n converges linearly/sublinearly/superlinearly to zero.12
+Linear Convergence and Iterated Mappings: Nearly all estimation algorithms
+used in Statistics start with an initial estimate θ0 and generate a sequence of estimates
+by θn+1 = M(θn ) for some mapping M(·). The algorithm is stopped when the generated
+sequence has converged within a tolerance of the limit θ∗ . Examples include the NewtonRaphson Method, Fisher’s Method of Scoring, Gradient Descent, the EM Algorithm,
+Block Relaxation, and many imputation methods. As shall be seen, a statistically
+motivated fitting algorithm will nearly always converge linearly unless it has been
+specifically engineered so that M0 (θ∗ ) = 0.
+Linear convergence is common for convergent sequences defined by repeatedly applying a function f so that xn+1 = f (xn ). To see this, perform a Taylor expansion about
+the limit point x∗ :
+f (xn ) ≈ f (x∗ ) + f 0 (x∗ )(xn − x∗ )
+f (xn ) ≈ x∗ + f 0 (x∗ )(xn − x∗ )
+f (xn ) − x∗ ≈ f 0 (x∗ )(xn − x∗ )
+xn+1 − x∗ ≈ f 0 (x∗ )(xn − x∗ )
+Taking norms of both sides yields that:
+Consider for example the case where µ = 1, p = 2, and kx0 − x∗ k = 2. It will be the case that
+kx1 − x∗ k = 4 and kx2 − x∗ k = 16.
+12
+The simple definition presented here is known as Q-Convergence, and the extended definition is
+known as R-Convergence.[29]
+11
+
+32
+
+kxn+1 − x∗ k . kf 0 (x∗ )kkxn+1 − x∗ k
+The situation here is a little subtle because f is a multivariate function. The exact
+rate is of convergence is controlled by the norm of the Jacobian matrix f 0 (x) at x∗ .
+So long as there is a matrix norm such that kf 0 (x∗ )k < 1 the sequence will converge
+linearly at worst, though faster than linear convergence is potentially possible if 0 is
+an eigenvalue of f 0 (x∗ ).13 If f 0 (x∗ ) = 0, the convergence will be superlinear.
+
+1.8
+
+Overview of Appendices
+
+Appendix A contains an overview of the optimisation methods used throughout this
+thesis. It can be safely skipped if one is already familiar with the theory unconstrained
+optimisation up to Line Search Methods. Line Search methods can be thought of as a
+generalisation of Gradient Descent or the Newton-Raphson method where the size of
+the step taken14 varies on each iteration. The material in Appendix A is a prerequisite
+for Chapter 2 in particular.
+Appendix B discusses the Implicit Filtering method. Implicit Filtering was found
+to be inadequate for our purposes and hence does not play any positive or active role
+in this thesis. The material associated with this purely negative result is accordingly
+relegated to the appendices.
+
+13
+
+Consider for example the multivariate sequence defined by (xn+1 , yn+1 ) = (x2n , yn /2). The convergence towards zero is superlinear in the x direction, but only linear in the y direction. If
+(x0 , y0 ) = (0.5, 0), then the convergence will be superlinear. Usually however the y component will be
+nonzero and will drag the convergence rate down to linear convergence.
+14
+Sometimes referred to as the Learning Rate in the Machine Learning community.
+
+33
+
+Chapter 2
+Hierarchical Estimation and the
+Parameter Cascade
+This chapter opens with a discussion on fitting a semi-parameteric generalisation of
+the ODE used to model the Reflux data in Section 1.6.1. It is shown that a hierarchial
+method is needed, where the inner problem consists of fitting the ODE to the data
+given the paremeters, and the middle problem in turn entails finding the best choice of
+parameters. The Parameter Cascade method for fitting penalised smoothing problems
+with unknown parameters is then introduced.
+A familiarity with numerical optimisation methods such as Gradient Descent, the
+Newton-Raphson Mathod, and Line Searches is assumed. Details are provided in
+Appendix A.
+
+2.1
+
+Fitting the Reflux Data Using a Semi-Parametric
+ODE Model
+
+In Section 1.6 the Reflux data was discussed. An ODE model along the lines of y 0 =
+βy + u0 as described in Equation 1.6 was fitted to the data. After pausing to discuss
+performing a parametric fit by approximating y(t) by basis functions, Data2LD was then
+used to fit a sophisticated semi-parameteric model where the ODE y 0 (t) = β(t) + u(t)
+only holds approximately. While the parametric approach was explored in detail,
+serious discussion of Data2LD was deferred to this chapter.
+To introduce some of the ideas behind Data2LD, a semi-parametric ODE model
+that lies in between the purely parameteric approach discussed in Sections 1.6.1 and
+1.6.2, and the relatively non-parameteric employed by Data2LD will be briefly examined
+in this section. This ODE model takes the form:
+
+34
+
+
+(
+
+βy(t)
+t < t0
+
+0
+
+
+y (t) = βy(t) + u(t) t ≥ t
+0
+
+
+
+
+y(0) = 0
+The forcing function u(t) is unknown and must be estimated alongside β, so this is
+a semi-parametric model.
+The general solution to this ODE given by:
+y(t) = e
+
+βt
+
+Z
+
+min(t,t0 )
+
+u(s)ds
+t0
+
+As in Section
+R 1.6, the breakpoint at t0 will be assumed to be known in advance.
+Letting U (t) = u(s)ds, the general solution can be more conveniently written as:
+y(t) = eβt U (t)1(t − t0 )
+Here 1(t) denotes the Heaviside step function:
+(
+0 t<0
+1(t) =
+1 t≥0
+Let I denote the set of observations for which ti > t0 . If β were known, U (t) could
+estimated by non-parameterically regressing the values yi /eβti against ti where i ∈ I.
+The forcing function u(t) could then be estimated by differentiating the estimate for
+U (t).
+If U (t) were known on the other hand, β could be estimated by minimising the
+following non-linear least squares criterion:
+X
+SSE[β; U (t)] =
+[yi − eβti U (ti )]2
+i∈I
+
+A hierarchical estimation strategy seems natural. For a given choice of β, let U (t|β)
+denote the estimate of U (t) produced by regressing yi /eβti against ti . Define the associated least squares error by:
+H(β) = SSE[β; U (t|β)]
+X
+=
+[yi − eβti U (ti |β)]2
+i∈I
+
+The sketch presented here fails to address two important questions: how to to
+estimate U (t) given β, and how to optimise H(β). Using the nomenclature of the field,
+the inner problem entails estimating U (t) given the parameters and β, and the middle
+problem entails minimising H(β).
+35
+
+Data2LD similarly employs a powerful hierarchical fitting methodology for FDA
+problems known as the Parameter Cascade, which will be introduced in the next section.
+
+2.2
+
+The Two-Stage Parameter Cascade
+
+Consider the following penalised regression problem:
+Z
+N
+X
+2
+P EN SSE(f, θ) =
+(yi − f (ti )) + λ
+
+1
+
+|Tθ f |2 dt.
+
+0
+
+i=1
+
+Here Tθ is some differential operator, that is parameterised by an unknown θ that
+is to be estimated.
+Tθ can be an ordinary differntial operator or a partial differential operator; linear,
+quasi-linear, or nonlinear.
+There are two statistical objects to be estimated here: the parameter θ, and the
+function f (t).
+Ramsay and Cao propose the following hierarchial approach to estimation[5]: Given
+a fixed value of θ, let f (t|θ) denote the function that minimises P EN SSE(f, θ) For a
+given value of θ, its associated mean square error is then defined by:
+N
+1 X
+[yi − f (ti |θ)]2
+M SE(θ) =
+N i=1
+
+By making f (t) dependent on θ, the fitting problem has been reduced to a non-linear
+least squares problem.
+This leaves the issue of estimating the optimal value of θ - Ramsay and Cao propose
+the use of Gradient Descent.
+For a given value of θ, f (t|θ) is found. These two values together are then used to
+compute M SE(θ) and ∇M SE(θ). Finally, a new value of θ is computed by perturbing
+θ in the direction of the gradient.This scheme is sketched out in Figure 2.1.
+It is assumed that f (t) can be represented by a finite vector c associated with an
+appropriate basis. This leads to a pair of nested optimisation problems: the Inner
+Optimisation involves finding the value of c that minimises the penalised least squares
+criterion given θ, and the Middle Optimisation entails finding the value of θ that
+minimises M SE(θ).
+There is thus a ‘cascade’ of estimation problems, where the results of the lower level
+estimation problems feed back in to the higher level ones.
+Note that every time a new value of θ is introduced, the associated function f (t|θ)
+must be computed from scratch. The middle optimisation can thus generate many
+inner optimisation subproblems as the parameter space is explored, and these in turn
+could require multiple iterations to complete if no explicit formula for c given θ is
+available.
+36
+
+Figure 2.1 is a highly idealised sketch of the Parameter Cascade. The main abstraction is that the step of computing f (t|θ) is presented as a single atomic and organic
+step, even though it could be a complex process in its own right. This risks masking
+some of the comptuational work that is happening. A more realistic description is
+provided in Figure 2.2. In this thesis, Parameter Cascade problems that cannot be
+differentiated easily or at all are considered.
+
+2.3
+
+The Three-Stage Parameter Cascade
+
+Up to this point, the structural parameter λ has been treated as fixed. But it is possible
+to extend the Parameter Cascade to estimate λ.
+It is necessary to introduce an outer criterion F (λ) that determines how good a
+given choice of λ is.
+A common choice for the outer criterion is Generalised Cross Validation.[5, 37]
+Just as the problem of fitting a function f (·|θ) can generate an optimisation subproblem, that of fitting a third level in the cascade can generate a series of subproblems
+to find the best parameter choice associated with a given value of λ, which in turn generates a series of subproblems to find the fitted function as the parameter space is
+explored.
+As stated in Chapter 1, neither the FDA nor Data2LD packages implement the three
+stage parameter cascade. They instead require practioners to find the best choice of
+λ by cycling through a set of predetermined values or even just employing manual
+adjustment. There is no guarantee that the optimal choice of λ would lie in a finite set
+of predetermined values. Manual adjustment is slow and cumbersome compared to an
+automated optimisation routine.
+
+2.4
+
+Investigating the Data2LD Package
+
+Data2LD uses a sophisticated two-level parameter cascade algorithm to fit parameters
+to the data, which is briefly described here.
+The inner level of the parameter cascade is implemented by the eponymous Data2LD
+routine. The middle level is implemented by the Data2LD.opt command.[35] The outer
+level of optimisation for choosing the trade-off parameter λ is not implemented.1
+The Data2LD function is written in what might be called ‘R Style’ - upon calling
+the method, it returns a list with a of number computed quantites and statistics. The
+associated Mean Square Error (MSE),2 the gradient of MSE and the Hessian of MSE
+will always be computed and returned whether one needs them or not.
+1
+For Data2LD, the smoothing parameter is written in terms of ρ = λ/(1+λ). The term λ is retained
+for the sake of simplifying the exposition.
+2
+To be clear here, the MSE returned is the MSE associated with the choice of paremeters. The
+command Data2LD fits a function using the choice of parameters passed to it, and then reports the
+associated MSE alongside other related values.
+
+37
+
+Start with value θn
+
+Has the algorithm converged?
+
+Return θn
+
+Compute f(t|θn)
+
+Compute ∇MSE(MSE(θn)
+
+Let θn+1 = θn - ∇MSE(MSE(θn)
+
+Figure 2.1: Two Stage Parameter Cascade (Simplified)
+
+38
+
+Start with value θn
+
+Has the middle
+algorithm converged?
+
+Return θn
+
+Start with value cm
+
+Let cm+1 = cm - ∇MSE(θcm
+
+Has the inner
+algorithm converged?
+
+Compute ∇MSE(θ cm
+
+Compute ∇MSE(θMSE(θθn) using cm
+
+Let θn+1 = θn - ∇MSE(θMSE(θθn)
+
+Figure 2.2: Schematic of the Two Stage Parameter Cascade With the Inner
+Optimisation Visible
+
+39
+
+Only the Data2LD.opt command is investigated in detail here. The middle level
+of the Parameter Cascade is generally easier to implement than the inner level. When
+implementing the middle level, one can generally treat the lower level as a ‘black box’
+that accepts a given choice of parameters as inputs, and then returns the value of the
+objective function and sometimes derivatives as outputs. There is plenty of existing
+methods for tackling such optimisation problems.
+
+2.4.1
+
+How Data2LD Estimates Parameters
+
+The code forData2LD can be difficult to understand. While software with such powerful
+features was inevitably going to be complex, the authors compound the issue by not
+heeding best practices recommended for making code easy to read and maintain. For
+example, Data2LD hardcodes unnamed constants into the code. Allowing such ’Magic
+Numbers’ is strongly discouraged because it makes code more error prone and difficult
+to understand.[27]
+For brevity, let gn and Hn respectively denote the gradient vector and Hessian matrix of the objective function f (θ) at θn . The search directions used by the Data2LD.opt
+command are the Gradient Descent direction:
+pn = −gn
+
+(S1)
+
+pn = −H−1
+n gn
+
+(S2)
+
+and the Newton Direction:
+Data2LD.opt makes use of Line Search methods, which are discussed in more detail
+in Section A.4. For line search methods, the algorithm takes a variable step αn in the
+direction pn on each iteration. Simpler algorithms such as Gradient Descent set αn to
+a constant. Choosing the value of αn is a subproblem that must be tackled on each
+iteration.
+Data2LD uses four tests to determine how good a step is:3
+
+ First Wolfe Condition (checks for sufficient decrease in the objective function):
+
+f (θn + αn pn ) ≤ f (θn ) + c1 αn p>
+n gn
+
+(T1)
+
+ Second Wolfe Condition (checks for sufficient decrease in curvature):
+>
+|p>
+n ∇f (θn + αn pn )| ≤ c2 |pn ∇f (θn )|
+3
+
+(T2)
+
+Data2LD actually tests for the negation of T3 and T4. For the sake of consistency the logical
+negations of the two tests used by Data2LD are presented here so that passing a test is consistently a
+good thing and failing consistently represents unsatisfactory or pathalogical behaviour.
+
+40
+
+ Has the function even decreased compared to the previous iteration?
+
+f (θn + αn pn ) ≤ f (θn )
+
+(T3)
+
+ Has the slope along the search direction remained nonnegative?
+
+p>
+n ∇f (θn + αn pn ) ≤ 0
+
+(T4)
+
+The constants c1 and c2 are required to satisfy 0 < c1 < c2 < 1.[29]
+These four tests are illustrated in Figure 2.3. Written in terms of φ(α) = f (θ +αpn )
+the tests are:
+φ(αn ) ≤ φ(0) + c1 αn φ0 (0)
+
+(T1')
+
+|φ0 (αn )| ≤ c2 |φ0 (0)|
+
+(T2')
+
+φ(α) ≤ φ(0)
+
+(T3')
+
+φ0 (α) ≤ 0
+
+(T4')
+
+If T1 and T2 are satisfied, then the line search has converged completely. If T3
+has failed, this represents a total failure because it means the line search has failed
+to produce any improvement in the objective function. A failure in T4 means the
+function has overshot a critical point.4
+The use of four tests is a little unusual here. The literature suggests that only the
+Wolfe Conditions T1 and T2 are needed as discussed in Section A.4. Data2LD.opt
+is designed to be robust against the possibility that the objective function mightn’t
+behave as predicted by the computed gradient and Hessian.
+Depending on the outcome of the tests, Data2LD chooses the stepsize as follows:
+ If T1, T2, and T3 are passed, the algorithm terminates.
+ If T1 and T1 are passed, or T4 is passed; but T3 is failed, it means that the slope
+is satisfactory, but the function has increased rather than decreased. Data2LD
+reduces the step size.
+>
+If T4 fails, this implies that p>
+n ∇f (θn + αn pn ) and pn ∇f (θn ) are of opposite sign since pn is
+>
+choosen so that pn gn < 0. The Intermediate Value Theorem means there is an ᾱ between 0 and αn
+such that p>
+n ∇f (θn + ᾱpn ) = 0, so that there is a critical point on the line segment between θn and
+θn + αn pn .
+4
+
+41
+
+0.25
+0.20
+f(x)
+
+0.15
+
+D
+
+●
+
+0.05
+
+0.10
+
+A
+
+●
+
+C
+
+●
+
+●
+
+0.00
+
+B
+
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+x
+
+Figure 2.3: Point A is the initial point. Point B passes T1 with c1 = 0.5 and passes
+T2 with c2 = 0.9. Point C fails T1 with c1 = 0.5 and also fails T3, but passes T4,
+and passes T2 with c2 = 0.9. Point D fails all four tests.
+ If all four tests are failed, then the newest point is unsuitable entirely .Data2LD
+falls back on interpolation to try to find a critical point of φ(α), falling back on
+quadratic interpolation methods if necessary.5
+
+If the line search succeeds in reducing the objective function, Data2LD uses the
+Newton search direction for the next iteration. If the line search makes the objective
+function worse, the Gradient Descent direction is used. In the event of the line search
+making the objective function worse twice in a row, Data2LD returns an error.
+Somewhat peculiarly, Data2LD does not make use of φ00 (α) despite being able to
+compute it easily.6 One would think that the Newton-Raphson Method would be the
+first approach to perform the line search attempted before resorting to interpolationbased methods since it’s both simpler to implement and faster to converge. The effort
+required to compute φ00 (α) is mostly a sunk cost because Data2LD will return the
+5
+The line search code for the Data2LD is lightly commented and dense, all that one can be strictly
+certain of is that the method uses radicals to compute the next value of α, falling back on solving a
+linear equation if necessary. Getting the root of a quadratic is equivalent to finding a critical point of
+a cubic, and solving a linear equation is equivalent to finding the critical points of a quadratic.
+6
+00
+Differentiating the expression φ0 (α) = p>
+n ∇f (xn + αpn ) with respect to α yields that φ (α) =
+p>
+H(α)p
+,
+where
+H(α)
+denotes
+the
+Hessian
+of
+f
+evaluated
+at
+x
++
+αp
+.
+n
+n
+n
+n
+
+42
+
+Hessian matrix on each iteration whether it is wanted or not.
+
+2.5
+
+Hierarchical fitting of a Partial Differential Equation
+
+A linear PDE that is analogous to the linear ODE used to model the Reflux data in
+Section 1.6 is the Transport Equation:
+∂u(x, t)
+∂u(x, t)
++β
+=0
+∂t
+∂x
+A general solution to the Transport Equation is given by [46]:
+u(x, t) = f (x − βt)
+The function f (·) is unspecified. The solution u(x, t) is constant along the rays
+x = βt + C. The solution is an animation of the shape f (x) moving to the right at
+fixed speed β.
+The ODE y 0 (t) + βy(t) = 0 can be thought of as a simplifcation of the Transport
+Equation, where it is assumed that u(x, t) only varies with time, and not with space.
+It is apparent that this PDE has a much richer solution structure than is the case for
+the ODE, which only has solutions of the form Ae−βt . Statistically speaking, fitting the
+Transport Equation to observed data is a semi-parametric problem because one of the
+parameters to be estimated is a function. The problem of fitting the Transport Equation is also a transformation model such as that used for the Box-Cox transformation,
+since the plot of u(x, t) with respect to x at a fixed time t is a transformed version of
+f (x), the curve at t = 0.
+If the parameter governing the transformation process - β - is known, f (·) is reasonably easy to estimate. Suppose there were n observed values yi at time ti and location
+xi . It has already been established that the value observed at a point x at time t depends only on x − βt. The function f (·) could thus be estimated by non-parametrically
+regressing the observed values at yi against xi − βti
+What if β were unknown? The above discussion suggests a hierarchial approach to
+estimation: for a given choice of β, to fit an associated function f (·|β) using an appropriate non-parametric estimation method, and compute the associated least squares
+error. Let H(β) be the function that associates each β with its sum of squared error:7
+H(β) =
+
+n
+X
+
+[yi − f (xi − βti |β)]2
+
+i=1
+
+The problem of minimising H(β) is a non-linear least squares problem that is also a
+two level hierachial estimation problem. The inner level consists of non-parametrically
+7
+
+In case the lefthand side might be slightly unclear - for the ith observation, the associated function
+f (·|β) is evaluated at xi − βti .
+
+43
+
+fitting a function to the set of points {(yi , xi − βi )} given β. The associated sum of
+squared errors is then returned as H(β). The outer level entails optimising the profiled
+objective function H(β).
+This is a broad fitting strategy where different statistical and optimisation approaches can be swapped in and out as needed. There are several ways to tackle the
+inner function - LOESS; Kernel Regression; Penalised Splines, etc. The least squares
+loss function could be replaced with another one as suits the problem. There are many
+methods for optimising H(β) that might be attempted - subgradient methods if H(β)
+is convex, Gradient Descent, Gauss-Newton Method, derivative-free methods and so
+on.
+
+44
+
+Chapter 3
+Derivative-Free Optimisation and
+the Parameter Cascade
+The Parameter Cascade as presented in the previous chapter requires the computation
+of derivatives to perform optimisation. However, computing the necessary derivatives
+can be a time-consuming and complex task. This is especially the case for the higher
+levels of the Parameter Cascade.[5] In some cases the derivatives might not even exist,
+such as when the loss function used to measure goodness of fit is non-differentiable.
+In this chapter, the use of derivative-free methods for fitting FDA problems is
+explored. Derivative-free methods are used to tackle a series of increasingly complex
+problems, culminating in fitting one level of the Parameter Cascade without derivatives.
+
+3.1
+
+Overview of Quadratic Optimisation Methods
+
+A large class of numerical optimisation methods rely on constructing a quadratic approximation to objective function f (θ). Given an iterate θn and possibly some associated data, a quadratic approximation mn (θ) to the objective function is constructed.
+The next iterate θn+1 is then found by minimising mn (θ). Constructing the approximate quadratic and then minimising it tends to be straightforward. If the next iterate
+θn+1 (θ) is unsatisfactory, a new quadratic model function mn+1 (θ) is again minimised,
+producing the next iterate θn+2 . Ideally, the θn will approach the optimal point as the
+sequence of quadratic models become increasingly accurate approximations to f (θ) in
+the neighbourhood of the optimal point, so that the process can be repeated until
+convergence.[29]
+
+3.1.1
+
+Newton’s Method
+
+The Newton-Raphson Method is a well-known member of this class. Newton’s method
+constructs a quadratic approximation using a second-order Taylor expansion around
+θn :
+
+45
+
+1
+f (θ) ≈ mn (θ) = f (θn ) + f 0 (θn )(θ − θn ) + f 00 (θn )(θ − θn )2
+2
+It is not difficult to show that the critical point of mn (θ) is given by θn+1 = θn −
+0
+f (θn )/f 00 (θn ), which is the usual Newton formula.[16, 23, 24, 29]
+For a point close to θn , the difference between f (θ) and mn (θ) is roughly equal
+to [f 000 (θn )/3!](θ − θn )3 so long as f (θ) is sufficiently well behaved[16]. This formula
+suggests that if θn is close to the optimal point θ∗ so that |θ∗ − θn | is sufficiently small,
+then |θn − θ∗ |3 will be very small indeed and so the quadratic model will be a very
+accurate approximation of f (θ) around θ∗ . As a result, θn+1 will be quite close to θ∗ . The
+next model mn+1 (θ) will thus be substantially better than mn (θ) at approximating f (θ)
+around θ∗ , and so θn+2 will be much closer to θ∗ than θn+1 . Newton’s method converges
+very rapidly so long as one is sufficiently close to θ∗ to start with. In fact, Newton’s
+method converges quadratically, as discussed in Section A.1.
+Newton’s method is a very effective estimation algorithm so long as the derivatives
+0
+f (θ) and f 00 (θ) can be computed, and so long as the initial starting value is not too
+far from the optimal value. Choosing a good initial value is thus very important. For
+maximum likelihood estimation for example, a method of moments estimator or the
+median could be used to provide an initial starting value.
+
+3.1.2
+
+Secant Method
+
+If the second derivative is difficult to calculate, one can approximate it with a difference
+quotient instead [16, 29]1 :
+f 00 (θ) ≈
+
+f 0 (θn ) − f 0 (θn−1 )
+θn − θn−1
+
+(3.1)
+
+This leads to the quadratic approximation:
+
+
+1 f 0 (θn ) − f 0 (θn−1 )
+0
+mn (θ) = f (θn ) + f (θn )(θ − θn ) +
+(θ − θn )2
+2
+θn − θn−1
+And the update formula:
+f 0 (θn ) − f 0 (θn−1 )
+= θn −
+θn − θn−1
+0
+f (θn )[θn − θn−1 ]
+= θn − 0
+f (θn ) − f 0 (θn−1 )
+θn−1 f 0 (θn ) − θn f 0 (θn−1 )
+=
+f 0 (θn ) − f 0 (θn−1 )
+
+
+θn+1
+
+1
+
+−1
+
+f 0 (θn )
+
+The Secant Method is denoted as the Method of False Position in [16]
+
+46
+
+The Secant Method is straightforward to implement, and only requires first derivatives. Relying on on f (θn ), f 0 (θn ) and f 0 (θn−1 ) instead of f (θ), f 0 (θn ) and f 00 (θn ) has
+a drawback however. The Secant Method’s model is less accurate because θn−1 tends
+to be further from θ∗ than θn . More formally, the error for the model is roughly equal
+to [f 000 (θn )/3!](θn − θ)2 (θn−1 − θ). If the sequence is converging to θ∗ , substituting in
+the (θ − θn−1 ) term inflates the error relative to Newton’s Method and acts as a drag
+on convergence. It can be shown that the Secant Method convergences superlinearly
+with order 1.618, but avoiding the cost of computing a second derivative on each step
+means that more iterations can be completed in a given period of time. The Secant
+Method is comparable with Newton’s Method, and can be faster if computing the
+second derivative is difficult.
+The Secant Method is a widely used method that provides a good trade-off between
+convergence speed and ease of implementation[16]. Multivariate generalisations of the
+Secant Method when used for optimisation are usually referred to as Quasi-Newton
+Methods, and are discussed in Section A.3.
+
+3.1.3
+
+Successive Parabolic Interpolation
+
+Parabolic interpolation goes one step further than the Secant Method and dispenses
+with derivatives entirely. Instead, a model function is constructed by interpolation
+through the points (θn , f (θn )), (θn−1 , f (θn−1 )), and (θn−2 , f (θn−2 ))[29, 49].
+(θ − θn−1 )(θ − θn−2 )
+(θn − θn−1 )(θn − θn−2 )
+(θ − θn )(θ − θn−2 )
++ f (θn−1 )
+(θn − θn )(θn − θn−2 )
+(θ − θn−1 )(θ − θn )
++ f (θn−2 )
+(θn − θn−1 )(θn − θn )
+
+mn (θ) =f (θn )
+
+This model has a approximate error of [f 000 (θn )/3!](θ − θn )(θ − θn−1 )(θ − θn−2 ). By
+relying on the past two iterates, the rate of convergence is slowed further. Parabolic
+interpolation has an order of convergence of 1.32.[49]
+An issue with parabolic interpolation is providing enough initial points to seed the
+method.[29] This difficulty is more acute for the multivariate case. One approach is to
+provide enough points at the start and run the algorithm from there. Alternatively, one
+can start off with just enough points needed to estimate an ascent or descent direction
+and construct a linear approximation, and then run the optimisation routine using a
+sequence of linear approximations until there enough points to construct a parabola.
+If one is using a linear approximation, one must impose a limit on the maximum
+distance that the routine can travel on each iteration since linear functions do not have
+a minimum or maximum and diverge off to infinity.
+
+47
+
+3.1.4
+
+Discussion
+
+All three approaches are governed by the same fundamental theory of approximating
+functions by polynomials. The only difference is the precise inputs used to construct
+an approximation. This means that if a problem is suitable for Newton’s Method, the
+other two methods will very likely perform well. If one applies parabolic interpolation to
+a sufficiently smooth objective function, then one is in a sense automatically employing
+Newton’s Method even if one made no effort to investigate the differentiabilty of the
+objective function.
+On the other hand, the methods all share the same fundamental handicap as well;
+these methods are not guaranteed to converge unless the starting point is close to
+the optimal value. Local convergence does not necessarily imply global convergence.
+The error terms in the quadratic approximations are all something like (θ − θn )3 . If
+|(θ − θn )| and any other error terms are small, the error in the approximation will be
+much smaller since it is proportional to the product of three such errors. If however
+the errors are large, their product might be so large that the method fails to converge.
+[16, 24, 29]
+This is less academic than it might seem. Suppose one had a complicated likelihood function L(θ). Perhaps to evaluate the likelihood one must numerically integrate
+a complex marginal distribution that depends on θ. Instead of attempting to find explicit formulae for the score and information functions, if one could produce a crude
+estimate θ̂ and crude estimate of the error σ̂θ , then one could use successive parabolic
+interpolation with {θ̂, θ̂ − 2σ̂θ , θ̂ + 2σ̂θ } as a set of starting points. If L(θ) is in fact
+a well behaved smooth function, then parabolic interpolation will find the value of θ
+that maximises L(θ) fairly quickly. It is necessary to provide plausible starting values
+for θ because the quadratic model is only certain to be valid if one is already near the
+optimal value.
+
+3.2
+
+Modifying the Data2LD.opt Routine
+
+In Section 1.4, for fitting the Melanoma data, the following penalised regression model
+is used:2
+Z
+X
+2
+P EN SSE(f |θ, ρ) = (1 − ρ)
+[yi − f (ti ] + ρλ |f − θf (4) |2 dt
+While Data2LD can fit a penalty of the form f − θf (4) , and it can enforce linear
+equality constraints such as θ1 − θ2 = 0, it cannot enforce linear inequality constraints
+such as θ ≥ 0, nor can it work with penalties of the form f − θ2 f (4). [35] This means
+that it’s possible in principle that the estimated value of θ returned by Data2LD.opt
+2
+In this section, for the sake of consistency with the notation used by Data2LD, θ is used to denote
+the frequency parameter instead of the usual ω, and ρ = λ/(1 + λ) is used to determine the trade-off
+between fit to the data and fit to the ODE model instead of λ.
+
+48
+
+is negative even though this value is not valid for the modelling problem at hand since
+it is desired that θ ≥ 0.
+Approximating the Derivative: We modified a single line in the code for the
+Data2LD.opt routine introduced in Section 2.4 to use a finite difference approximation
+to the first derivative of the objective function.
+f 0 (θ) ≈
+
+f (θn ) − f (θn−1 )
+θn − θn−1
+
+(3.2)
+
+Because only a single line was changed, Data2LD.opt still computes the second
+derivatives and makes use of them in the same fashion as before. Note as well that this
+modified code will only work for problems with only one parameter to be estimated
+because it will only compute the derivative in one direction.
+Ignoring the line search, the optimisation routine thus takes the following form now:
+(
+(θn−1 )
+dn
+= f (θθnn)−f
+−θn−1
+(3.3)
+θn+1 = θn − dn /f 00 (θn )
+The first derivative is approximated using a secant equation, but the second derivative is computed exactly.
+Error Analysis: An error analysis must be done from scratch, as a result of the
+unusual situation where there are errors in the gradient, but the second derivative can
+be found exactly.
+Suppose that instead of the true derivative f 0 (θ), the value f 0 (θ) + (θ) is used
+instead. Assume that there exists ¯n > 0 such that for the nth iteration, |(θ) < ¯ for
+all θ in some neighbourhood of the optimal point θ∗ . Let en = |θn − θ∗ | denote the
+absolute error on the nth iteration. Then it is the case that:3
+en+1 ≤ K(¯n + e2n )
+
+(3.4)
+
+To determine ¯n , it is necessary to estimate the error introduced by the approximation (3.2). It straightforward4 to show that the absolute value of the error is approximately equal to 12 f 00 (η)|θn − θn−1 |. If it is further assumed that the second derivative
+is continuous and positive around θ∗ ,5 and the sequence is sufficiently close to θ∗ , then
+there are constants c and C such that 0 < cf 00 (θ∗ ) ≤ f 00 (η) ≤ Cf 00 (θ∗ ).
+3
+
+This result is a special case of Theorem 5.4.1 in [17].
+Using Taylor’s theorem, it can be seen that f (θn ) − f (θn−1 ) = f (θn ) − [f (θn ) − f 0 (θn )(θn −
+θn−1 ) + 21 f 00 (η)(θn − θn−1 )2 ] = f 0 (θn )(θn − θn−1 ) − 12 f 00 (η)(θn − θn−1 )2 . Divide across by (θn − θn−1 )
+and it is then easy to get the desired result. The −f 0 (θn )(θn − θn−1 ) term arises because f (θn−1 ) =
+f (θn − (θn − θn−1 )) ≈ f (θn ) − f 0 (θn )(θn − θn−1 ).
+5
+If this assumption fails, there are bigger problems than the rate of convergence since f 00 (θ∗ ) < 0
+implies that θ∗ is not a local minimiser of the objective function.
+4
+
+49
+
+Combining this with the Triangle Inequality, it is possible to find an upper bound
+that can be expressed in terms of en and en−1 :
+f 00 (θ∗ )|θn − θn−1 | ≤ Cf 00 (θ∗ )[|θn − θ∗ | + |θn−1 − θ∗ |]
+= Cf 00 (θ∗ )[en + en−1 ]
+Plugging this particular choice of ¯n into (3.4) yields:
+en+1 ≤ K{Cf 00 (θ∗ )[en + en−1 ] + e2n }
+Neglecting the quadratic e2n term, and letting M = KCf 00 (θ∗ ), we get that:
+en+1 ≤ M (en + en−1 )
+Since en ≥ 0 for all n and M > 0, this recurrence inequality implies that en ≤ an
+for all n, where an+1 = M (an + an−1 ), a0 = e0 and a1 = e1 . The method thus converges
+linearly (in the extended sense) provided M is not too big and provided the starting
+position is not too far away from the optimal point.
+Comparison with the Secant Method and Successive Parabolic Interpolation: This method only converges linearly while Successive Parabolic interpolation
+and the usual secant method both converge superlinearly. A crude explanation for this
+behaviour is that the Secant method and Parabolic Interpolation methods both effectively use three points to construct a quadratic approximation, while this method only
+uses two points to construct a linear approximation. While an exact second derivative is used, the gains from this are nonetheless dwarfed by the error introduced by
+approximating the first derivative with two points.
+For the Secant Method, one finds that en+1 ≤ M̄ en en−1 . For successive parabolic
+interpolation, one ends up with a recurrence relation of the form en+1 ≤ M̃ [en en−1 +
+en en−2 + en−1 en−2 ] It can be shown that these inequalities become equalities as the
+method converges, and this implies superlinear convergence subject to some mild technical conditions. [49]
+Comparing the Modfied Method with the Original Method: The fitting algorithm used by Data2LD.opt is hierarchial because there are two levels of optimisation,
+an outer level that computes search directions, and an inner level that conducts line
+searches. This makes charting the course of the method a little tricky. The easiest
+approach is to simply reproduce verbatim the output of Data2LD.opt.
+Below the output for the original method and the modified method when applied to
+fitting the Melanoma data are presented. The workings of the two different levels can
+be seen. At the top level, Data2LD.opt computes the value of the objective function
+and the magnitude of the gradient used for the search direction. It then reports the
+values of the objective function and directional derivatives along the search direction
+50
+
+computed in the course of conducting a line search. For the modified method, the
+computed gradients and directions are approximate.
+Both methods achieve a similar value of the objective function, but the estimated
+values of θ differ somewhat. The modified method is clearly much slower than the
+original, which is congruent with our theoretical analysis. The associated values of the
+objective function for the two estimates are so similar it is difficult to conclusively say
+which computed estimate is better.
+Newton Method with Gradient Line Search
+Iter.
+0
+theta
+theta
+theta
+1
+theta
+theta
+
+Criterion
+Grad Length
+0.03974
+0.002238
+= 0.400000, dtheta = -0.001867
+= -0.104395, dtheta = 0.000476
+= 0.002903, dtheta = -0.000044
+0.039187
+4.4e-05
+= -0.494194, dtheta = 0.002106
+= -0.006478, dtheta = 0.000002
+
+2
+0.039187
+Convergence reached.
+
+2e-06
+
+Newton Method with Secant Approximation To First Derivative
+Iter.
+0
+theta
+theta
+theta
+theta
+1
+theta
+theta
+theta
+2
+theta
+theta
+theta
+3
+theta
+theta
+theta
+4
+
+Criterion
+0.03974
+= 0.400000,
+= 0.414612,
+= 0.401771,
+= 0.402048,
+0.039554
+= 0.304096,
+= 0.318509,
+= 0.305876,
+0.039404
+= 0.209704,
+= 0.224023,
+= 0.211530,
+0.039293
+= 0.117183,
+= 0.131623,
+= 0.119149,
+0.039221
+
+Grad Length
+0.002238
+dtheta = 0.001898
+dtheta = -0.000300
+dtheta = 0.000230
+dtheta = -0.000005
+0.001876
+dtheta = 0.001555
+dtheta = -0.000241
+dtheta = 0.000184
+0.001472
+dtheta = 0.001177
+dtheta = -0.000176
+dtheta = 0.000134
+0.001047
+dtheta = 0.000772
+dtheta = -0.000107
+dtheta = 0.000081
+0.000609
+51
+
+theta = 0.026769, dtheta = 0.000353
+theta = 0.042419, dtheta = -0.000035
+5
+0.039191
+0.000237
+theta = -0.034310, dtheta = 0.000030
+theta = 0.005845, dtheta = 0.000061
+theta = 0.010409, dtheta = -0.000007
+6
+0.039187
+8.1e-05
+theta = -0.021601, dtheta = -0.000015
+theta = -0.005596, dtheta = 0.000053
+theta = -0.000575, dtheta = 0.000002
+7
+0.039187
+Convergence reached.
+
+3.3
+
+2.7e-05
+
+Golden-Section Search
+
+In contrast to the methods discussed above, methods that repeatedly split the interval
+of interest in two parts and pick one, which is in turn split into two parts and so on, tend
+to be slow. They have the advantage in that they are guaranteed to ensure consistent
+and steady progress towards the optimal point subject to technical conditions.
+A generic bisection algorithm starts with an interval [a, b] and a third point c
+between a and b such that f (c) < f (a) and f (c) < f (b). A fourth point d within
+the interval [a, b] is selected, and f (d) is computed. If d is between a and c, and
+f (d) < f (a) and f (d) < f (c), then [a, c] becomes the new interval and d becomes
+the new provisional minimum. If f (c) < f (d), then the new interval becomes [d, b],
+- c remains the provisional minimum, but the interval has been narrowed. A similar
+approach applies if d is between c and b.
+The only bisection method used in practice is known as Golden-Section Search,
+where the point d is chosen so that the width of the new interval is equal to that of
+the old one divided by the Golden Ratio φ ≈ 1.618.[7, 24] The process is illustrated in
+Figure 3.1.
+
+3.4
+
+Brent’s Method
+
+Brent’s Method is a hybrid of successive parabolic interpolation and golden-section
+search [4]. If parabolic interpolation is failing to provide a sufficiently rapid decrease in
+the objective function, a bisection step is performed. While the bisection steps might
+not produce as much progress as the parabolic steps, they are certain to produce a
+consistent rate of improvement no matter how close the algorithm is to the optimal
+point, while parabolic interpolation is only certain to work if one is already within a
+neighbourhood of the optimal point as noted in Section 3.1.4. Brent’s method will also
+
+52
+
+f(b) ●
+f(d)1 ●
+f(a) ●
+f(c) ●
+f(d)2 ●
+
+a
+
+c
+
+d
+
+b
+
+Figure 3.1: Golden-Section search. If f (c) < f (d), the next triplet is given by
+{a, c, d}, otherwise {c, d, b} is used.
+perform a bisection step if the interpolating parabola is ill-conditioned, or if a bisection
+step has not been performed recently.
+The hybrid method is robust as a result of the golden section steps, and the parabolic
+steps ensure it performs well when applied to smooth functions along with a decent
+starting value.
+
+3.5
+
+Estimation Of Parameters For A Standard Cauchy
+Distribution Using Brent’s Method
+
+To illustrate how Brent’s metthod is employed in practice it will be used on a straightforwards estimation problem first. Consider the question of fitting a Cauchy distribution to some data. Given n observations x1 , . . . , xn from an unknown Cauchy distribution, the likelihood function is given by:
+L(µ, σ) =
+
+n
+Y
+
+1
+h
+
+i=1
+
+πσ 1 +
+
+
+x−µ 2
+σ
+
+i
+
+Attempting to maximise this likelihood by the usual method entails solving a fairly
+complex system of equations in µ and σ. Our purpose is to demonstrate that Brent’s
+Method can tackle this problem without much difficulty.
+53
+
+Brent’s Method can only optimise a function in one dimension at a time, so it is
+necessary to attempt to optimise for µ and σ separately. The profile log-likelihood of
+σ is computed:
+`(σ) = sup log(L(µ, σ))
+µ
+
+R can evaluate `(σ) straightforwardly by using Brent’s method to optimise L(µ, σ)
+with respect to µ and holding σ constant. The function `(σ) can then in turn be
+optimised to find the optimal value of σ. This procedure is illustrated in Figure 3.2.
+One subtlety with optimising a Cauchy likelihood is that the likelihood function can
+have multiple local maxima since the likelihood function is the ratio of two multivariate
+polynomials in µ and σ. To ensure that the algorithm was sufficiently close to the MLE,
+the median was used as an initial estimate of µ, and half the interquartile range was
+used as an initial estimate for σ. Given these somewhat crude estimates µ̃ and σ̃, the
+the standard error of the median σµ̃ is approximately given by:
+σ̂µ̃ ≈
+
+1
+√
+2f (µ̃; µ̃, σ̃) n
+
+Where f (x; µ, σ) is the Cauchy density function with location parameter µ and
+scale parameter σ. The values µ̃ ± 2σ̂µ̃ are then used to provide the initial lower and
+upper bounds for the optimiser. The aim is to construct a confidence interval that is
+highly likely to contain the MLE for µ (rather than the actual true parameter), but
+isn’t so wide that the interval is in danger of containing multiple local maxima for the
+likelihood.
+Not only can the likelihood be maximised without derivatives, but asymptotic inference can be done without derivatives as well. Given the score function and the
+Fisher information at the maximum likelihood estimates, it is possible to compute an
+approximate confidence interval for σ and µ.[31] Instead of analytic methods, one can
+use finite differences to approximately compute the necessary derivatives to the desired
+degree of accuracy[10, 26]. This was successful at producing a valid approximation for
+the profile likelihood, shown as a red dotted parabola in Figure 3.2.
+It is thus possible to compute a confidence interval using the Score test. The test
+statistic S(σ)2 /I(σ) could be accurately approximated using finite differences. One
+takes the value of σ for which the test statistic is less than or equal to the appropriate
+critical value from a chi-squared distribution. By inspecting the plot in Figure 3.3 and
+then solving for σ, an approximate confidence interval for σ can be computed such that
+σ lies in (0, 2.20) with 95 percent confidence.
+An important assumption underpinning such asymptotic confidence intervals is that
+the two term quadratic Taylor expansion based on the score and information functions
+is valid over the range of interest. This is not necessarily the case here as can bee seen
+in Figure 3.3. There is a spike in the score statistic on the right caused by the Fisher
+information changing sign at approximately σ = 2.35. This indicates that the confidence interval might be wider than the range of for which a quadratic approximation
+54
+
+around the MLE is valid, and should perhaps be treated with some scepticism.
+
+55
+
+−25000
+−26000
+−27000
+−29000
+
+−28000
+
+l(σ)
+
+0.5
+
+1.0
+
+1.5
+
+3.0
+
+σ
+
+1.0
+
+1.5
+
+2.0
+
+2.5
+
+−28000
+
+●
+
+0.5
+
+−26000
+
+−44
+000
+−50000
+
+−40
+
+000
+
+−460
+
+00
+
+−36
+
+000
+
+−420
+
+00
+
+−32
+−380
+00
+
+000
+
+−30000
+
+−34000
+
+0
+−3800
+
+000
+000
+−40
+−36
+00 −46000
+−420
+
+000
+
+−44
+
+−50000
+
+−54000
+
+0.0
+
+−54000
+
+−3
+
+−2
+
+−1
+
+0
+
+1
+
+2
+
+3
+
+Figure 3.2: Profile log likelihood in σ, and contour plot of the joint log likelihood.
+
+56
+
+300
+250
+200
+150
+100
+0
+
+50
+
+Test Statistic
+
+0.5
+
+1.0
+
+1.5
+
+2.0
+
+2.5
+
+σ
+
+Figure 3.3: Plot of profile score statistic.
+
+3.6
+
+Robust ODE Parameter Estimation
+
+If observations of values from an ODE are subject to heavy-tailed noise such as in the
+Cauchy case, least squares regression becomes unsuitable. An obvious candidate is L1
+regression, which attempts to minimise the sum of the absolute values of the residuals
+instead of the sum of the squared residuals. An important property of L1 regression
+is that median is naturally associated with this approach; the sample median of a set
+of numbers is the constant value that minimises the L1 error just as the sample mean
+is the constant value that minimises the least squares error[43]6 . L1 regression can
+greatly complicate the process of estimation however, because the the function |x| is
+not everywhere differentiable. This means that the usual gradient-based approaches to
+nonlinear regression such as gradient descent should not be applied. Even methods that
+attempt to numerically approximate the derivatives such as parabolic interpolation are
+either entirely unsuitable at worst, or not guaranteed to converge quickly at best.
+Brent’s Method can tackle such problems however, being robust against non differentiabilty. For nonlinear L1 regression, the objective function tends to be piecewise
+smooth - between the “kinks”, the function is differentiable and amenable to parabolic
+interpolation. Once the bisection steps have reached a neighbourhood of the optimal
+value, parabolic interpolation will find it fairly quickly.
+6
+
+This is discussed in more detail in Chapter 4.
+
+57
+
+Consider for example, the following ODE with β = −0.5 :
+
+00
+2 0
+
+y − β(1 − y )y + y = 0
+y(0) = 1
+
+ 0
+y (0) = 0
+
+(3.5)
+
+This ODE describes a non-linear oscillator, and is representative of quasi-linear
+mathematical models that can’t be tackled by the FDA package or Data2LD. Note that
+this ODE is of the form y 00 + β(y)y 0 + y = 0 with β(y) = −β(1 − y 2 ). By definition,
+the linear ODEs usually used in FDA cannot model systems where the β(·) terms have
+y as a dependent variable, they can only model situations where the parameters vary
+with time alone (and/or space in the case of a linear PDE).
+We wish to investigate the problem of estimating β from noisy observations.
+The desolve package [45] was used to numerically find the values of y(t) at chosen
+time points {t1 , . . . , tK }. The values of y(t) at these points - corrupted by random
+Cauchy noise - were independently sampled N times. This produced a set of KN
+observations: {y11 , y12 , . . . , y1N , . . . , yK1 . . . , yKN }. Because the data is heavy-tailed,
+least squares regression is inappropriate. Instead, the goodness of fit associated with a
+given choice of β was measured by the sum of absolute errors associated with a given
+choice of β :
+SAE(β) =
+
+K X
+N
+X
+
+|y(ti ; β) − yij |
+
+i=1 j=1
+
+Here y(t; β) denotes the solution of Equation 3.5 for a given choice of β. To evaluate
+SAE(β) at a given value of β, it is necessary to use desolve to numerically find
+the values of y(ti |β). Brent’s method was used to find the number β̂ that minimised
+SAE(β). Figure 3.4 shows the original curve, the generated points, the realisation of
+SAE(β), and the fitted curve generated by β̂. Both the original curve and the original
+value of β are recovered with reasonable accuracy.
+
+58
+
+●
+
+●
+
+●
+
+1.0
+
+●
+
+●
+●
+
+●
+
+● ●
+●
+●
+
+●
+
+Original
+Fitted
+
+●
+
+●
+
+●
+
+●
+
+●
+
+0.5
+
+●
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+● ●
+
+●
+
+● ●
+
+●
+
+●
+
+● ● ●
+
+●
+
+●
+
+●
+●
+●
+
+●
+
+●
+●
+
+0.0
+
+y(t)
+
+● ●
+
+●
+
+●
+●
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+● ●
+
+●
+●
+
+●
+
+●
+
+●
+●
+
+●
+●
+●
+
+●
+
+●
+
+−0.5
+
+●
+●
+●
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+●
+
+−1.0
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+0
+
+2
+
+4
+
+6
+
+●
+
+8
+
+10
+
+t
+●
+
+●
+●
+
+4.00
+3.98
+
+3.99
+
+SAE(β)
+
+4.01
+
+4.02
+
+●
+
+−2.0
+
+−1.5
+
+−1.0
+
+−0.5
+
+0.0
+
+β
+
+Figure 3.4: Original curve, fitted curve, and objective function.
+
+59
+
+3.7
+
+The Parameter Cascade and Brent’s Method
+
+Recall that the Parameter Cascade has three levels.
+For the inner problem there is a given functional J(f ; θ, λ) that takes a function f
+and associated parameters θ and λ and returns a real number. Usually, the function
+f is represented by a vector of coefficients with a given associated basis. The function
+fˆ(t|ω, λ) that optimises J(·; θ, λ) is then found. Outside of simple cases such as in
+Section 1.3.1, this problem cannot be solved analytically. The problem is nearly always
+solved numerically by restricting the space of functions to the span of some set of chosen
+basis functions and optimising over that.
+This in turn defines the middle problem, H(θ, fˆ(t|ω, λ); λ) = H(θ; λ), which is
+usually defined as the least squares error associated with the optimal f given θ and λ :
+X
+H(θ; λ) =
+[xi − fˆ(ti |ω, λ)]2
+As suggested in the previous section on fitting an ODE with Cauchy noise, the
+middle error might be another loss function besides least squares error such as the sum
+of absloute errors. As before, value of θ that optimises H(·) holding λ constant, defined
+by θ̂(λ), is computed.
+And finally, the outer problem attempts to determine the value of λ that minimises
+the prediction error (generalisation error) by minimising another function defined by:
+F (λ, θ̂(λ), fˆ(t|θ̂, λ)) = F (λ).
+
+(3.6)
+
+There are several plausible choices for F (·), one could use leave-one-out crossvalidation, one could partition the data set into a training set and a validation one,
+and let F (λ) be the associated error for the validation set, one could use Generalised
+Cross-Validation. This criterion is in turn optimised to find the optimal λ.
+Note that the three levels are somewhat isolated from each other and only interact by exchanging parameters downwards and optimal values upwards. The middle
+function H(·) for example only requires the value of the optimal f (·) evaluated at the
+choosen points ti , and does not care about how these values were found or how f (·) is
+represented.
+The inner problem consists of finding a function that minimises a certain criterion
+for a given set of parameters. As previously discussed, the complexity of such problems
+can increase fairly rapidly and require a considerable degree of expert knowledge and
+often must be developed from scratch if the differential penalty changes too much. It is
+thus desirable that the inner problem can be solved with already existing methods and
+tools such as the FDA package or Data2LD to avoid the effort of having to develop
+one’s own. Ideally, it should be possible for one to plug in existing code that can
+compute H(·) and the optimal function as required.
+There is thus a considerable degree of potential modularity present in the Parameter
+Cascade that is not fully investigated in Ramsay and Cao’s paper [5], and research that
+
+60
+
+inherits that framework. The Parameter Cascade can be adapted to heavy-tailed errors
+for example, by using appropriate loss functions for the various levels of the problem.
+Not only is it good research practice to have mostly independent components that
+can be tackled and verified separately before being combined, it is also good practice
+from a software engineering perspective because the potential for complex interactions
+between different parts of code is reduced. This tends to save on debugging and testing
+requirements, which can be quite high when implementing codes for FDA.
+The Data2LD package is fairly tightly coupled. Rather than use R’s built-in routines
+for example to optimise the associated middle problem, the authors wrote their own
+code. With Brent’s method however, there is more separation, which makes it very
+easy to build optimisation routines on top of other code. This substantially elides the
+cost and effort of tackling the inner problem and allows one to concentrate on the
+statistical questions such as fitting the model to data.
+Melanoma Data
+This derivative free optimisation strategy was applied to fitting the melanoma dataset
+with a parameterised linear differential operator:
+Lω = D 2 − ω 2 D 4 .
+
+(3.7)
+
+Both ω and λ will be estimated, so this is a full three-level Parameter Cascade
+without derivatives. As already noted, the Data2LD package can only implement a
+two-level Parameter Cascade. The inner problem consists of finding the function f (t)
+that minimises a penalised regression problem of the form:
+Z
+X
+2
+P EN SSE(f ; ω, λ) =
+(xi − f (ti )) + λ |Lω f (t)|2 dt
+The penalty term measures the extent to which a function lies outside of the span
+of the functions {1, t, cos(ωt), sin(ωt)}.
+The FDA package has routines that can do the numerical work of fitting the data
+with differential penalty given in (3.7) for given choices of λ and ω, and then report
+the associated mean square error.
+Using Brent’s method, the function H(ω; x, λ) can be optimised with respect to
+ω for a given fixed λ. In the spirit of (3.6), this defines a profiled objective function
+F (λ, ω̂(λ), fˆ(t|ω̂, λ)) = F (λ).
+The outer objective function F (λ) can be in turn optimised a second time using
+Brent’s Method to estimate the optimal value of λ. Figure 3.5 plots H(ω; x, λ) for a
+fixed value of λ, and plots F (λ).
+For ω, Figure 3.5 shows tht the error is not particularly sensitive to small deviations
+from the optimal value even for fairly high values of λ. This suggests that the fitted
+curve will be adjusted to ensure no substantial increase in the error so long as ω isn’t
+altered too much from the optimal value.
+
+61
+
+Heuristically speaking, a flat objective function in the neighbourhood of the optimal
+point as can be seen in Figure 3.5 increases the uncertainty in estimation because it is
+more difficult to argue that the optimal value is definitively better than adjacent ones.
+The loss function associated with a given fitting problem only approximates the ’true’
+loss function as the sample size goes to infinity.
+If λ is set too low, the optimal value of ω is numerically indistinguishable from
+zero. This is the case when ω is optimised for the value of λ that minimises the GCV,
+Brent’s method reports zero as the optimal value to within its default tolerance.
+For λ, the curve has two critical points, with an asymptote as λ tends to infinity.
+A huge advantage of this approach compared to Data2LD’s use of derivative-based
+methods is that it allows for the use of more robust loss functions since no use at all is
+made of derivatives.
+Suppose one wanted to choose ω to minimise the Median Absolute Deviation median(|yi − fˆ(ti |ω, λ)|) - instead of the least squares error. This loss function is
+chosen instead of the usual L1 error for the sake of demonstration because the L1 error
+might sometimes be tackled using a generalised version of gradient descent known as
+the subgradient method,[42] while getting any kind of a derivative for MAD is difficult.
+It is quite simple, one just replaces the code that computes the least squares error with
+a few lines of R code that computes the MAD and run the optimisation routine again.
+It can be seen in Figures 3.6 and 3.7 that the MAD gives similar results to the usual
+least squares criterion, which suggests that both estimators are mutually consistent
+with each other.
+
+62
+
+SSE vs ω with λ = 10000
+●
+
+3.930
+
+●
+●
+●
+
+3.925
+
+●
+●
+
+●
+●
+
+3.915
+
+SSE(ω)
+
+3.920
+
+●
+●
+
+●
+
+3.910
+
+●
+●
+●
+●
+
+3.905
+
+●
+●
+●
+●
+
+3.900
+
+●
+●
+● ●
+● ● ● ● ● ● ● ● ● ● ● ● ● ● ●
+
+0.0
+
+0.2
+
+●
+
+●
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+ω
+
+●
+
+0.20
+
+0.22
+
+GCV vs log(λ)
+
+0.16
+
+●
+● ●
+●
+●
+
+0.14
+
+GCV(λ,ω(λ))
+
+0.18
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+0.12
+
+●
+
+●
+
+0.10
+
+●
+●
+●
+
+−5
+
+●
+
+0
+
+5
+
+10
+
+log(λ)
+
+Figure 3.5: Plots of the middle and outer optimisation problems.
+
+63
+
+MAD vs ω with λ = 100
+
+0.210
+
+●
+
+●
+
+●
+
+0.205
+
+●
+
+●
+
+●
+
+●
+
+●
+
+0.200
+
+MAD(ω)
+
+●
+
+●
+●
+●
+●
+
+0.195
+
+●
+
+●
+
+●
+● ●
+
+●
+●
+
+● ● ● ● ● ● ●
+● ●
+
+0.190
+
+●
+
+●
+
+●
+●
+●
+
+●
+●
+
+●
+●
+
+●
+●
+
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+ω
+
+Figure 3.6: Plot of the middle optimisation problem with MAD used as a loss function
+
+MAD
+SSE
+
+● ● ●
+●
+●
+●
+
+4
+
+●
+●
+
+●
+
+●
+
+●
+●
+
+●
+●
+●
+
+3
+
+Melanoma Rate
+
+●
+
+●
+
+●
+
+●
+●
+●
+
+●
+
+●
+●
+●
+
+2
+
+●
+●
+●
+●
+● ●
+●
+●
+
+1
+
+●
+●
+● ●
+
+1935
+
+1940
+
+1945
+
+1950
+
+1955
+
+1960
+
+1965
+
+1970
+
+Year
+
+Figure 3.7: Comparison of fits for MAD and SSE criteria for middle problem
+64
+
+Chapter 4
+A Two Level L1 Parameter Cascade
+Using the MM Algorithm.
+In the previous chapter, Brent’s method was introduced and was used to tackle Parameter Cascade problems where the middle level uses a loss function which is difficult to
+differentiate or has no well-defined derivative everywhere. It was remarked that Brent’s
+method ensures that the different elements of the Parameter Cascade tend to be loosely
+coupled from each other and this allows one to combine different fitting methodologies
+for different levels straightforwardly.
+Here these ideas are developed further. First, the L2 based penalised fitting method
+is extended to the L1 case. This new method is then used alongside Brent’s method to
+implement a two level Parameter Cascade with L1 loss functions at both levels.
+
+4.1
+
+L1 Estimation for the Inner Problem
+
+Brent’s method is designed to optimise real-valued functions over a real interval. In
+the previous it was extended to functions that take more than one real argument by
+optimising over each coordinate separately when the Cauchy likelihood was optimised.
+However, there is no guarantee that this approach will perform well, and it can even
+fail entirely for functions that have an exotic topography or multiple local optima
+arranged unusually1 . Even in the best case, optimising over each coordinate generates
+its own optimisation sub-problem, which has the cumulative effect of increasing the
+running time of the algorithm. Brent’s method further requires the specification of a
+bounding box that contains the optimal point since it uses bisection, and that is harder
+and harder to do as the number of dimensions increases. All of these considerations
+mean that Brent’s Method is highly unsuitable for performing L1 fitting over a space of
+functions which tend to have a large number of dimensions - by definition, there is one
+1
+
+Consider for example the problem of finding the minimum of the function f (x) = x sin(x) over
+the interval [0, 13]. It is easy to see that the minimum is not on the boundary points of the interval
+because f (0) = 0, f (6) = −1.67, and f (13) = 5.45. Brent’s method fails to find the minimum. It
+claims the optimal value is given by f (4.9) = −4.81 though f (11) = −10.99.
+
+65
+
+dimension introduced for each basis function used. Likewise, the non-differentiabilty
+of the absolute value function means that other approaches that implicitly rely on
+differentiabilty such as parabolic interpolation are inadvisable.
+Instead a different approach will be employed, a generalisation of the Iteratively
+Re-weighted Least Squares algorithm for computing the L1 median of a set of N items
+{x1 , . . . , xN } to which an L1Pnorm can be associated. The L1 median is defined as
+the object x that minimises N
+i=1 |x − xi |. We will start by describing how IWLS can
+be used to compute the L1 median of a set of real numbers. We will further show
+that this as an example of what is known as an MM algorithm, and then proceed to
+straightforwardly extend this MM algorithm to produce a modified Penalised Sum of
+Squares problem that can be iteratively solved and re-weighted to find the function
+that minimises a penalised L1 norm.
+
+4.1.1
+
+An MM Algorithm For Computing the Median
+
+Suppose that given a set of numbers {x1 , . . . , xN } , one wished to find the number x
+that minimised the L1 distance between them:
+SAE(x) =
+
+N
+X
+
+|xi − x|
+
+i=1
+
+It is well known that SAE(x) is minimised by the sample median of the numbers
+[43]2 . The usual approach to computing the sample median - sorting the numbers
+and taking the one in the middle - cannot be generalised to FDA problems, so we
+will use a different approach. The main difficulty is that the function SAE(x) is not
+everywhere differentiable, which means that the usual derivative-based techniques such
+as gradient descent or Newton’s method can’t work. Instead an approach known as
+Majorise-Minimise or the MM Algorithm will be used.[13, 23, 24] For a given iterate
+xn , a function M (x|xn ) is required with the following properties:
+M (x|xn ) ≥ SAE(x)
+M (xn |xn ) = SAE(xn )
+The function M (x|xn ) is said to majorise SAE(x). The next iterate xn+1 is then
+found as the value of x that minimises M (x|xn ). Thus:
+2
+
+This is asserted without proof in [43], probably because the proof tends to be simultaneously
+awkward but trivial to those familiar with it. The amount of work required to demonstrate that the
+sample median minimises SAE(x) is greatly reduced if one notes that SAE(x) is a convex function
+in x. Any local minimum of a convex function is also a global minimum[3], so one only needs to show
+that for any sufficiently small  that SAE(x̄) ≤ SAE(x̄ ± ), where x̄ is the sample median.
+
+66
+
+SAE(xn+1 ) ≤ M (xn+1 |xn )
+≤ M (xn |xn+1 )
+= SAE(xn )
+
+If such a function M (x|y) could be determined such that M (x|y) would be straightforward to minimise, it is then possible to easily produce a sequence of iterates xn such
+that SAE(xn+1 ) ≤ SAE(xn ) for all n. This pattern of monotone improvement in the
+objective function is similar to the EM Algorithm. In fact, the EM algorithm is a
+special case of the MM algorithm[52] 3 .
+The most important question associated with the MM algorithm is the construction
+of the majorising function. Once the majoriser has been found, the algorithm is generally straightforward to implement, as will be seen shortly.[13, 25] Verifying a potential
+majoriser is usually straightforward, finding one in the first place is more difficult. The
+EM algorithm for example takes advantage of the probabilistic structure of the problem and Jensen’s inequality 4 . For an L1 problem, the usual approach is to employ the
+Arithmetic Mean-Geometric Mean inequality [25]. Only the AM-GM inequality in its
+simplest form is required here, that the geometric mean of two numbers is less than or
+equal to their arithmetic mean:
+x+y
+√
+xy ≤
+2
+It’s worth noting that the AM-GM inequality is in fact a special case of Jensen’s
+Inequality since the log function is concave:
+
+log(
+
+log x log y
+x+y
+)≥
++
+2
+2√
+2
+√
+= log x + log y
+√
+= log xy
+
+It is possible to exploit the AM-GM inequality to majorise an L1 regression problem
+by a weighted L2 problem. One can represent the L1 norm as a geometric mean, which
+then allows for the L1 norm to majorised and separated by a weighted sum of squares.
+Given an iterate xn , the AM-GM inequality implies that:
+3
+
+When applied to maximisation problems, MM instead stands for Minorise-Maximise. This case is
+the same except the surrogate function is required to be less than or equal to the objective function
+and it is maximised on each iteration. Thus, each iteration drives the objective function upwards.
+4
+The EM algorithm is intended to maximise the log-likelihood and drives it upwards on each
+iteration, so it’s an example of a Minorise-Maximise algorithm.
+
+67
+
+p
+(y − x)2
+s
+(y − x)2
+|y − xn |
+=
+|y − xn |
+
+
+1 (y − x)2
+≤
++ |y − xn |
+2 |y − xn |
+
+|y − x| =
+
+This in turn implies that:
+
+X
+
+
+
+1 X (xi − x)2
+|xi − x| ≤
++ |xi − xn |
+2
+|xi − xn |
+1 X (xi − x)2 1 X
++
+(|xi − xn |)
+=
+2
+|xi − xn | 2
+
+PThe L1 problem is thus majorised by a weighted least squares problem. The
+|xi − xn | term is constant with respect to x, so neglecting it makes no difference
+to the choice of x that is optimal. Likewise, multiplying the weighted least squares
+problem by a positive constant doesn’t change the optimal value either, so the 12 term
+can be eliminated by multiplying by 2. The optimal value xn+1 can thus be found by
+minimising this weighted least squares score:
+1
+2
+
+X (xi − x)2
+|xi − xn |
+The algorithm thus consists of finding the value of x that minimises the least squares
+error inversely weighted by the residuals from the previous iteration.
+
+4.1.2
+
+Penalised L1 Fitting
+
+For the case of penalised regression, the penalised sum of absolute errors is defined by:
+Z
+X
+P EN SAE(f |θ, λ) =
+|xi − f (ti )| + λ |T f |2 dt
+Here T is used instead of L to denote a differential operator that might not necessarily be linear.5 As before, this can be majorised
+by a weighted sum of a residual-weighted
+P
+penalised sum of squared errors, and a
+|xi − fn (ti )| term that can be safely ignored
+in the course of the optimisation.
+5
+
+In some situations T could even be an integral operator. This could easily be the case for example
+if the observed values were the measured velocities of a vehicle, and the penalty was intended to
+impose constraints on quantities such as the distance travelled or fuel consumed
+
+68
+
+
+1
+1 X
+P EN SAE(f ) ≤ W P EN SSE(f |fn , θ, 2λ) +
+|xi − fn (ti )|
+(4.1)
+2
+2
+
+Z
+
+1 X
+1 X [xi − f (ti )]2
++ 2λ |T f |2 dt +
+|xi − fn (ti )| (4.2)
+=
+2
+|xi − fn (ti )|
+2
+To find the function that minimises the penalised L1 error, one repeatedly finds the
+function that minimises W P EN SSE with the previous set of residuals used as inverse
+weights. This produces a sequence of fitted functions for which the penalised sum of
+absolute errors is monotonically forced downwards.
+
+4.1.3
+
+Discussion
+
+The sequence of penalised errors P EN SAE(fn ) is monotone decreasing but cannot
+be less than zero, so it is a bounded monotone sequence. The Monotone Convergence
+Theorem for sequences of real numbers[39] thus guarantees that a given generated
+sequence P EN SAE(fn ) will always converge to a limit. There are two caveats. First,
+the sequence might converge to a different point depending on the starting values there is no guarantee that the sequence will converge to the lowest possible value of
+P EN SAE. Second, there is no guarantee that the underlying sequence of functions will
+converge, and may just oscillate between several points. The sequence −1, 1, −1, . . .
+does not converge but the associated sequence of absolute values 1, 1, 1, . . . does.
+This approach of associating the objective function with more standard problem
+that acts as a surrogate is employed in the literature on the EM Algorithm. For
+example, in the introductory chapter of [28], the authors discuss how a multinomial
+estimation problem can be transformed into a binomial problem with missing data
+by artificially splitting one of the cells; they then construct a simple iterative EM
+scheme that can then be repeatedly iterated to estimate parameters for the original
+multinomial. They even remark that the the surrogate problems associated with EM
+algorithms tend to be easy to solve using existing tools in the field. Likewise, the L1
+problem has been replaced here with a surrogate sequence of weighted L2 problems
+that can easily solved using the FDA package. Since the FDA package does much of the
+heavy lifting, the actual code for implementing penalised L1 regression is brief.
+The literature on the MM algorithm remarks that it is simple to implement and
+good at tackling high dimensional penalised regression, though convergence can be slow
+[52]. These claims are borne out when the convergence of the method is examined in
+Section 4.1.4 below.
+
+4.1.4
+
+Testing the Algorithm on the Melanoma Data
+
+Since minimising P EN SAE is a problem over many dimes ions, plotting the objective
+function to verify that the optimal function has been found isn’t possible. Instead the
+MM algorithm described in Section 4.1.2 will be tested by applying it to the melanoma
+69
+
+data perturbed by random noise. Further, the convergence of the algorithm for the
+original melanoma dataset will be examined.
+Figure 4.1 presents the L1 and L2 inner fits to the melanoma data corrupted by
+Cauchy distributed noise. The value of ω was held fixed at value of 0.3, which was
+chosen as being roughly the average of the two different estimates of ω presented in
+Figures 3.5 and 3.6 from the previous chapter. It is apparent from the Figure 4.1
+that the MM fit is robust against outliers, tends to ignore more deviant points, and
+even manages to remain similar to the original fit. The least-squares fit tends to chase
+the heavy-tailed noise on the other hand. This is strong evidence that the curve that
+minimises P EN SAE has been found and that the method has been implemented
+correctly.
+Figures 4.2 and 4.4 plot the convergence of SAE and P EN SAE over the course of
+the algorithm. Note that the PENSAE statistic doesn’t quite converge monotonically
+as the theoretical analysis predicted. Instead, it fluctuates before settling down to
+the typical and expected pattern of monotone decline. Upon investigation, it was
+determined that over the first handful of iterations the range of the weights applied to
+the observations on each iteration, that were computed using the residuals from the
+previous iteration, grew very rapidly. By the fourth iteration, the lowest weight is equal
+to 1.48, and the highest was equal to 4.8×106 . It seems that this rapid and large change
+produces qualitative changes in behaviour before the algorithm manages to ‘burn in’.
+It is likely that observations with low weights are being effectively censored after a few
+iterations due to roundoff error. It was found that imposing a minimum threshold for
+the weights by adding a constant to all the residuals before proceeding to computing
+the weights smooths out this behaviour, but doesn’t eliminate it entirely.
+Figure 4.3 plots the convergence of the coefficient vectors cn . This log-plot suggests
+that the sequence of fitted coefficient vectors cn converges linearly since kcn+1 − cn k ≈
+Ckcn − cn−1 k as n → ∞.
+
+70
+
+5
+
+L1 Norm
+L2 Norm
+
+●
+●
+●
+
+●
+●
+
+●
+
+4
+
+●
+
+●
+
+●
+
+●
+
+●
+
+3
+
+●
+●
+
+●
+● ●
+●
+
+●
+
+2
+
+●
+●
+● ●
+
+●
+
+●
+
+●
+●
+●
+
+●
+
+●
+
+1
+
+Melanoma Rate
+
+●
+●
+
+−1
+
+0
+
+●
+
+●
+
+●
+
+●
+
+●
+
+1935
+
+●
+
+1940
+
+1945
+
+1950
+
+1955
+
+1960
+
+1965
+
+1970
+
+Year
+
+Figure 4.1: Comparison of L1 and L2 inner fits to Cauchy perturbed data with ω
+fixed at 0.3
+
+71
+
+8.6
+
+●
+
+8.4
+
+SAEi
+
+8.8
+
+9.0
+
+●
+
+●
+
+●
+●
+●
+
+8.2
+
+●
+
+0
+
+● ●
+● ● ●
+● ● ● ● ●
+● ● ● ● ● ● ● ●
+● ● ● ● ●
+
+5
+
+10
+
+15
+
+20
+
+25
+
+30
+
+0
+
+Iteration
+
+●
+
+−1
+
+●
+
+●
+
+−2
+
+●
+●
+●
+●
+●
+●
+
+−4
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+−5
+
+log(ei)
+
+−3
+
+●
+
+●
+●
+●
+●
+●
+
+−6
+
+●
+●
+
+−7
+
+●
+
+●
+
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+30
+
+Iteration
+
+Figure 4.2: Plot of values and log differences for SAE Statistic
+
+72
+
+−2.5
+
+●
+
+−3.0
+
+●
+
+●
+
+●
+
+●
+●
+●
+
+−4.0
+
+log(ei)
+
+−3.5
+
+●
+
+●
+●
+●
+●
+
+−4.5
+
+●
+●
+●
+●
+●
+●
+●
+
+−5.0
+
+●
+●
+●
+●
+●
+●
+●
+
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+Iteration
+
+9.27
+
+Figure 4.3: Plot of log norm differences for coefficients. Note that they tend to settle
+on a line.
+
+●
+
+9.26
+
+●
+●
+●
+
+●
+
+9.25
+
+PENSAEi
+
+●
+
+●
+
+9.24
+
+●
+●
+●
+●
+
+●
+●
+●
+
+9.23
+
+●
+●
+
+0
+
+5
+
+10
+
+15
+
+●
+
+●
+
+●
+
+●
+
+20
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+25
+
+Iteration
+
+Figure 4.4: Plot of PENSAE statistic as the algorithm proceeds.
+
+73
+
+4.2
+
+The Two Level Parameter Cascade with L1 Norm
+
+The inner problem of the parameter cascade is a semi-parametric least squares regression model. The fitted function is modelled as a weighted sum of a solution to the
+differential equation (parametric), and a non-parametric residual. The λ term governs
+how big the residual is allowed to be relative to the the least squares error term
+If the usual least-squares error function is used, the inner problem will probably
+struggle with outliers and heavy tailed errors as is the case for any form of least-squares
+regression.
+For high order differential operators like that used to model the melanoma data,
+there are many degrees of freedom associated with the differential operator’s solution
+set. The ω and λ parameters don’t strongly constrain the lower level of the cascade.
+There is thus little capacity for the higher levels of the cascade to restrain the lowest
+level through altering the λ and ω parameters and the parameter cascade must use
+robust estimation at every level.
+In Chapter 3, it was discussed how Brent’s Method can be used to tackle the middle
+problem without derivatives and then used this approach to optimise a highly irregular
+loss function. In Section 4.1, the MM algorithm was used to optimise the inner problem
+with an L1 norm.
+Combining the two methods, it is very straightforward to implement a two-level
+parameter cascade with L1 errors at both levels.
+In Figure 4.5, the result of fitting a two level L1 Parameter Cascade with L1 errors
+is plotted. It can be seen that the SAE(ω) function is irregularly shaped. In Figure
+4.6 both the L1 and L2 fits to Cauchy-perturbed melanoma data are shown. Figure
+4.7 plots the results of applying the L1 and L2 Parameter Cascades to the original
+and perturbed Melaonoma data, alongside mixed versions where the L1 loss function
+is used for the inner fitting and L2 loss function for the middle fitting and vice versa.
+
+74
+
+SAE vs ω with λ = 100
+●
+●
+
+0.185
+
+●
+
+●
+●
+●
+
+●
+
+0.180
+
+●
+
+●
+
+●
+
+●
+
+●
+
+0.175
+
+●
+
+●
+
+●
+
+● ●
+●
+
+●
+
+0.170
+
+SAE(ω)
+
+●
+●
+
+●
+
+●
+
+0.165
+
+●
+
+●
+● ●
+● ●
+
+●
+●
+
+●
+●
+
+●
+
+0.160
+
+●
+
+●
+
+●
+●
+
+●
+●
+
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+ω
+
+● ● ●
+●
+●
+●
+
+4
+
+●
+●
+
+●
+
+●
+
+●
+●
+
+●
+●
+●
+
+3
+
+Melanoma Rate
+
+●
+
+●
+
+●
+
+●
+●
+●
+
+●
+
+●
+●
+●
+
+2
+
+●
+●
+●
+●
+● ●
+●
+●
+
+1
+
+●
+●
+● ●
+
+1935
+
+1940
+
+1945
+
+1950
+
+1955
+
+1960
+
+1965
+
+1970
+
+Year
+
+Figure 4.5: Fitting an L1 Parameter Cascade to the Melanoma Data
+
+75
+
+5
+
+L1 Norm
+L2 Norm
+
+●
+●
+●
+
+●
+●
+
+●
+
+4
+
+●
+
+●
+
+●
+
+●
+
+●
+
+3
+
+●
+●
+
+●
+● ●
+●
+
+●
+
+2
+
+●
+●
+
+●
+
+●
+● ●
+
+●
+
+●
+●
+
+●
+
+●
+
+1
+
+Melanoma Rate
+
+●
+●
+
+−1
+
+0
+
+●
+
+●
+
+●
+
+●
+
+●
+
+1935
+
+●
+
+1940
+
+1945
+
+1950
+
+1955
+
+1960
+
+1965
+
+1970
+
+Year
+
+Figure 4.6: L1 and L2 Parameter Cascades with the same perturbed data as in Figure
+4.1. Compare the L1 curve in this plot with the one in Figure 4.5.
+
+76
+
+L2 Inner, L2 Middle
+L2 Inner, L1 Middle
+L1 Inner, L2 Middle
+L1 Inner, L1 Middle
+
+● ● ●
+●
+●
+●
+
+4
+
+●
+●
+
+●
+
+●
+
+●
+●
+
+●
+●
+●
+
+3
+
+Melanoma Rate
+
+●
+
+●
+
+●
+
+●
+●
+●
+
+●
+
+●
+●
+●
+
+2
+
+●
+●
+●
+●
+● ●
+●
+●
+
+1
+
+●
+●
+● ●
+
+1935
+
+1940
+
+1945
+
+1950
+
+1955
+
+1960
+
+1965
+
+1970
+
+Year
+
+●
+●
+●
+
+●
+●
+
+●
+
+●
+
+4
+
+5
+
+L2 Inner, L2 Middle
+L2 Inner, L1 Middle
+L1 Inner, L2 Middle
+L1 Inner, L1 Middle
+
+●
+
+●
+
+●
+
+●
+
+3
+
+●
+●
+
+●
+● ●
+●
+
+●
+
+2
+
+●
+●
+
+●
+
+●
+● ●
+
+●
+
+●
+●
+
+●
+
+●
+
+1
+
+Melanoma Rate
+
+●
+●
+
+−1
+
+0
+
+●
+
+●
+
+●
+
+●
+
+●
+
+1935
+
+●
+
+1940
+
+1945
+
+1950
+
+1955
+
+1960
+
+1965
+
+1970
+
+Year
+
+Figure 4.7: All possible combinations of L1 and L2 loss functions that can be used for
+the Parameter Cascade. The top plot applies them to the original melanoma data,
+the bottom to the same perturbed data as in Figures 4.1 and 4.6
+
+77
+
+4.3
+
+Accelerating The Rate of Convergence
+
+The MM Algorithm is very sluggish, and this is a well known weakness of both itself
+and the EM algorithm. The literature however suggests that this problem could be
+easily ameliorated in this particular case because of a special feature present.[28] In
+practice one doesn’t want to fit the full model, but only wants to compute an associated
+summary statistic that determines how good a given choice of parameters is. It will
+often be the case that only the value of P EN SSAE or GCV or SAE associated with
+a given choice of parameters is required as inputs to an optimisation routine, and it is
+not desirable to iterate until the full model converges if this effort can be avoided.
+MacLanan and Krishnan[28] discuss the situation where one only wants to compare
+the likelihoods between a restricted model and a full model. They suggest the use of
+sequence acceleration methods to rapidly extract the likelihoods [28] instead of running
+the EM algorithm to completion since the full models aren’t needed. The literature on
+the MM algorithm claims that acceleration methods for the EM algorithm translate
+quite easily to the MM case [52]. On this basis, we explored whether this approach
+might be applied here.
+The approach employed is known as Aitken Acceleration[8, 28]. Suppose that there
+is a sequence x0 , x1 , x3 , . . . converging to a limit x∗ . Aitken’s method makes the ansatz
+that xn+1 −x∗ ≈ C(xn −x∗ ) for some constant C. Many iterative algorithms in statistics
+exhibit this pattern as discussed in Section 4.1.3. This suggests the following equation:
+xn − x∗
+xn+1 − x∗
+≈
+xn − x∗
+xn−1 − x∗
+Solving for x∗ gives the accelerated sequence.
+There is an equivalent definition that is easier to generalise [16]. Consider a sequence
+defined by functional iteration so that xn+1 = F (xn ) for some function F (·). Define
+the error sequence by en = xn+1 − xn = F (xn ) − xn . The function g(x) = F (x) − x
+returns the error associated with any value, and the limit of the sequence satisfies
+g(x∗ ) = 0. Suppose one knew the inverse of g(x), which will be denoted by h(e). Then
+x∗ could be found by evaluating f (0). The next best thing would be to use the values
+of the sequence to approximate h(e), and then evaluate this approximate function at
+zero instead. The Aitken method approximates h(e) by linear interpolation between
+(en , xn ) and (en−1 , xn−1 ), and then evaluates this approximation at e = 0.
+
+78
+
+4.3.1
+
+Illustrative Example: Using Imputation to Fit an ANOVA
+Model With Missing Data
+
+For illustrative purposes, we will make use of an example from chapter 2 of [28]. The
+authors discuss fitting an ANOVA model to a factorial experiment where some of the
+values are missing. They proceed by using the fitted model to estimate the missing
+values; fitting the model again with the new imputed values; and using the new fitted
+values in turn to again update the estimates of missing values. The process is repeated
+until convergence. In the text, the authors do not work with likelihood or any probabilistic models and treat the question as purely a regression problem. This is similar
+to our L1 fitting problem.
+The authors’ example was implemented again in R.6 . For each iteration, the SSE
+statistic was computed. This defines an associated sequence {SSE1 , SSE2 , . . . , SSEn , . . . }.
+Applying Aitken’s method to this sequence produces a new sequence {ASSEn }. As can
+be seen in Figure 4.8 and Table 4.1, the accelerated sequence converges far more quickly
+to the limit of the {SSEi } sequence than the original sequence.
+
+4.3.2
+
+Generalisations
+
+Exploring more powerful methods than Aitken’s method can be justified in two circumstances. The first is that if one is running the algorithm over and over again such
+that an increase in speed over many iterations means the effort invested is worth it.
+This might be the case for example if one wanted to use the bootstrap to model the
+distribution of a likelihood ratio statistic computed using the EM Algorithm as previously described. The second is if the sequence is difficult to accelerate. In the context
+of accelerating the MM fitting algorithm introduced in Section 4.1, it shall be seen that
+both conditions apply.
+As a field of study, sequence acceleration is closely related to time series analysis.
+A generic first order autoregressive model is given by:
+xn+1 = f (xn , n) + n
+Consider the case where there are both no random errors so that n is always zero,
+and the sequence converges to a limit. Here, the problem of determining the long term
+value of the sequence from a set of observations is equivalent to that of accelerating
+the sequence. If the specific form of f (xn , n) is known, there can often be a specific
+acceleration method that can exactly extract the limit. For illustration, suppose there
+were a sequence of the following form, but the parameters β0 and β1 were unknown:
+xn = β 0 +
+6
+
+β1
+n
+
+(4.3)
+
+The SSE statistic here is different from the RSS statistic presented in the text this example was
+taken from. The new code converges to the same estimates as in the original, so the example has been
+re-implemented correctly. It was not possible to determine with what degrees of freedom RSS was
+associated with.
+
+79
+
+As n goes to infinity, xn converges to β0 . It is not difficult to show that the limit β0
+can be found by applying the following sequence transformation:
+
+xn − xn+1
+
+
+β̂1,n = 1 − 1 
+n
+n+1
+(4.4)
+
+
+ x̃n = xn − β̂1,n
+n
+If the transformation (4.4) is applied to a sequence of values x1 , x2 , . . . , xn , . . . that
+is of form (4.3), then the transformed sequence x̃1 , x̃2 , . . . , x̃n , . . . will have the property
+that x̃n = β0 for all n. Likewise, the Aitken method is exact for sequences of the form
+xn+1 = β0 + β1 xn , and so can be thought of as the deterministic analogue of an AR(1)
+model.
+The process of acceleration isn’t quite so neat in practice because sequences don’t
+adhere perfectly to these simple forms. Instead, the best that can be hoped for is that
+the transformed sequence converges to the same limit as the original, but the rate of
+convergence is higher. For example, if transformation (4.4) is applied to a sequence
+of the form yn = β0 + βn1 + nβ22 , then the transformed sequence is now of the form
+ỹn = β0 + O( n12 ), which converges to β0 more quickly than the original sequence.7
+Suppose a convergent sequence is of the form xn+1 = f (xn ) with f (·) differentiable
+and x∗ is the limit. Using a first order Taylor expansion, it can be seen that for
+sufficiently large n, xn+1 ≈ x∗ + f 0 (x∗ )(xn − x∗ ). In this case, Aitken acceleration has
+a decent chance of accelerating the sequence so long as it has ’burned in’ sufficiently.
+One generalisation, proposed in [16] is to use higher order polynomials to model
+the inverse error function h(e). So h(e) would be approximated by a quadratic through
+(en , xn ), (en−1 , xn−1 ) and (en−2 , xn−2 ). Making e the independent variable here instead
+of x means the estimated limit can simply be found by evaluating the approximating
+quadratic at e = 0 instead of having to find the correct root of a quadratic to compute
+each element of the accelerated sequence.
+Another approach is to simply apply Aitken Acceleration to the sequence twice.
+Both these approaches were attempted for the missing data model, and the results
+can be seen in Table 4.1 and Figure 4.9. It can be seen that both methods improve
+convergence, though double Aitken acceleration is more effective (and easier to implement).
+One can take the process further. For the missing values linear model, these higherorder methods converge very rapidly and are prone to numerical instability thereafter
+due to the error terms being so small. If the Aitken method is applied three times
+to the original sequence, the first entry yields the limit immediately and there is no
+need to go any further. Applying the quadratic method twice in a row produces a new
+sequence for which the first entry is within 10−12 of the limit.
+7
+
+Doing the algebra, it can be seen that it is now the case that β̂1,n = β1 + β2
+h
+i
+h 3 2 i
+1
+−n −n +n
+ỹn = β0 + β2 − n22n+1
++
+=
+β
++
+β
+.
+2
+0
+2
+(n+1)
+n
+n4 (n+1)
+
+80
+
+h
+
+2n+1
+n(n+1)
+
+i
+
+, and so
+
+Orginal Sequence
+Aitken Acceleration
+
+●
+
+●
+
+●
+
+●
+●
+●
+
+0
+
+●
+●
+●
+●
+
+●
+
+●
+●
+●
+●
+
+●
+●
+
+−5
+
+Log Error
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+−10
+
+●
+
+●
+●
+
+●
+
+●
+●
+
+●
+
+●
+●
+
+0
+
+5
+
+10
+
+●
+
+15
+
+● ●
+
+20
+
+●
+
+25
+
+30
+
+Iteration
+
+Figure 4.8: Log Errors for original sequence of SSE values and the accelerated one
+Other Approaches: There are alternative approaches besides those described here.
+For example, the EM and MM algorithms generate a sequence of coefficient vectors
+{c0 , c1 , . . . , cn , . . . } with cn+1 = F(cn ) for some function F(·). In our particular situation, the function F(·) would denote the operator that takes a coefficient vector and
+returns the coefficient vector that minimises the associated W P EN SSE problem (4.1).
+The limit of this sequence - should it exist - is a solution to the equation c = F(c). It
+is proposed in the literature to use Newton or Quasi-Newton methods such as those
+described in the chapter on Brent’s method to numerically solve this fixed point equation [6, 8]. The idea is that such methods will find the fixed point more rapidly than
+simply iterating F(·) until one gets sufficiently close to the limit. These methods have
+the disadvantage of being more complex and time consuming to implement than the
+univariate acceleration methods.
+
+81
+
+Orginal Sequence
+Aitken Acceleration
+Double Aitken
+Quadratic Acceleration
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+0
+
+●
+●
+●
+●
+
+●
+
+●
+●
+●
+●
+
+●
+
+●
+
+●
+
+−5
+
+Log Error
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+●
+
+●
+
+●
+●
+
+●
+●
+
+●
+
+●
+
+−10
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+●
+●
+
+0
+
+5
+
+● ●
+
+●
+● ●
+
+10
+
+●
+
+●
+
+● ●
+
+15
+
+● ● ●
+
+20
+
+●
+
+25
+
+30
+
+Iteration
+
+Figure 4.9: More sophisticated acceleration methods can provide a further boost to
+convergence. There are gaps in the plot because the more accelerated iterations have
+no valid log error since R cannot numerically distinguish them from the final limit.
+
+82
+
+Table 4.1: Iterations of the original sequence SSEn , the accelerated sequence ASSEn ,
+the quadratically accelerated sequence QASSEn , and the doubly accelerated
+sequence DASSEn .
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+∞
+
+SSEn
+4949.6944444444
+3575.1658950617
+3282.7945625667
+3220.5935028609
+3207.3596279977
+3204.5439391293
+3203.9448588925
+3203.8173952920
+3203.7902754193
+3203.7845052414
+3203.7832775456
+3203.7830163340
+3203.7829607572
+3203.7829489323
+3203.7829464164
+3203.7829458811
+3203.7829457672
+3203.7829457430
+3203.7829457378
+3203.7829457367
+3203.7829457365
+3203.7829457364
+3203.7829457364
+
+ASSEn
+3203.8032711619
+3203.7843303225
+3203.7830400346
+3203.7829521582
+3203.7829461738
+3203.7829457662
+3203.7829457385
+3203.7829457366
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+
+83
+
+QASSEn
+3203.7834325738
+3203.7829788622
+3203.7829479917
+3203.7829458900
+3203.7829457469
+3203.7829457371
+3203.7829457365
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+
+DASSEn
+3203.7829457122
+3203.7829457359
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+3203.7829457364
+
+0
+
+●
+
+●
+●
+
+−3
+−4
+−7
+
+−6
+
+−5
+
+Log Error
+
+−2
+
+−1
+
+●
+
+Orginal Sequence
+Aitken Accleration
+
+●
+●
+●● ●
+●
+●
+●●
+●
+●●
+●●●
+●●
+●●●
+●●
+●●
+●●●
+●●
+●●●
+●●●
+●
+●●●
+●
+●●●
+●●
+●
+●●
+●●
+●●
+●●
+●
+●●
+●●
+●
+●
+●
+●●
+●
+●
+●
+●
+●
+●
+● ●●●●●●●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●
+●●
+●
+●●
+●
+●
+●●
+●
+●●
+●● ●
+●● ●
+●●
+●
+●
+●
+●
+● ●●
+●
+● ●● ●
+●
+●●
+●●
+●
+●
+●●
+●
+●
+● ●●●
+● ●●●
+●
+●●
+● ●●
+● ●
+●
+●
+●●●
+●
+● ●
+●
+●
+●
+● ●
+●
+●
+●
+● ●
+●
+●
+●● ●●
+●
+●
+●
+●
+●
+●
+●
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+Iteration
+
+Figure 4.10: Accelerating the SAE sequence generating by the L1 fitting algorithm
+using Aitken’s Method. The improvement in covergence is mediocre.
+
+4.3.3
+
+Accelerating the L1 Fitting Algorithm
+
+The L1 fitting algorithm devised in Section 4.1 is much more difficult to accelerate
+as can be seen in Figures 4.10 and 4.11. Figure 4.10 shows the result of applying
+Aitken acceleration to the SAE sequence generated, and Figure 4.11 shows the results
+of attempting an entire battery of acceleration methods, including methods specifically
+designed for accelerating slowly converging sequences that Aitken acceleration cannot
+accelerate such as Epsilon Algorithm and Lubkin’s W transform. [11, 30, 50] No
+method performs substantially better than Aitken acceleration. The SAE sequence is
+apparently either numerically ill-behaved or of a very unusual form.
+To conclude, it is possible to save some time by acceleration, but the scope for
+doing so is limited and the process would have to be monitored carefully to ensure that
+numerical instability isn’t causing trouble.
+
+84
+
+−3
+−4
+−7
+
+−6
+
+−5
+
+Log Error
+
+−2
+
+−1
+
+0
+
+●
+●
+●
+●
+●
+●
+●
+●
+●●
+●
+●
+●
+●
+●
+●
+●
+●● ●●
+●●●
+●●
+●
+●●● ●
+● ●●●
+●
+●
+●
+●●●●●
+●●●●●
+●
+●
+●●
+●●●
+●
+●
+● ●●●●
+●●●
+●●
+●●●●●
+●● ●●●● ●● ●
+●●●
+●●●
+●●
+●●●
+● ● ● ●●●
+●●●
+● ●●
+●●
+●
+● ●
+●●
+●● ● ●
+●
+●● ●
+●●
+●
+●●
+●●
+●●●
+●
+●
+●●●
+●●
+●● ●
+● ●● ●
+●●
+● ●●
+●
+●
+●
+●
+●●
+●●●
+●
+●●
+●
+●
+●●●●●
+●
+●●●●●●●●●
+●●
+●●
+●
+●
+●
+●
+●
+●
+●
+●
+●●
+●●● ●●●
+●
+●●
+●
+● ● ●●●● ● ●●
+●
+● ●●
+●●
+●
+●●
+●●
+●
+●●
+●●
+● ●● ●●●
+●●
+●
+●
+●●●
+●
+●●● ●
+● ●●●
+●
+●
+●●
+●
+●
+●● ● ●●
+●●
+● ●● ●
+● ●
+●
+●
+●
+●
+●●●●●
+●●●●● ●
+●
+●
+●● ●●
+●● ●
+●●●
+●
+●
+●●
+●
+● ●●
+●●●●● ● ●
+● ●
+●●
+●
+●
+●●● ●
+●
+●
+●● ●
+●
+●
+●
+● ●●
+●
+●●
+●
+●● ● ●●
+●
+●
+●
+● ●●
+● ●
+●
+●● ●
+●●
+●●
+●
+● ●● ● ●● ● ●
+●●● ●●
+●●
+●
+●●
+●
+●
+●
+●●●●
+●
+●
+●
+●
+●
+●
+●●
+●
+●●● ●●
+●●● ●
+●●●●●● ●
+●
+●
+● ●●●
+● ●● ●
+●
+●●●
+●●
+●
+●
+● ●●●
+●
+●
+●● ●
+●
+●●
+●●●●
+● ●●●●
+●●
+● ●
+●
+● ● ●●
+●●●● ●●
+●
+●
+●
+●
+●
+●
+● ●
+●●● ●
+●
+●
+●
+●
+●
+● ●●
+●
+●
+●
+● ●●
+●●● ●
+●
+●
+●●●
+●
+●
+●
+●
+●
+●
+●
+●●
+
+Original Sequence
+Aitken (Linear) Accleration
+Double Aiken
+Quadratic Acceleration
+Epsilon Alogrithm
+Lublin's W
+
+●
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+Iteration
+
+Figure 4.11: Accelerating the SAE sequence using multiple methods. Aitken’s
+method performs the best, despite it’s lack of sophistication.
+
+85
+
+Chapter 5
+Profiling Non-Linear Regression
+Models With the Parameter
+Cascade
+In this chapter we will discuss regression models that can be separated into an inner
+problem where one attempts to find the best fit given a choice of parameters, and a
+middle problem where one attempts to in turn find the optimal choice of parameters.
+First a simple nonlinear regression model will be discussed as an example to introduce
+the ideas used in this chapter. Then, a Parameter Cascade method for fitting linear
+ODEs is devised. Finally, the Parameter Cascade approach will be used to fit PDEs.
+The approach used in this chapter here is related to an ODE fitting methodology
+developed by Ramsay et al.[12, 36] The authors attempt to fit a parameterised ODE
+x0 (t) = f (x(t), t|θ) using a penalised regression model of the form:
+Z T
+X
+2
+[x0 (t) − f (x(t), t|θ)]2 dt
+P EN SSE(x(t); θ, λ) =
+[yi − x(ti )] + λ
+0
+
+The first term measures fit to the data, and the second measures fidelity to the
+ODE. This in turn defines a middle problem for θ :
+X
+H(θ) =
+[y − x̂(ti |θ, λ)]2
+Where x̂(ti |θ, λ) is the minimiser of P EN SSE(x(t); θ, λ) for fixed values of θ and
+λ.
+The assumption is made that x(t) can be expanded as a linear combination of basis
+functions, and the authors then proceed to conduct a traditional parameter cascade.1
+A sophisticated package called CollocInfer has been developed to implement the
+method in a similar fashion as Data2LD.
+1
+
+Not entirely traditional. To perform a fit, derivatives of f (·) with respect to θ and x are required.
+CollocInfer uses finite differencing to estimate these derivatives if no information is provided by the
+user.
+
+86
+
+The approach used in this chapter is more in the spirit of symmetry methods used
+to solve differential equations as described in [14]. The aim is to exploit structure in
+the specific dynamical system being modelled so that the problem of fitting the system
+is turned into a transformation model of some kind, which can then be fitted using a
+hierarchial approach.
+Our approach can fit first-order linear PDEs with ease for example because it exploits the fact that the solutions to these PDEs are constant along certain curves whose
+shape depend on the PDE at hand and the parameters.
+
+5.1
+
+Fitting a Non-Linear Regression Model With
+the Parameter Cascade
+
+Consider the following non-linear regression model where observed values yi are values
+observed at times ti :
+yi = α + βeγti + i
+
+(5.1)
+
+This would be a straightforward linear regression problem if it were not for the
+unknown eγt term. If γ were known, α and β could be found through simple linear
+regression with the eγti term acting as an independent variable predicting the yi
+This suggests the following regression strategy. Define a function H(γ) to be the
+sum of squared errors from performing simple linear regression on the yi against eγti .
+That is:
+X
+H(γ) = min
+[yi − α − βeγti ]2
+α,β
+
+This defines a middle problem, with the inner problem being that of minimising
+the simple linear regression problem given γ. The non-linear model can be fitted by
+using Brent’s Method to fit the middle problem.
+This approach was applied to simulated data with α = 100, β = 4, and γ = 1, and
+the results can be seen in Figure 5.1.
+
+87
+
+5.2
+
+Fitting Linear Homogeneous ODEs Using the
+Parameter Cascade
+
+Recall a linear homogeneous ODE of order n is given by:
+n−1
+
+dn y X
+dk y
+=
+a
+(t;
+θ)
+k
+dtn
+dtk
+k=0
+Under some mild technical conditions, the set of solutions to such an ODE is an
+n dimensional vector space and has a unique solution for each set of intial conditions.
+It is often more convieninet to work with ODEs in matrix form from now on. Any
+homogeneous linear ODE can be represented in matrix form:
+dy
+= A(t; θ)y
+dt
+For example, the ODE y 00 = −ω 2 y with the initial conditions y(0) = y0 and y 0 (0) =
+v0 can be represented as:
+  
+ 
+d y1
+0 1
+y1
+=
+2
+−ω 0
+y2
+dt y2
+with the initial condition y(0) = (y0 , v0 )0 .
+A basis for the solution set of any linear ODE can be formed from the set of solutions
+associated with the initial conditions y(0) = ei , where ei denotes the ith basis vector.
+So this suggests the following cascade algorithm: given a set of parameters, find the
+set of solutions {y1 (t|θ), . . . , yn (t|θ)}, where yk (t|θ) denotes the solution with the kth
+basis vector as an initial condition. Then perform regression to fit the {yi (t|θ)} to the
+observed data. The inner problem consists of fitting a weighted sum of the {yi (t|θ)} to
+the observed data and reporting the associated error given a choice of parameters. The
+middle problem consists of finding the set of parameters that minimises this associated
+error.
+For a problem where the ODE can be solved explicitly, things proceed as in Section
+5.1. Consider again the ODE y 00 − ω 2 y = 0. The solutions generated by the intial
+conditions (1, 0) and (0, 1) is given by {A cos ωt + B sin ωt|A, B ∈ R}. So the middle
+least squares criterion is given by:
+X
+H(ω) = min
+[yi − a cos ωti − b sin ωti ]2
+a,b
+
+Finding the optimal a and b given ω is an inner problem that can be solved using
+least squares regression as before. In fact, such a problem has already been encountered:
+the nonlinear model given in Equation 5.1 is associated with the ODE y 00 − γy 0 = 0.
+For ODE problems that cannot be explicitly solved, the trajectories yn (t|θ) must
+be instead found by a numerical solver for each choice of θ. The inner problem then
+consists of linearly regressing the computed solutions against the observed data.
+88
+
+5e+05
+
+●
+●
+
+●
+
+3e+05
+
+SSE(γ)
+
+4e+05
+
+●
+
+●
+
+2e+05
+
+●
+
+●
+●
+
+1e+05
+
+●
+●
+
+●
+●
+●
+●
+
+●
+●
+
+●
+
+−1
+
+0
+
+●
+
+●
+
+●
+
+1
+
+2
+
+3
+
+γ
+
+600
+
+700
+
+●
+
+500
+
+●
+
+400
+
+●
+
+300
+
+●
+●
+
+●
+●
+
+200
+
+●
+●
+●
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+100
+
+y
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+0
+
+1
+
+2
+
+3
+
+4
+
+5
+
+t
+
+Figure 5.1: Profile Plot and Fitted Curve
+
+89
+
+To illustrate the method, it was applied to the following ODE with α = −0.3 and
+β = −1.0 :
+√
+y 00 (t) = α ty(t) + β sin(2t)y 0 (t)
+
+(5.2)
+
+To minimise the middle problem, the Nelder-Mead method was used - Brent’s
+method was felt to be unsuitable because of the awkward topography. The results can
+be seen in Figure 5.2.
+The advantage of the parameter cascade here over a generic optimisation routine
+is that it is noticebly faster than trying to optimise everything in one go. The linear
+regression steps mean that the ODE needs to solved numerically fewer times, so that
+the algorithm runs arond 30% faster for the ODE in Equation 5.2. However, the
+nls command is faster than the Parameter Cascade for Equation 5.1 even when no
+derivatives are provided.
+Compared to Data2LD and CollocInfer, this approach numerically estimates a
+basis for the solution set of the linear ODE and then projects the observed data onto
+the approximate solution set using the lm command. On the other hand, Data2LD
+and CollocInfer add penalties to the least squares criterion to ensure suffcient adherence to the ODE post hoc. This approach has the advantage of being much easier to
+implement, but it requires rigid adherence to the ODE, and cannot tackle non-linear
+problems like CollocInfer.
+
+90
+
+●
+
+2
+
+●
+●
+
+●●
+
+●
+
+●
+
+●●
+
+●
+
+●
+●
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+1
+
+●
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+●
+
+0
+
+yi
+
+●
+
+●
+●
+●
+
+●
+
+●
+
+●
+
+−1
+
+●
+
+●
+●
+●●
+
+●
+●
+
+●
+
+●
+●
+
+−2
+
+●
+
+0
+
+1
+
+2
+
+3
+
+4
+
+5
+
+3
+
+ti
+
+●
+
+Original
+Estimated
+
+0
+
+90
+
+β
+
+1
+
+2
+
+●
+
+−1
+
+10
+
+●
+
+20
+
+30
+
+10
+
+−1
+
+40
+
+30
+
+−3
+
+20
+
+80
+
+50
+
+−2
+
+0
+
+60
+
+60
+
+−3
+
+50
+
+70
+
+−2
+
+40
+
+●
+
+1
+
+2
+
+3
+
+α
+
+Figure 5.2: Plot of fit to simulated data, and contour plot of SSE against α and β.
+Blue dot is true parameter values, red is estimated parameter values.
+
+91
+
+5.3
+
+Estimation for First Order Linear PDEs
+
+As discussed in Chapter 2, a similar framework can be used to perform estimation
+for PDEs in some cases. A complication is that for a PDE, the initial condition is a
+function rather than a constant. PDE problems cannot be tackled by Data2LD nor
+CollocInfer.
+
+5.3.1
+
+The Transport Equation
+
+In Section 2.5 the Transport Equation was introduced and a fitting strategy was
+sketched out. Recall that the Transport Equation is defined by:
+(
+∂u(x,t)
++ βx ∂u(x,t)
+=0
+∂t
+∂t
+(5.3)
+u(x, 0)
+= f (x)
+In Chapter 2, a middle objective function H(β) to estimate the parameter β was
+defined, but no effort was made to actually fit the model. The objective function H(β)
+was defined as the sum of squares:
+X
+H(β) =
+[yi − fˆ(xi − βti )]2
+And so:
+X
+∂H
+=−
+2ti fˆ0 (xi − βti )[yi − fˆ(xi − βti )]
+∂β
+To compute the gradient of H(β), the estimates of the functions f (x) and f 0 (x)
+associated with a given choice of β are needed.
+This understates the difficulty however. The command smooth.spline will only
+return the GCV score, not the sum of squared errors. So we are forced to use a more
+complicated objective function than least squares unless a routine to compute them is
+written.
+Fortunately, Brent’s Method can be used to minimise H(β) instead. As can be seen
+in Figure 5.3 objective function is irregular, and care must be taken that one is close
+to the optimal value already.
+Estimating f (x) is harder than estimating β as can be seen in Figure 5.4.
+
+92
+
+0.10
+●●●●●
+
+●
+
+●●
+●●●●
+
+●
+
+●
+●●●
+
+●●
+
+●●
+
+●
+
+●
+
+●
+
+●●
+
+●
+
+●
+
+●●●
+
+0.08
+
+●
+
+0.06
+
+●
+
+●
+
+GCV
+
+●
+●
+●
+
+●
+
+0.04
+
+●
+●
+●
+●
+●
+
+0.02
+
+●
+●
+●
+
+●
+
+0.00
+
+●
+
+−3
+
+−2
+
+−1
+
+0
+
+1
+
+●
+●
+
+2
+
+3
+
+β
+
+Figure 5.3: Plot of middle optimisation for the transport equation. Blue line denotes
+original parameter, red line denotes fitted estimate
+
+93
+
+1.0
+0.8
+0.6
+0.0
+
+0.2
+
+0.4
+
+f(z)
+
+−4
+
+−2
+
+0
+
+2
+
+4
+
+6
+
+z
+
+0.0
+
+0.2
+
+0.4
+
+f(z)
+
+0.6
+
+0.8
+
+1.0
+
+(a)
+
+−6
+
+−4
+
+−2
+
+0
+
+2
+
+4
+
+6
+
+z
+
+(b)
+
+Figure 5.4: The estimates of f (x) computed for various sample sizes. The plot (a)
+gives the result with 200 sample points, the plot (b) gives the result for 2000 sample
+points. To avoid confusion between x and x − βt, z was made the independent
+variable for this plot. Furthermore, the points used to fit f (x) aren’t displayed to
+reduce clutter and make it easier to compare the fitted curves with the original.
+94
+
+0.14
+
+●
+●
+
+0.12
+
+●
+●
+●
+●
+
+0.10
+
+●
+●
+●
+●
+●
+
+0.08
+
+GCV
+
+●
+●
+●
+●
+●
+●
+
+0.06
+
+●
+●
+●
+●
+
+0.04
+
+●
+●
+
+●
+
+●
+
+●●
+
+●●●
+
+●
+●
+
+●
+
+●
+
+●
+●
+
+0.02
+
+●
+
+−0.2
+
+●
+
+●
+
+●
+
+−0.4
+
+●
+
+0.0
+
+0.2
+
+●
+
+●●●
+
+●●
+
+●
+
+●
+
+0.4
+
+●
+
+0.6
+
+0.8
+
+β
+
+Figure 5.5: Plot of outer optimisation for the modified transport equation with only
+30 sample points. Blue line denotes original parameter, red line denotes fitted
+estimate
+
+5.3.2
+
+The Transport Equation with Space-varying Velocity
+
+The transport equation is a little trivial, so the methodology will be applied to a more
+difficult PDE. Instead of having a constant velocity, let it vary with position by having
+the velocity equal βx instead of β. This produces the following modified transport
+equation:
+(
+∂u(x,t)
++ βx ∂u(x,t)
+=0
+∂t
+∂t
+(5.4)
+u(x, 0)
+= f (x)
+The problem of estimating β for this PDE is ill-conditioned in the sense that
+smooth.spline will crash for some meshes.
+
+95
+
+1.0
+
+●
+
+●
+
+●
+●
+●
+●
+
+●
+●
+●
+
+0.8
+
+●
+
+●
+
+●
+
+●
+
+0.6
+
+●
+
+●
+
+●
+●
+
+0.4
+
+f(z)
+
+●
+
+0.2
+
+●
+
+0.0
+
+●
+
+● ●
+
+●
+
+●
+●
+
+●
+
+●●
+
+●
+
+●
+
+−6
+
+−5
+
+−4
+
+−3
+
+−2
+
+−1
+
+0
+
+1
+
+z
+
+Figure 5.6: Plotted estimate of f (x) for the modified transport equation with 30
+sample points.
+
+96
+
+Chapter 6
+Conclusion and Further Research
+6.1
+
+Derivative-Free versus Derivative-Based Methods
+
+We have shown that use of derivative free methods can allow for a considerable reduction in time spent on writing code to fit FDA problems. Brent’s Method is much
+simpler than Data2LD.opt.
+The derivative-free approch is effective at fitting data using non-smooth loss functions such as the sum of absolute deviations. A huge advangtage is that it allows one
+to utilise existing code that only computes a goodness-of-fit statistic for a given choice
+of parameters.
+The derivative-free approach further allows problems that are not mainstream
+within FDA such as parameterically fitting PDEs to be solved without having to implement a complex solver like Data2LD.
+However, the methodology suffers from some weaknessess. It is undeniably slower
+than derivative-based methods. The MM algorithm for L1 fitting suffers particularly
+badly from this weakness because it must solve many weighted P EN SSE problems
+in the course of its execution and it is difficult to accelerate. This must be balanced
+against the MM algorithm’s ease of implemention.
+
+6.2
+
+Further Subjects for Inquiry
+
+An obvious topic for further investigation is combining Brent’s method with Data2LD so
+that the latter package can handle the question of parameter estimation, while Brent’s
+method is used to find the optimal value of λ.
+Another question to be asked is whether the MM algorithm for L1 fitting can be
+combined with Data2LD to perform L1 fitting where the parameters of the ODE are
+time varying functions.
+Finally, while the two level parameter cascade with L1 errors was implemented,
+no effort was made to implement the three level parameter cascade. It has not been
+97
+
+investigated by us whether the GCV is appropriate as a fitting criterion for λ in the
+L1 case.
+
+6.3
+
+Quasi-linear Differential Problems
+
+Throughout this thesis, it has been possible to use techniques from Applied Mathematics to construct solution strategies on a case by case basis, or use Statistical methods
+to find a semi-parametric fit. As differential equations become more complex, both approaches begin to rapidly become non-viable. In this section, quasi-linear differential
+equation models will be briefly discussed to illustrate how small changes can greatly
+increase the difficulty of fitting.
+The difference between a quasi-linear and a linear differential equation is that the
+coefficients in a quasi-linear equation are allowed to depend on the unknown function1 .
+Instead of an ODE such as y 0 = β(t)y, one would have an ODE such as y 0 = β(y, t)y.
+Though quasi-linear problems tend to be reminiscent of linear ones, they are nonetheless
+substanially more complicated, and require more technical knowledge to tackle.
+For a quasi-linear variation of a linear ODE, consider the Van Der Pol Equation:
+y 00 (t) + β(1 − y(t))2 y 0 (t) + y(t)
+This ODE has no obvious solution.
+
+6.3.1
+
+Inviscid Burger’s Equation
+
+Even if a solution exists, an estimation strategy might be difficult to derive. Consider
+the inviscid Burger’s Equation:
+∂u(x, t)
+∂u(x, t)
++ βu(x, t)
+=0
+∂t
+∂x
+This equation is identical to the Transport Equation except that the rate term is
+equal to βu(x, t). The solution is given by:
+u(x, t) = f (s)
+Here f (·) is some arbitary function as before, and s is implicitly defined as the
+solution of the equation x = βf (s)t + s. Since s = x − βut, this can be written as:
+u(x, t) = f (x − βut)
+Fitting this model is substantially trickier than the Transport Equation. There is
+no clean separation between the problem of estimating f (·) and β since u(x, t) appears
+on the righthand side and scales β.
+1
+
+In practice there is no precise definition of ‘quasi-linear’, it is defined as suits the problem domain
+at hand
+
+98
+
+A further complication is that u(x, t) might only define a relation, instead of a
+function. There might be multiple values of u associated with a given (x, t) that
+satisfy the solution equation. Physically speaking, multiple values correspond to shock
+waves.
+
+6.3.2
+
+Discussion
+
+We see that the level of knowledge required to devise fitting strategies can increase
+substantially even with seemingly modest increases in the complexity of the associated
+differential equation.
+Consider the following quasi-linear model of genetic drift in a population proposed2
+by R.A. Fisher:[9]
+∂u(x, t)
+∂u(x, t)
++ β1
+= β2 u(x, t)(1 − u(x, t))
+(6.1)
+∂t
+∂x
+This problem is similar to the previous PDEs we discussed, it even admits travelling
+wave solutions of the form f (x + ct) as Fisher himself noted. Nonetheless, it is a much
+more difficult problem despite the apparently modest increase in complexity. One
+would likely have to consult a textbook that covers non-linear PDEs that can generate
+waves in fair degree of detail to be able to devise a fitting strategy. This is quite a
+specialised subject!
+The overall result is that as the complexity of the differential equation increases,
+more and more time will be needed to model it correctly.
+
+2
+
+In the Annals of Eugenics...
+
+99
+
+Appendices
+
+100
+
+Appendix A
+Overview of Optimisation Methods
+This appendix provides an overview of the ideas in numerical optimisation used throughout this thesis. [7, 29] are accessible texts for those who require more information. [29]
+is recommended since it covers line search methods in more detail than [7].
+
+A.1
+
+Gradient Descent and the Newton-Raphson method
+
+The simplest derivative-based optimisation algorithm is known as Gradient Descent:
+xn+1 = xn − αgn
+The fixed parameter α > 0 controls how big a step the method will take on each
+iteration. Gradient descent has the property that the directions it generates will always
+point ’downhill’ so that a small step will decrease the objective function:
+f (xn+1 ) = f (xn − αgn )
+≈ f (xn ) − αgn> gn
+= f (xn ) − αkgn k2
+This means that f (xn+1 ) < f (xn ) so long as α isn’t too big. Gradient descent is
+simple but it only converges linearly under ideal conditions. [7, 29, 51]. If the objective
+function isn’t sufficiently ideal, gradient descent might only converge sublinearly.[51]
+Consider the question of minimising the function f (x) = x4 using Gradient Descent,
+starting at x = 0.5 with α = 0.2. The minimum of f (x) is of course at x = 0, so the
+absolute value of the iterates xn is a measure of the error. Figure A.1 plots the log errors
+for the first 20,000 iterations, It is readily apparent that the algorithm is converging
+sublinearly and that the rate of convergence is absolutely and utterly woeful. It takes
+around 250 iterations before the error falls below 10−3 , around 1900 iterations before
+the error falls below 10−4 , and 13800 iterations before the error falls below 10−5 . The
+data suggests that the number of iterations needed to reduce the error to 10−n−1 is
+101
+
+approximately 7.4 times the number of iterations needed to achieve an error of 10−n .
+It could thus take over 100,000 iterations to get an error of less than 10−6 .
+Gradient descent can be thought of as the naive choice if one only has access to
+f (x) and ∇f (x). Suppose the second derivatives were available as well. What would
+the ‘obvious’ choice be in this case? Perform a second-order Taylor expansion of the
+objective function around xn :
+1
+f (x) ≈ fn + gn> (x − xn ) + (x − xn )> Hn (x − xn )
+2
+The expression on the righthand side is minimised by x = xn − H−1
+n gn . Given the
+iterate xn , the Newton-Raphson method defines the next iterate by:
+xn+1 = xn − H−1
+n gn
+The Newton-Raphson Method converges quadratically, subject to technical conditions, including that so long as one is already near the optimal point and that the
+Hessian at the optimal point is not pathological.[7, 16, 23, 24, 29] If these assumptions
+do not hold, undesirable behaviour can occur. For example, the Newton Raphson
+Method only converges linearly with rate 0.666 when applied to the function f (x) = x4
+as can be seen in Figure A.2, because the second derivative is zero at the optimal
+point.1 [16] While the Newton-Raphson method is undeniably a huge improvement over
+Gradient Descent here, it nonetheless completely fails to achieve the usual quadratic
+convergence.
+The biggest weaknesses of Newton’s Method the cost of constantly computing the
+Hessians, the possibilty that −H−1
+n gn fails to be a descent direction, and the possibilty
+of poor performance or even divergence if one is far from the optimal value.
+
+1
+
+For the case of univariate optimisation, the specific rate of convergence is given by m/(m + 1),
+where m is the number of consecutive higher order derivatives starting from the second derivative that
+are zero at the optimal point.[16] In the case where f (x) = x4 , we have that f 00 (0) = 0 and f 000 (0) = 0,
+but f (4) (0) = 24 6= 0, and so m = 2.
+
+102
+
+−3
+−5
+
+−4
+
+Log Error
+
+−2
+
+−1
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+0
+
+5000
+
+10000
+
+15000
+
+20000
+
+Iterations
+
+Figure A.1: Plot of the log errors from applying Gradient Descent to the function
+f (x) = x4 .
+
+103
+
+0
+−10
+−20
+−30
+−40
+
+Log Error
+
+●●
+●●
+●●●●●●●●●●
+●●
+●●●●●●●●●●●●●●●●●●●●●●●●●
+●●
+●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●●
+●
+●●
+●●
+●
+●
+
+Gradient Descent
+Newton−Raphson Method
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+Iterations
+
+Figure A.2: Plot of the log errors from applying Gradient Descent and the
+Newton-Raphson Method to the function f (x) = x4 .
+
+104
+
+A.2
+
+The Chord Method
+
+Chord Methods attempt to approximate the Hessian matrix by using a constant matrix
+Q. The next iterate is defined by:
+xn+1 = xn + Qgn
+The case Q = −αI with α > 0 corresponds to Gradient Descent.
+The Chord Method might look crude, but it is useful. In some cases for example,
+it is faster to compute the Hessian once at the start and stick with it throughout
+the entire algorithm than to constantly recompute it so that Q = H0 .[17] The Chord
+Method is especially likely to be faster than the Newton-Raphson Method if evaluating
+the gradient is cheap compared to the cost of computing the Hessian.
+It is important that the matrix −Q be positive definite. The derivative of f (xn ) in
+the direction Qgn is proportional to gn> Qgn since:
+f (xn + Qgn ) ≈ f (xn ) + gn> Qgn
+Ensuring that x> Qx < 0, ∀x 6= 0 means that Qgn will always be a descent direction
+so that f can be reduced by taking a step in its direction.
+It can be shown that the Chord Method converges linearly,[17] an informal argument
+will be provided here which closely follows the presentation in [16]. Let g(x) denote
+the mapping g(x) = x + Q∇f (x) so that xn+1 = g(xn ). Suppose the sequence xn
+converges, to determine how quickly the converge occurs, perform a Taylor expansion
+about the limit x∗ :
+xn+1 − x∗ = g0 (x∗ )(xn − x∗ )
+= (I + QH)(xn − x∗ )
+= K(xn − x∗ )
+For brevity, we let H denote the Hessian of f at x∗ . The convergence of the Chord
+Method around x∗ is governed by the matrix K = I + QH. If K = 0, then Q = H−1
+and the method converges superlinearly. It is very rarely the case that the Hessian at
+the limit point is available though. Usually the matrix Q is only an approximation to
+H−1 . The better the approximation, the smaller the matrix K will be, and the faster
+the rate of convergence.
+
+A.3
+
+More Sophisticated Hessian Approximations
+
+Instead of using a fixed matrix on each iteration as with the Chord Method, more
+advanced methods allow the matrix Q to vary on each iteration:
+xn+1 = xn + Qn gn
+105
+
+Bearing in mind the derivation of the Newton-Raphson Method presented in Section
+A.1, suppose that the objective function f (x) is locally approximated by a quadratic
+function as follows:
+1
+f (x) ≈ fn + gn> (x − xn ) + (x − xn )> An (x − xn )
+2
+for some matrix An This approximation is minimised by:
+xn+1 = xn − A−1
+n gn
+A condition generally imposed is that the approximate Hessians An used must be
+positive-definite. This ensures that the approximate qudaratics don’t have any saddle
+points or surfaces on which the second derivative is zero so that a well defined search
+direction is guaranteed.[23, 24, 29]
+The choice Qn = H−1
+n corresponds to the Newton-Raphson Method. The discussion
+in Section A.2 suggests that to ensure faster than linear convergence, it is necessary to
+ensure that I + Qn H goes to 0 as n goes to infinity.2
+Linearly Convergent Methods: Not every method that changes Qn on each interation converges superlinearly. A straightforward example of linear convergence3 is
+found by setting An to the diagonal elements of the Hessian, so that:
+
+ 2
+∂f
+
+2
+
+ ∂x1
+An = 
+
+
+..
+
+.
+∂f 2
+∂x2n
+
+
+
+
+
+Another method that only converges linearly is Fisher’s Method of Scoring for
+Maximum Likelihood estimation, which uses the expected information matrix I(θ) to
+approximate the observed information I(θ). It is not the case that I(θ̂) = I(θ̂), so one
+should not expect I + Qn H → 0 as the algorithm converges to the MLE θ̂. As a result,
+Fisher’s Method of Scoring will only converge linearly, though at a decent pace so long
+as it is a reasonable approximation to the observed Fisher Information.4
+Quasi-Newton Methods: Quasi-Newton Methods use the computed gradients to
+construct approximations to the true Hessians as the algorithm proceeds.[29] These
+methods produce a sequence of psuedo-Hessians Bn that satisfy the Secant Condition:
+2
+
+As noted in [29], it is actually only required that Qn approximates Hn along the directions which
+the algorithm is searching.
+3
+For the sake of simplicity it is assumed that all the methods discussed here do in fact converge.
+4
+As the sample size grows larger, the expected Fisher Information gets increasingly good at approximating I(θ̂)−1 , so that Fisher’s Method of Scoring tends to converge faster and faster as the sample
+size gets bigger. But that doesn not mean that Fisher’s Method of Scoring achieves superlinear
+convergence when applied to one specific set of data.
+
+106
+
+Bn (xn − xn−1 ) = gn+1 − gn
+In one dimension, finding a Bn that satisfies the Secant Condition is equivalent to
+computing a finite difference approximation to the second deriviative:
+Bn (xn − xn−1 ) = f 0 (xn ) − f 0 (xn−1 )
+f 0 (xn ) − f 0 (xn−1 )
+Bn =
+xn − xn−1
+When the sequence xn converges, the denominator in the finite difference approximation converges to zero as well, so the that the rate of convergence is faster than for
+a finite difference approximimation which uses a fixed denominator h.[17]
+For multivariate problems, the second derivative is in the form of a matrix, so there
+is not enough information to construct a full approximation afresh on each iteration.
+Rather, the approximate Hessian is partially updated using one of several approaches.
+R’s optim routine uses the BFGS method to compute the next approximate Hessian.
+[32] BFGS finds the symmetric matrix Bn+1 satisfying the secant condition such that
+the inverse B−1
+n+1 minimises a weighted Frobenius distance between itself and the previous inverse B−1
+n . A low memory variant of BFGS known as L-BFGS is also available
+in R’s standard libary[29, 32].
+Quasi-Newton Methods converge superlinearly, but are not quadratically convergent
+like Newton’s Method.[29] They have the advantage however of avoiding the cost of
+computing Hessian Matrices, so they can prove faster than Newton’s Method in practice
+despite more iterations being needed to achieve a given degree of accuracy.
+Finite Differences: In several places in this thesis finite difference methods are used
+to approximate derivatives.5
+For example, one might wish to use finite difference methods to approximate the
+elements of Hn . There are many different ways of computing finite difference approximations. For example, a straightforward scheme to approximated Hn that only requires
+two additional function evalutions is given by:
+
+[Hn ]ij ≈
+
+f (xn + hei ) + f (xn + hej ) − f (xn − hei ) − f (xn − hej )
+4h2
+
+For very small values of h, any numerical error in evaluating the objective function
+will start to dominate the finite difference estimates. Suppose that that a univariate
+function g(x) were computed with errors (x) and |(x)| ≤ ¯ for all x. Furthermore,
+suppose a forward difference ∇h g(x) approximation were used to estimate g 0 (x). Taking
+into account the error in evaluating g(x), the approximation proceeds as follows:
+5
+
+Refer to [17, 26, 29] for more detail.
+
+107
+
+g(x + h) + (x + h) − f (x) − (x)
+h
+g(x) + hg 0 (x) − g(x) + (x + h) − (x) + O(h2 )
+=
+h
+hg 0 (x) + O(¯) + O(h2 )
+=
+h¯ 
+0
+= g (x) + O
++ O(h)
+ h¯
+
+= g 0 (x) + O
++h
+h
+
+∇h g(x) =
+
+The approximation error will first shrink and
+√ then get larger and larger as as h → 0.
+The optimal choice of h is given by h = O( ¯), because it simultaneously keeps the
+order of magnitudes of both ¯/h and h small.
+The question of the convergence rate for the finite difference method is more complex than for other methods. Define the errors by en = xn − x∗ where x∗ is the optimal
+point. Subject to technical conditions6 the errors satisfy the following recurrence relation [17]:7
+ken+1 k ≤ K[¯ + (ken k + h)ken k]
+
+(A.1)
+
+If the objective function is evaluated to a degree of accuracy close to machine
+precision, it would be the case that ¯ is on the order of 10−16 and h ≈ 10−8 . On
+the other hand, if the objective function were approximated using a complex or slow
+simulation method, it might only be the case that ¯ ≈ 10−4 and h ≈ 10−2 . To get a
+sense of the implications of this result, consider the following three cases:
+ If ken k is very large compared to h and ¯ so that h  ken k and ¯  ken k, then
+ken+1 k ≤ Kken+1 k2 holds approximately and the convergence appears quadratic.
+ If ken k is of similar order of magnitude to h so that ken k ≈ Ch for 1 < C < 10;
+and both terms are large compared to ¯, so that h  ¯, and ken k  ¯; then
+it is approximately the case that ken+1 k ≤ K(C + 1)hken k, so that the rate of
+convergence appears to be linear.
+ Finally, if ken k is of the same order of magnitude as ¯ or smaller, we have that
+ken+1 k ≤ O(K[¯ + (¯ + h)¯]). A reduction in the error is no longer guranteed.
+
+To surmise: the finite difference method converges quite rapidly at first, but begins
+to slow down and then stagnate entirely as it proceeds. The degree of accuracy that
+can be ultimately achieved is limited by ¯.
+√
+Including that h > M ¯, for some constant M that depends on the function being approximated.
+7
+In the mulitvariate case here, we require that k(x)k ≤ ¯ where (x) is the evaluation error as
+before.
+6
+
+108
+
+0
+
+●
+
+●
+●
+
+●
+
+●
+●
+
+●
+
+●
+●
+●
+
+●
+
+−5
+
+●
+
+●
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+e = 1.0e−4 h = 1.0e−2
+e = 1.0e−12 h = 1.0e−1
+e = 1.0e−12 h = 1.0e−6
+Machine Precision
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+●
+
+●
+
+−10
+
+Log Error
+
+●
+
+●
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+−15
+
+●
+
+5
+
+10
+
+15
+
+20
+
+Iterations
+
+Figure A.3: Plot of the log iterates produced from the recurrence relation
+en+1 = ē + (en + h)en with e0 = 0.5, for various choices of ē and h.
+Figure A.3 illustrates the recurrence relation in Equation A.1. It is apparent that
+instead of converging towards zero, the various sequences converge to a limiting value
+depending the specific value of ¯, and h governs the rate of convergence.
+
+A.4
+
+Line Search Methods
+
+So far, every method has entailed computing a search direction pn and letting xn+1 =
+xn + αpn , where it is often the case that α = 1. The generated search directions pn
+have been required to be a descent directions so that:
+d
+f (xn + αpn )
+<0
+dα
+α=0
+This means that if α is small enough, then a step in direction pn will reduce the
+value of the objective function. At most, the optimisation method only knows the
+values of fn , gn and Hn , so it can construct a quadratic or linear approxmition to to
+the objective function xn and use that to find the next point.
+As illustrated in Figure A.4, the approximation can fail if one takes too big a step.
+For complex estimation problems, the objective funtion often has multiple peaks and
+troughs, so one must be careful that one has not wandered out of the range of validity
+of the locally constructed approximation.
+
+109
+
+The naive solution is to set α to some very small value. The first problem with
+this approach is that α might be unnecessarily small so that convergence is needlessly
+slow. The second problem is that the quality of a choice of α is governed by the higher
+order derivatives of the objective function, especially the higher order derivatives at
+the optimal point.8 It will often be the case that such information is not available.
+Imagine the frustration if one had started an optimisation routine with a value of α
+that looked reasoanable for the initial values, and then came back 12 hours later to find
+the routine had failed as it approached the optimal point because it α was ultimately
+too high. Third, a globally valid choice of α might be far too low in some places by
+definition. More flexibility would allow α to be bigger where viable to gain a faster
+rate of convergence.
+The more sophisticated approach is to allow α to vary on each iteration:
+xn+1 = xn + αn pn
+Alongside the problem of choosing the search direction pn , it is now necessary
+to decide on each iteration how far in this direction to go. This entails probing the
+objective function along the ray {xn + αpn |α ≥ 0} to find the next point.
+For convenience, let the function φ(α) = f (xn + αpn ) denote the restriction of
+f (·) to the ray from xn in the direction pn . Note that φ(0) = f (xn ) and φ0 (α) =
+p>
+n ∇f (xn + αpn ).
+The goal of the line search is to find a point along the ray generated by xn and
+pn that is satisfactory. In principle one could of course attempt to find the value α∗
+that minimises φ(α), but this is generally regarded as excessive. Usually one only
+iterates until sufficient improvement has been found and uses that point for the next
+iteration.[29]
+Besides setting simply αn = α for all n, the simplest line search method is known as
+a Backtracking Line Search. In this case, α is set to an initial value α0 and repeatedly
+shrunk down to ρα, where 0 < ρ < 1 until a satisfactory point is found.
+Algorithm 1 Sketch of Backtracking Line Search
+Require: That 0 < ρ < 1; that α0 > 0; and that p is a descent direction at x.
+function BacktrackingLineSearch(x, p)
+α ← α0
+while f (x + αp) is unsatisfactory do
+α ← ρα
+end while
+return (x + αp)
+end function
+8
+
+The literature very often works with Lipschitz continuity instead of differentiability. For simplicity
+in exposition, diffentiability will be used here.
+
+110
+
+A.4.1
+
+Wolfe Conditions
+
+In order to ensure the line search method converges,9 the steps taken are required to
+satisfy the Wolfe Conditions.10
+f (xn + αn pn ) ≤ f (xn ) + c1 αn p>
+n ∇f (xn )
+>
+|p>
+n ∇f (xn + αn pn )| ≤ c2 |pn ∇f (xn )|
+
+(W1)
+(W2)
+
+Restated in terms of φ(α), the Wolfe conditions are:
+φ(αn ) ≤ φ(0) + c1 αn φ0 (0)
+|φ0 (αn )| ≤ c2 |φ0 (0)|
+
+(W1')
+(W2')
+
+The constants c1 and c2 are required to satisfy 0 < c1 < c2 < 1.[29]
+The first condition ensures sufficient decrease in the objective function, the second
+ensures a sufficent decrease in the gradient between steps. Intuitively, the bigger |φ0 (0)|
+is, the bigger the decrease in the objective function demanded and the smaller the
+decrease in slope demanded, and vice versa.
+
+A.4.2
+
+More sophisticated Line Search Algorithms
+
+More sophisticated line search algorithms try to make better use of the values of
+φ(α) and φ0 (α) computed in the course of the search. The first approach is to construct a quadratic interpolant through the points φ(0), φ0 (0), and φ(ᾱ), where ᾱ is
+the current value of α. The constructed quadratic m(α) has the properties that
+m(0) = φ(0), m0 (0) = φ0 (0) and m(ᾱ) = φ(ᾱ) The next value of α is taken to be
+the minimiser of m(α).
+If the line search has been running for longer, so that values φ(ᾱ) and φ(α̃) are
+available, then cubic interpolation is possible thorugh the values φ(0), φ0 (0), φ(ᾱ) and
+φ(α̃). The next value of α is taken as the minimum of the interpolating cubic, which
+entails solving a quadratic equation. While cubic methods can converge more rapidly
+than quadratic methods11 they are also sometimes unstable and can have multiple
+critical points.
+More exotic choices proposed in the literature include the posibility of using rational
+functions to approximate φ(α) instead of polynomials, as discussed in [1]. An example
+of such an approximation is:
+pα2 + qα + r
+(A.2)
+sα + u
+Here, the values p, q, r, s and u are the parameters of the rational function to be
+determined.
+φ(α) ≈
+
+9
+
+There are other conditions, but the Wolfe conditions are standard. Refer to [29] for more detail
+Strictly, these are the Strong Wolfe conditions. The usual Wolfe conditions only require that
+>
+−p>
+n gn+1 ≤ −c2 pn gn .
+11
+It is noted in the literature that line searaches using cubic interpolants constructed using only
+values of φ(α) and no derivatives do not converge quadratically [47].
+10
+
+111
+
+1.5
+
+2.0
+
+2.5
+
+3.0
+
+Quadratic Model Failure
+
+f(t)
+
+Actual Value
+1.0
+
+●
+
+0.5
+
+Current Point
+●
+
+0.0
+
+●
+
+●
+
+−0.5
+
+Predicted Minimiser of f(t)
+0
+
+1
+
+2
+
+3
+
+4
+
+5
+
+6
+
+t
+
+Figure A.4: Extrapolating too far out can lead to disaster!
+
+112
+
+Appendix B
+Implicit Filtering1
+The weakness of the finite difference approach discussed in Section A.3 is that errors
+in evaluation eventually cripple the method. Suppose that the errors were related to
+the stepsize h so that the error bound is given by ¯(h) instead of a constant ¯. In this
+case the error in the forward difference approximation would be given by:
+
+
+¯(h)
+O
++h
+h
+So long as ¯(h)/h → 0 as h → 0, the error in approximating the derivative goes to
+zero as well. The method might converge properly in this case.
+The Implicit Filtering methodology is designed for optimising problems where the
+exact value of the objective function f (·) is unavailable. Instead, it is assumed that
+there is parameter h which controls the degree of accuracy. It is further assumed that
+the lower h, the lower the error. It is usually the case that getting a higher degree of
+accuracy implies a higher computational running time.
+For example, if the objective function is of the form E[f (θ)] and the expectation
+is being√ approximated using a Monte Carlo method, it would be reasonable to set
+h = 1/ N where N is the number of samples used so that the standard deviation is
+proportional to h. On the other hand if the expectation were being approximated by
+numerical integration, it would be reasonable to set h to the step size used.
+
+B.1
+
+Description of the Algorithm
+
+Let f (x; h) denote the result of approximately evauluating f (·) at the point x with
+precision level h and let (x; h) be the associated error. To generate a search direction,
+Implicit Filtering uses an approximation ∇h f (x) to the gradient ∇f (x) that depends
+on h. The simplest such approximation employs forward differencing to approximate
+the gradient:
+1
+
+Interested readers are pointed towards [18, 20, 29].
+
+113
+
+f (x + hei ; h) − f (x; h)
+(B.1)
+h
+Here [∇h f (x)]i denotes the ith component of ∇h f (x) and ei is the ith basis vector.
+This approximate gradient is then used to define a search direction. The algorithm
+proceeds to conduct a line search along this direction until a point that achieves a
+sufficient reduction is found, which then becomes the latest iterate, and a new search
+direction is computed.2
+In the event of any of the following occuring, it is deemed that more precision is
+needed:
+[∇h f (x)]i =
+
+ A point achieving sufficient reduction cannot be found after a prespecified maximum number of iterations.
+ A clear descent direction cannot be identified.
+ The approximate gradient is of a similar order of magnitude to h, so that one
+can’t be confident that true gradient isn’t in fact zero.
+
+If any of these conditions hold, the value of h is shrunk so that h ← δh with
+0 < δ < 1. The algorithm then proceeds again with this higher level of precision.
+The algorithm terminates when the change in the value of the objective function
+produced by reducing the value of h and running again is within a chosen tolerance.
+The sequence of approximate values returned by Implicit Filtering is monotone
+decreasing so that if m < n then f (xm ; h1 ) ≥ f (xn ; h2 ), where h1 is the precision used
+with xm and h2 is the precision used with xn . Bear in mind however that since Implicit
+Filtering only ever approximately evaluates the objective function, it is not necessarily
+the case that m < n implies that f (xm ) ≤ f (xn ).
+An variation of the Gauss-Newton algorithm based on the Implicit Filtering has
+been developed, and was used to fit parameters to an harmonic oscillator of the
+form y 00 + cy 0 + ku = 0, where the initial conditions are known and c and k must
+be estimated.[19]
+
+B.2
+
+Convergence Theory
+
+For Implicit Filtering to converge, the error needs to decrease sufficiently rapidly relative to the sequence of precision parameters hn . The specific condtions depend on the
+specific variation of Implicit Filtering used.[18, 19, 20, 29] The convergence criteria are
+similar to:
+2
+
+More precisely, the next point xk+1 is required to satisfy a condition of the form f (xk+1 ; h) ≤
+f (xk ; h) − cd>
+k [∇h f (xk )], where dk = xk+1 − xk and 0 < c < 1. Note that there is no requirement to
+decrease the norm of the approximate gradient ∇h f (x).
+
+114
+
+
+lim
+
+n→∞
+
+
+(x; hn )
++ hn = 0
+hn
+
+(B.2)
+
+In a Statistical context, being too naive and failing to treat the convergence criteria
+with respect risks a failure of convergence. Consider again√the question of minimising
+E[f (θ)]. For the Monte Carlo
+√ method that sets hn = 1/ n, the associated error is
+approximately equal to σ/ n for some σ > 0, Substituting this into (B.2) gives that:
+
+
+lim
+
+n→∞
+
+
+
+
+
+√σ
+n
+
+
+
+
+
+(x; hn )
+1
++ hn = lim    + √ 
+n→∞
+hn
+n
+√1
+n
+
+=σ
+In this case, there is no guarantee that the method would converge. An obvious
+rectification would be to set the √
+sample size associated with hn to (1/hn )4 instead of
+(1/hn )2 so that (x; hn )/hn = σ/ n. This illustrates a potential weakness of Implicit
+Filtering, that the cost of approximating the objective function grows very rapidly as
+h decreases.
+
+B.3
+
+Assessment of the Method
+
+Brief experimentation found that there were many disadvantages associated with Implicit Filtering:
+ Implicit Filtering is complex to code, and is thus difficult to maintain and debug.
+The R code used to fit the ODE (B.3) by Implicit Filtering came out at a little
+over 300 lines long. The code in the Data2LD package that performs optimisation
+is over 600 lines long. Code that uses Brent’s Method tends to be much shorter.
+ Implicit Filtering proved to be very slow when applied to the test problem in
+Section B.4 below.
+ The results of the fitting are sensitive to the value of the shrink factor δ choosen.
+ It can be necessary to add a penalty term to the objective function to ensure
+convergence.
+
+115
+
+B.4
+
+Using Implicit Filtering to Fit an ODE to the
+Melanoma Data
+
+To test Implicit Filtering, the following quasi-linear fourth order ODE was fitted to
+the melanoma data:3
+y (4) = µ2 [1 − sin(πy 00 )2 ]y 000 − ω 2 y 00
+
+(B.3)
+
+The objective function used was a penalised sum of squared errors of the form:
+Z
+X
+2
+P EN SSE(f (t), ω, µ) = ρ
+[yi − f (ti )] + (1 − ρ) |f 00 (t)|2 dt
+The value of P EN SSE is influenced by ω and µ because f (t) is required to be a
+solution of (B.3) with given values of ω and µ. The Implicit Filtering algorithm will
+not converge correctly without the penalty term as illustrated in Figure B.2.
+To compute P EN SSE, the package deSolve was used to numerically solve (B.3)
+with Rappropriate values of ω and µ. The precision factor h determined the stepsize used.
+The |f 00 (t)|2 dt term was approximated by taking the vector of computed values of
+f 00 (t) returned by deSolve, and then finding the sum of squared values. As h → 0,
+this approximation becomes more and more accurate.
+As can be seen in Table B.1, the algorithm takes a long time to run. It can be seen
+in both the table and Figure B.1 that changing the value of δ can introduce qualitative
+changes in behaviour. The algorithm is much quicker for δ = 0.9, presumably because
+the algorithm is converging to a different fit than for the other cases. For the fastest case
+where δ = 0.9, 200 values of the P EN SSE sequence are generated before the sequence
+converges to within a tolerance of 10−4 . This statistic substantially underestimates
+the actual amount of work done since Implicit Filtering rejects many evaluations as
+being inadaquate in the course of its execuction and further evaluations are needed
+to compute the approximate gradients ∇h f (·). For case where δ = 0.9, P EN SSE was
+computed over 3700 times with various values of h used.
+δ Running Time (Seconds)
+0.7
+1717.807
+0.8
+1611.459
+0.9
+1013.165
+
+Running Time (Minutes)
+28.63
+26.85
+16.88
+
+Table B.1: Time taken for Implicit Filtering to fit (B.3) to the melanoma data for
+various values of δ.
+
+3
+
+The version of Implicit Filtering used is actually a modified version of that described above. A
+Quasi-Newton algorithm was used instead of naive gradient descent to compute search directions, and
+central differences were used to estimate the gradient instead of forward differences as in (B.1).
+
+116
+
+● ● ●
+
+4.5
+
+●
+
+●
+●
+
+4.0
+
+●
+●
+
+●
+
+●
+
+●
+●
+
+3.5
+
+●
+
+3.0
+
+●
+
+●
+
+●
+●
+
+2.5
+
+Melanoma Rate
+
+●
+●
+●
+
+●
+
+●
+
+●
+●
+
+2.0
+
+●
+●
+●
+●
+
+1.5
+
+●
+● ●
+●
+●
+
+1.0
+
+●
+
+●
+● ●
+
+1935
+
+1940
+
+1945
+
+1950
+
+1955
+
+1960
+
+1965
+
+1970
+
+Year
+
+(a)
+
+● ● ●
+●
+
+●
+●
+
+4
+
+●
+●
+
+●
+
+●
+
+●
+●
+
+●
+●
+●
+
+3
+
+Melanoma Rate
+
+●
+
+●
+
+●
+
+●
+●
+●
+
+●
+
+●
+●
+●
+
+2
+
+●
+●
+●
+●
+● ●
+●
+●
+
+1
+
+●
+
+●
+● ●
+
+1935
+
+1940
+
+1945
+
+1950
+
+1955
+
+1960
+
+1965
+
+1970
+
+Year
+
+(b)
+
+Figure B.1: Fitting the ODE (B.3) to the Melanoma data. The exact value of the
+shrink value δ effects the fit the Implicit Filtering algorithm converges to. For δ = 0.7
+the computed fit in (a) resembles a straight line, but δ = 0.9 results in a sinusodial
+plus linear trend as can be seen in (b).
+117
+
+6
+
+● ● ●
+
+●
+●
+
+4
+
+●
+●
+
+●
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+2
+
+Melanoma Rate
+
+●
+
+●
+
+●
+●
+
+●
+●
+
+● ●
+
+●
+
+● ●
+
+−2
+
+0
+
+●
+
+●
+
+1935
+
+1940
+
+1945
+
+1950
+
+1955
+
+1960
+
+1965
+
+1970
+
+Year
+
+Figure B.2: Without a penalty term, Implicit Filtering entirely fails to fit the ODE
+(B.3) to the melanoma data.
+
+118
+
+Bibliography
+[1] Jonathan Barzilai and Aharon Ben-Tal. Nonpolynomial and inverse interpolation
+for line search: synthesis and convergence rates. SIAM Journal on Numerical
+Analysis, 19(6):1263–1277, 1982.
+[2] John P Boyd. Chebyshev and Fourier spectral methods. Courier Corporation, 2001.
+[3] Stephen Boyd and Lieven Vandenberghe. Convex optimization. Cambridge university press, 2004.
+[4] Richard P Brent. Algorithms for minimization without derivatives. Courier Corporation, 2013.
+[5] Jiguo Cao and James O Ramsay. Parameter cascades and profiling in functional
+data analysis. Computational Statistics, 22(3):335–351, 2007.
+[6] Kwun Chuen Gary Chan. Acceleration of expectation-maximization algorithm for
+length-biased right-censored data. Lifetime data analysis, 23(1):102–112, 2017.
+[7] Edwin KP Chong and Stanislaw H Zak. An introduction to optimization, volume 76. John Wiley & Sons, 2013.
+[8] Arthur P Dempster, Nan M Laird, and Donald B Rubin. Maximum likelihood from
+incomplete data via the em algorithm. Journal of the Royal Statistical Society:
+Series B (Methodological), 39(1):1–22, 1977.
+[9] Ronald Aylmer Fisher. The wave of advance of advantageous genes. Annals of
+eugenics, 7(4):355–369, 1937.
+[10] Bengt Fornberg. Generation of finite difference formulas on arbitrarily spaced
+grids. Mathematics of computation, 51(184):699–706, 1988.
+[11] PR Graves-Morris, DE Roberts, and A Salam. The epsilon algorithm and related
+topics. Journal of Computational and Applied Mathematics, 122(1-2):51–80, 2000.
+[12] Giles Hooker, James O Ramsay, Luo Xiao, et al. Collocinfer: collocation inference
+in differential equation models. Journal of Statistical Software, 75(2):1–52, 2016.
+
+119
+
+[13] David R Hunter and Kenneth Lange. A tutorial on MM algorithms. The American
+Statistician, 58(1):30–37, 2004.
+[14] Peter E Hydon and Peter Ellsworth Hydon. Symmetry methods for differential
+equations: a beginner’s guide, volume 22. Cambridge University Press, 2000.
+[15] Stefano M Iacus. Simulation and inference for stochastic differential equations:
+with R examples. Springer Science & Business Media, 2009.
+[16] Eugene Isaacson and Herbert Bishop Keller. Analysis of numerical methods.
+Courier Corporation, 2012.
+[17] Carl T Kelley. Iterative methods for linear and nonlinear equations, volume 16.
+Siam, 1995.
+[18] Carl T Kelley. Implicit filtering, volume 23. SIAM, 2011.
+[19] CT Kelley. Implicit filtering and nonlinear least squares problems. In IFIP Conference on System Modeling and Optimization, pages 71–90. Springer, 2001.
+[20] C.T. Kelley. A brief introduction to implicit filtering. https://projects.ncsu.
+edu/crsc/reports/ftp/pdf/crsc-tr02-28.pdf, 2002. [Online; accessed 12October-2019].
+[21] Jack Kiefer. Sequential minimax search for a maximum. Proceedings of the American mathematical society, 4(3):502–506, 1953.
+[22] Peter E Kloeden and Eckhard Platen. Numerical solution of stochastic differential
+equations, volume 23. Springer Science & Business Media, 2013.
+[23] Kenneth Lange. Optimization. Springer, 2004.
+[24] Kenneth Lange. Numerical analysis for statisticians. Springer Science & Business
+Media, 2010.
+[25] Kenneth Lange. The MM algorithm. https://www.stat.berkeley.edu/
+~aldous/Colloq/lange-talk.pdf, April 2007. [Online, accessed 18-September2019].
+[26] Randall J LeVeque. Finite difference methods for ordinary and partial differential
+equations: steady-state and time-dependent problems, volume 98. Siam, 2007.
+[27] Steve McConnell. Code complete. Pearson Education, 2004.
+[28] Geoffrey McLachlan and Thriyambakam Krishnan. The EM algorithm and extensions, volume 382. John Wiley & Sons, 2007.
+[29] J Nocedal and SJ Wright. Numerical Optimisation. Springer verlag, 1999.
+120
+
+[30] Naoki Osada. Acceleration methods for slowly convergent sequences and their
+applications. PhD thesis, Nagoya University, 1993.
+[31] Yudi Pawitan. In all likelihood: statistical modelling and inference using likelihood.
+Oxford University Press, 2001.
+[32] R Core Team. R: A Language and Environment for Statistical Computing. R
+Foundation for Statistical Computing, Vienna, Austria, 2013. ISBN 3-900051-070.
+[33] J. O. Ramsay, Hadley Wickham, Spencer Graves, and Giles Hooker. fda: Functional Data Analysis, 2018. R package version 2.4.8.
+[34] James Ramsay. Functional data analysis. Encyclopedia of Statistics in Behavioral
+Science, 2005.
+[35] James Ramsay. Data2LD: Functional Data Analysis with Linear Differential Equations, 2019. R package version 2.0.0.
+[36] James Ramsay and Giles Hooker. Dynamic data analysis. Springer, 2017.
+[37] Jim O Ramsay, Giles Hooker, David Campbell, and Jiguo Cao. Parameter estimation for differential equations: a generalized smoothing approach. Journal of the
+Royal Statistical Society: Series B (Statistical Methodology), 69(5):741–796, 2007.
+[38] JO Ramsay, G Hooker, and S Graves. Functional data analysis with R and MATLAB. Springer Science & Business Media, 2009.
+[39] Walter Rudin et al. Principles of mathematical analysis, volume 3. McGraw-hill
+New York, 1964.
+[40] René L Schilling. Measures, integrals and martingales. Cambridge University
+Press, 2017.
+[41] Larry Schumaker. Spline functions: basic theory. Cambridge University Press,
+2007.
+[42] Naum Zuselevich Shor. Minimization methods for non-differentiable functions,
+volume 3. Springer Science & Business Media, 2012.
+[43] Christopher G Small. A survey of multidimensional medians. International Statistical Review/Revue Internationale de Statistique, pages 263–277, 1990.
+[44] Karline Soetaert, Jeff Cash, and Francesca Mazzia. Solving differential equations
+in R. Springer Science & Business Media, 2012.
+[45] Karline Soetaert, Thomas Petzoldt, and R. Woodrow Setzer. Solving differential
+equations in R: Package deSolve. Journal of Statistical Software, 33(9):1–25, 2010.
+121
+
+[46] Walter A Strauss. Partial differential equations: An introduction. John Wiley &
+Sons, 2007.
+[47] Arie Tamir. Line search techniques based on interpolating polynomials using
+function values only. Management Science, 22(5):576–586, 1976.
+[48] Gerald Teschl. Ordinary differential equations and dynamical systems, volume 140.
+American Mathematical Soc., 2012.
+[49] Keller Vandebogart. Method of quadratic interpolation. http://people.math.
+sc.edu/kellerlv/Quadratic_Interpolation.pdf, September 2017. [Online; accessed 13-September-2019].
+[50] Jet Wimp. Sequence transformations and their applications. Elsevier, 1981.
+[51] Stephen Wright. Optimization for data analysis. In Michael W. Mahoney, John C.
+Duchi, and John C. Duchi, editors, The Mathematics of Data, chapter 2, pages
+49–98. American Mathematical Society and IAS/Park City Mathematics Institute
+and Society for Industrial and Applied Mathematics, 2018.
+[52] Tong Tong Wu, Kenneth Lange, et al. The MM alternative to EM. Statistical
+Science, 25(4):492–505, 2010.
+
+122
+

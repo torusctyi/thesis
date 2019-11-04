@@ -7,36 +7,36 @@
 \contentsline {paragraph}{Conduct Statistical Analysis Using the Discretised Model:}{6}
 \contentsline {paragraph}{Check the Approximation Error in Discretised Model:}{6}
 \contentsline {paragraph}{Check If Results of Statistical Analysis Are Consistent With Discretised Model.}{8}
-\contentsline {section}{\numberline {1.2}Penalised Regression}{9}
+\contentsline {section}{\numberline {1.2}Exact Penalised Regression}{9}
 \contentsline {subsection}{\numberline {1.2.1}Smoothing Splines}{9}
 \contentsline {subsection}{\numberline {1.2.2}Piecewise Trigonometric Interpolation}{10}
-\contentsline {section}{\numberline {1.3}Finite Dimensionalisation: the General Case}{12}
-\contentsline {subsection}{\numberline {1.3.1}FDA With A Quadratic Basis}{15}
+\contentsline {section}{\numberline {1.3}Penalised Regression Using Finite Dimensional Approximations}{12}
+\contentsline {subsection}{\numberline {1.3.1}FDA With a Quadratic Basis}{13}
 \contentsline {section}{\numberline {1.4}The \texttt {FDA} Package}{17}
-\contentsline {section}{\numberline {1.5}The \texttt {Data2LD} Package}{20}
-\contentsline {section}{\numberline {1.6}Modelling the Reflux Data: A Parametric Approach vs \texttt {Data2LD}}{20}
-\contentsline {subsection}{\numberline {1.6.1}Fitting the Reflux Data Parametrically by Solving the ODE Model}{22}
-\contentsline {subsubsection}{Parametric Fitting}{24}
-\contentsline {paragraph}{Estimating $\beta _0$ from the data:}{24}
-\contentsline {paragraph}{Estimating $\beta _1$ and $\beta _2$ from $\beta _0$ and the data:}{24}
-\contentsline {paragraph}{Simulataneous Estimation of Parameters:}{24}
-\contentsline {paragraph}{Matching:}{24}
-\contentsline {paragraph}{Breakpoint Estimation:}{25}
-\contentsline {subsubsection}{Discussion}{25}
-\contentsline {subsection}{\numberline {1.6.2}Fitting the Reflux Data Parametrically Using a Collocation Method}{27}
-\contentsline {subsection}{\numberline {1.6.3}Fitting the Reflux Data with \texttt {Data2LD}}{30}
-\contentsline {section}{\numberline {1.7}Rates Of Convergence}{30}
-\contentsline {paragraph}{Linear Convergence:}{30}
-\contentsline {paragraph}{Sublinear Convergence:}{32}
-\contentsline {paragraph}{Superlinear and Quadratic Convergence:}{32}
-\contentsline {paragraph}{An Extended Definition of Convergence Rates:}{33}
-\contentsline {paragraph}{Linear Convergence and Iterated Mappings:}{33}
-\contentsline {section}{\numberline {1.8}Overview of Appendices}{34}
-\contentsline {chapter}{\numberline {2}Hierarchical Estimation and the Parameter Cascade}{35}
-\contentsline {section}{\numberline {2.1}Fitting the Reflux Data Using a Semi-Parametric ODE Model}{35}
-\contentsline {section}{\numberline {2.2}The Two-Stage Parameter Cascade}{37}
-\contentsline {section}{\numberline {2.3}The Three-Stage Parameter Cascade}{38}
-\contentsline {section}{\numberline {2.4}Investigating the \texttt {Data2LD} Package}{38}
+\contentsline {section}{\numberline {1.5}The \texttt {Data2LD} Package}{19}
+\contentsline {section}{\numberline {1.6}Modelling the Reflux Data: Parametric Approaches and \texttt {Data2LD}}{19}
+\contentsline {subsection}{\numberline {1.6.1}Fitting the Reflux Data Parametrically by Solving the ODE Model}{21}
+\contentsline {subsubsection}{Parametric Fitting}{23}
+\contentsline {paragraph}{Estimating $\beta _0$ from the data:}{23}
+\contentsline {paragraph}{Estimating $\beta _1$ and $\beta _2$ from $\beta _0$ and the data:}{23}
+\contentsline {paragraph}{Simulataneous Estimation of Parameters:}{23}
+\contentsline {paragraph}{Matching:}{23}
+\contentsline {paragraph}{Breakpoint Estimation:}{24}
+\contentsline {subsubsection}{Discussion}{24}
+\contentsline {subsection}{\numberline {1.6.2}Fitting the Reflux Data Parametrically Using a Collocation Method}{26}
+\contentsline {subsection}{\numberline {1.6.3}Fitting the Reflux Data with \texttt {Data2LD}}{29}
+\contentsline {section}{\numberline {1.7}Rates Of Convergence}{29}
+\contentsline {paragraph}{Linear Convergence:}{29}
+\contentsline {paragraph}{Sublinear Convergence:}{31}
+\contentsline {paragraph}{Superlinear and Quadratic Convergence:}{31}
+\contentsline {paragraph}{An Extended Definition of Convergence Rates:}{32}
+\contentsline {paragraph}{Linear Convergence and Iterated Mappings:}{32}
+\contentsline {section}{\numberline {1.8}Overview of Appendices}{33}
+\contentsline {chapter}{\numberline {2}Hierarchical Estimation and the Parameter Cascade}{34}
+\contentsline {section}{\numberline {2.1}Fitting the Reflux Data Using a Semi-Parametric ODE Model}{34}
+\contentsline {section}{\numberline {2.2}The Two-Stage Parameter Cascade}{36}
+\contentsline {section}{\numberline {2.3}The Three-Stage Parameter Cascade}{40}
+\contentsline {section}{\numberline {2.4}Investigating the \texttt {Data2LD} Package}{40}
 \contentsline {subsection}{\numberline {2.4.1}How \texttt {Data2LD} Estimates Parameters}{41}
 \contentsline {section}{\numberline {2.5}Hierarchical fitting of a Partial Differential Equation}{44}
 \contentsline {chapter}{\numberline {3}Derivative-Free Optimisation and the Parameter Cascade}{46}
@@ -44,9 +44,9 @@
 \contentsline {subsection}{\numberline {3.1.1}Newton's Method}{46}
 \contentsline {subsection}{\numberline {3.1.2}Secant Method}{47}
 \contentsline {subsection}{\numberline {3.1.3}Successive Parabolic Interpolation}{48}
-\contentsline {subsection}{\numberline {3.1.4}Discussion}{48}
+\contentsline {subsection}{\numberline {3.1.4}Discussion}{49}
 \contentsline {section}{\numberline {3.2}Modifying the \texttt {Data2LD.opt} Routine}{49}
-\contentsline {paragraph}{Approximating the Derivative:}{49}
+\contentsline {paragraph}{Approximating the Derivative:}{50}
 \contentsline {paragraph}{Error Analysis:}{50}
 \contentsline {paragraph}{Comparison with the Secant Method and Successive Parabolic Interpolation:}{51}
 \contentsline {paragraph}{Comparing the Modfied Method with the Original Method:}{51}
@@ -54,48 +54,48 @@
 \contentsline {paragraph}{Newton Method with Secant Approximation To First Derivative}{52}
 \contentsline {section}{\numberline {3.3}Golden-Section Search}{53}
 \contentsline {section}{\numberline {3.4}Brent's Method}{53}
-\contentsline {section}{\numberline {3.5}Estimation Of Parameters For A Standard Cauchy Distribution Using Brent's Method}{54}
-\contentsline {section}{\numberline {3.6}Robust ODE Parameter Estimation}{57}
-\contentsline {section}{\numberline {3.7}The Parameter Cascade and Brent's Method}{60}
-\contentsline {subsubsection}{Melanoma Data}{61}
-\contentsline {chapter}{\numberline {4}A Two Level $L_1$ Parameter Cascade Using the MM Algorithm.}{65}
-\contentsline {section}{\numberline {4.1}$L_1$ Estimation for the Inner Problem}{65}
-\contentsline {subsection}{\numberline {4.1.1}An MM Algorithm For Computing the Median}{66}
-\contentsline {subsection}{\numberline {4.1.2}Penalised $L_1$ Fitting}{68}
-\contentsline {subsection}{\numberline {4.1.3}Discussion}{69}
-\contentsline {subsection}{\numberline {4.1.4}Testing the Algorithm on the Melanoma Data}{69}
-\contentsline {section}{\numberline {4.2}The Two Level Parameter Cascade with $L_1$ Norm}{74}
-\contentsline {section}{\numberline {4.3}Accelerating The Rate of Convergence}{78}
-\contentsline {subsection}{\numberline {4.3.1}Illustrative Example: Using Imputation to Fit an ANOVA Model With Missing Data}{79}
-\contentsline {subsection}{\numberline {4.3.2}Generalisations}{79}
-\contentsline {paragraph}{Other Approaches:}{81}
-\contentsline {subsection}{\numberline {4.3.3}Accelerating the $L_1$ Fitting Algorithm}{84}
-\contentsline {chapter}{\numberline {5}Profiling Non-Linear Regression Models With the Parameter Cascade}{86}
-\contentsline {section}{\numberline {5.1}Fitting a Non-Linear Regression Model With the Parameter Cascade}{87}
-\contentsline {section}{\numberline {5.2}Fitting Linear Homogeneous ODEs Using the Parameter Cascade}{88}
-\contentsline {section}{\numberline {5.3}Estimation for First Order Linear PDEs}{92}
-\contentsline {subsection}{\numberline {5.3.1}The Transport Equation}{92}
-\contentsline {subsection}{\numberline {5.3.2}The Transport Equation with Space-varying Velocity}{95}
-\contentsline {chapter}{\numberline {6}Conclusion and Further Research}{97}
-\contentsline {section}{\numberline {6.1}Derivative-Free versus Derivative-Based Methods}{97}
-\contentsline {section}{\numberline {6.2}Further Subjects for Inquiry}{97}
-\contentsline {section}{\numberline {6.3}Quasi-linear Differential Problems}{98}
-\contentsline {subsection}{\numberline {6.3.1}Inviscid Burger's Equation}{98}
-\contentsline {subsection}{\numberline {6.3.2}Discussion}{99}
-\contentsline {chapter}{Appendices}{100}
-\contentsline {chapter}{\numberline {A}Overview of Optimisation Methods}{101}
-\contentsline {section}{\numberline {A.1}Gradient Descent and the Newton-Raphson method}{101}
-\contentsline {section}{\numberline {A.2}The Chord Method}{105}
-\contentsline {section}{\numberline {A.3}More Sophisticated Hessian Approximations}{105}
-\contentsline {paragraph}{Linearly Convergent Methods:}{106}
-\contentsline {paragraph}{Quasi-Newton Methods:}{106}
-\contentsline {paragraph}{Finite Differences:}{107}
-\contentsline {section}{\numberline {A.4}Line Search Methods}{109}
-\contentsline {subsection}{\numberline {A.4.1}Wolfe Conditions}{111}
-\contentsline {subsection}{\numberline {A.4.2}More sophisticated Line Search Algorithms}{111}
-\contentsline {chapter}{\numberline {B}Implicit Filtering}{113}
-\contentsline {section}{\numberline {B.1}Description of the Algorithm}{113}
-\contentsline {section}{\numberline {B.2}Convergence Theory}{114}
-\contentsline {section}{\numberline {B.3}Assessment of the Method}{115}
-\contentsline {section}{\numberline {B.4}Using Implicit Filtering to Fit an ODE to the Melanoma Data}{116}
-\contentsline {chapter}{Bibliography}{119}
+\contentsline {section}{\numberline {3.5}Estimation Of Parameters For a Standard Cauchy Distribution Using Brent's Method}{54}
+\contentsline {section}{\numberline {3.6}Robust ODE Parameter Estimation}{58}
+\contentsline {section}{\numberline {3.7}The Parameter Cascade and Brent's Method}{61}
+\contentsline {subsubsection}{Melanoma Data}{62}
+\contentsline {chapter}{\numberline {4}A Two-Stage $L_1$ Parameter Cascade Using the MM Algorithm}{66}
+\contentsline {section}{\numberline {4.1}$L_1$ Estimation for the Inner Problem}{66}
+\contentsline {subsection}{\numberline {4.1.1}An MM Algorithm For Computing the Median}{67}
+\contentsline {subsection}{\numberline {4.1.2}Penalised $L_1$ Fitting}{69}
+\contentsline {subsection}{\numberline {4.1.3}Discussion}{70}
+\contentsline {subsection}{\numberline {4.1.4}Testing the Algorithm on the Melanoma Data}{70}
+\contentsline {section}{\numberline {4.2}The Two-Stage Parameter Cascade with $L_1$ Norm}{75}
+\contentsline {section}{\numberline {4.3}Accelerating The Rate of Convergence}{79}
+\contentsline {subsection}{\numberline {4.3.1}Illustrative Example: Using Imputation to Fit an ANOVA Model With Missing Data}{80}
+\contentsline {subsection}{\numberline {4.3.2}Generalisations}{80}
+\contentsline {paragraph}{Other Approaches:}{82}
+\contentsline {subsection}{\numberline {4.3.3}Accelerating the $L_1$ Fitting Algorithm}{85}
+\contentsline {chapter}{\numberline {5}Profiling Non-Linear Regression Models With the Parameter Cascade}{87}
+\contentsline {section}{\numberline {5.1}Fitting a Non-Linear Regression Model With the Parameter Cascade}{88}
+\contentsline {section}{\numberline {5.2}Fitting Linear Homogeneous ODEs Using the Parameter Cascade}{89}
+\contentsline {section}{\numberline {5.3}Estimation for First Order Linear PDEs}{93}
+\contentsline {subsection}{\numberline {5.3.1}The Transport Equation}{93}
+\contentsline {subsection}{\numberline {5.3.2}The Transport Equation with Space-varying Velocity}{96}
+\contentsline {chapter}{\numberline {6}Conclusion and Further Research}{98}
+\contentsline {section}{\numberline {6.1}Derivative-Free versus Derivative-Based Methods}{98}
+\contentsline {section}{\numberline {6.2}Further Subjects for Inquiry}{98}
+\contentsline {section}{\numberline {6.3}Quasi-linear Differential Problems}{99}
+\contentsline {subsection}{\numberline {6.3.1}Inviscid Burger's Equation}{99}
+\contentsline {subsection}{\numberline {6.3.2}Discussion}{100}
+\contentsline {chapter}{Appendices}{101}
+\contentsline {chapter}{\numberline {A}Overview of Optimisation Methods}{102}
+\contentsline {section}{\numberline {A.1}Gradient Descent and the Newton-Raphson method}{102}
+\contentsline {section}{\numberline {A.2}The Chord Method}{106}
+\contentsline {section}{\numberline {A.3}More Sophisticated Hessian Approximations}{106}
+\contentsline {paragraph}{Linearly Convergent Methods:}{107}
+\contentsline {paragraph}{Quasi-Newton Methods:}{107}
+\contentsline {paragraph}{Finite Differences:}{108}
+\contentsline {section}{\numberline {A.4}Line Search Methods}{110}
+\contentsline {subsection}{\numberline {A.4.1}Wolfe Conditions}{112}
+\contentsline {subsection}{\numberline {A.4.2}More sophisticated Line Search Algorithms}{112}
+\contentsline {chapter}{\numberline {B}Implicit Filtering}{114}
+\contentsline {section}{\numberline {B.1}Description of the Algorithm}{114}
+\contentsline {section}{\numberline {B.2}Convergence Theory}{115}
+\contentsline {section}{\numberline {B.3}Assessment of the Method}{116}
+\contentsline {section}{\numberline {B.4}Using Implicit Filtering to Fit an ODE to the Melanoma Data}{117}
+\contentsline {chapter}{Bibliography}{120}

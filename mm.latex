@@ -1,4 +1,4 @@
-\chapter{A Two Level $L_1$ Parameter Cascade Using the MM Algorithm.} \label{chap:mm_methods}
+\chapter{A Two-Stage $L_1$ Parameter Cascade Using the MM Algorithm} \label{chap:mm_methods}
 
 In the previous chapter, Brent's method was introduced and was used to tackle Parameter Cascade problems where the middle level uses a loss function which is difficult  to differentiate or has no well-defined derivative everywhere. It was remarked  that Brent's method ensures that the different elements of the Parameter Cascade tend to be loosely coupled from each other and this allows one to combine different fitting methodologies for different levels straightforwardly.
 
@@ -143,7 +143,7 @@ Figure \ref{fig:coef_plot} plots the convergence of the coefficient vectors $\ma
 
 
 
-\section{The Two Level Parameter Cascade with $L_1$ Norm}
+\section{The Two-Stage Parameter Cascade with $L_1$ Norm}
 
 The inner problem  of the parameter cascade is  a semi-parametric least squares regression model. The fitted function is modelled as a weighted sum of a solution to the differential equation (parametric), and a non-parametric residual. The $\lambda$ term governs how big the residual is allowed to be relative to the the least squares error term
 
