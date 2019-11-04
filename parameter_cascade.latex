@@ -49,6 +49,20 @@ Here $\mathbf{1}(t)$ denotes the Heaviside step function:
            \end{cases}
 \]
 
+The ODE model can thus be equivalently formulated as a functional linear model\cite{ramsay2005functional} of the form:
+
+\[
+    y(t) = L_\beta u(t)
+\]
+
+Where the parameterised linear operator $L_\beta$ is defined by:
+
+\[
+   L_\beta f(t) = \mathbf{1}(t-t_0)e^{\beta t} \int_{t_0}^t e^{-\beta t}f(t) dt
+\]
+
+In case the notation is unclear, $L_\beta$ is an operator that takes a function as an argument and returns another function. The parameter $\beta$ and function $u(t)$ are unknown and must be estimated. 
+
 For the special case discussed in Section \ref{sec:reflux_parametric_vs_data2ld} where $u(t) = u_0$ for all $t,$ we find that:
 
 \[
@@ -62,7 +76,7 @@ y(t) = \frac{u_0}{\beta}\left(1 - e^{\beta(t - t_0)}\right)\mathbf{1}(t-t_0)
 
 This is the same solution as was found at the start of Section \ref{sec:reflux_parametric_vs_data2ld}, except that the ODE is of the form $y' = \beta y + u_0$ for $t \geq t_0$ here instead of being of the form $y' = -\beta y + u_0$ as in Section \ref{sec:reflux_parametric_vs_data2ld}.
 
-For the sake of illustration, Figure \ref{fig:reflux_ode_arbitary} plots a solution with $\beta = -1, t_0 = 4,$ and $u(t) = 1 + 0.2*\sin(10t).$ In this situation, the constant forcing term is perturbed by high frequency, low amplitude noise. It can be seen that the solution resembles the constant case where $u(t) = u_0$ except that $y(t)$ converges to a sinusoidal function instead of a constant.
+For the sake of illustrating how this model behaves in practice, Figure \ref{fig:reflux_ode_arbitary} plots a solution with $\beta = -1, t_0 = 4,$ and $u(t) = 1 + 0.2\sin(10t).$ In this situation, the constant forcing term is perturbed by high frequency, low amplitude noise. It can be seen that the solution resembles the constant case where $u(t) = u_0$ except that $y(t)$ converges to a sinusoidal function instead of a constant.
 
 Let $I$ denote the set of indices for which $t_i > t_0.$
 If $\beta$ were known, $v(t)$ could estimated by non-parameterically\footnote{There is nothing in principle stopping one from attempting to fit $v(t)$ to $y/e^{\beta t}$ using a more basic methodology such as polynomial regression, but it is difficult to concieve of circumstances where this would be a good idea. Even if $u(t)$ were assumed to be some unknown polynomial, the same would not be true of $v(t).$ } regressing 
