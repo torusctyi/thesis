@@ -7,6 +7,8 @@
 \@writefile{toc}{\contentsline {section}{\numberline {1.1}Preliminaries}{4}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.1.1}Functional Data Analysis}{4}}
 \@writefile{toc}{\contentsline {subsubsection}{Specification of Function Spaces}{4}}
+\citation{schilling2017measures}
+\citation{schilling2017measures,bobrowski2005functional}
 \citation{kloeden2013numerical}
 \citation{iacus2009simulation}
 \citation{ramsay2009functional,ramsay2005functional}
@@ -49,7 +51,7 @@
 \newlabel{fig:quad_model}{{1.5}{17}}
 \@writefile{toc}{\contentsline {section}{\numberline {1.4}The \texttt  {FDA} Package}{17}}
 \newlabel{sec:intro_fda_package}{{1.4}{17}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1.6}{\ignorespaces Using the \texttt  {FDA} package to smooth the melanoma data with the differential operator $Lf = f - \omega ^2f^{(4)}.$\relax }}{18}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.6}{\ignorespaces Using the \texttt  {FDA} package to smooth the melanoma data with the differential operator $Lf = f'' - \omega ^2f^{(4)}.$\relax }}{18}}
 \newlabel{fig:fda_mela_smooth}{{1.6}{18}}
 \citation{ramsay2005functional}
 \@writefile{toc}{\contentsline {section}{\numberline {1.5}The \texttt  {Data2LD} Package}{19}}
@@ -102,9 +104,12 @@
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{toc}{\contentsline {section}{\numberline {2.1}Fitting the Reflux Data Using a Semi-Parametric ODE Model}{34}}
+\@writefile{toc}{\contentsline {paragraph}{Explicit Solution:}{35}}
 \citation{ramsay2005functional}
-\@writefile{lof}{\contentsline {figure}{\numberline {2.1}{\ignorespaces A solution to the general Reflux ODE with a constant plus sinusoidal forcing function.\relax }}{37}}
-\newlabel{fig:reflux_ode_arbitary}{{2.1}{37}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.1}{\ignorespaces A solution to the general Reflux ODE with a constant plus sinusoidal forcing function.\relax }}{36}}
+\newlabel{fig:reflux_ode_arbitary}{{2.1}{36}}
+\@writefile{toc}{\contentsline {paragraph}{Formulation as a Functional Linear Model:}{37}}
+\@writefile{toc}{\contentsline {paragraph}{A Hierarchical Approach to Fitting the ODE Model:}{37}}
 \citation{cao2007parameter}
 \@writefile{toc}{\contentsline {section}{\numberline {2.2}The Two-Stage Parameter Cascade}{38}}
 \citation{cao2007parameter,ramsay2007parameter}
@@ -117,13 +122,14 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {2.3}{\ignorespaces Schematic of the Two Stage Parameter Cascade With the Inner Optimisation Visible\relax }}{41}}
 \newlabel{fig:twoStageParam}{{2.3}{41}}
 \citation{mcconnell2004code}
+\citation{data2ld}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.4.1}How \texttt  {Data2LD} Estimates Parameters}{42}}
 \newlabel{eqn:grad_descent}{{{\textbf  {S1}}}{42}}
 \newlabel{eqn:newton_method}{{{\textbf  {S2}}}{42}}
 \newlabel{eqn:t1}{{{\textbf  {T1}}}{42}}
 \newlabel{eqn:t2}{{{\textbf  {T2}}}{42}}
-\newlabel{eqn:t3}{{{\textbf  {T3}}}{42}}
 \citation{nocedalnumerical}
+\newlabel{eqn:t3}{{{\textbf  {T3}}}{43}}
 \newlabel{eqn:t4}{{{\textbf  {T4}}}{43}}
 \@writefile{lof}{\contentsline {figure}{\numberline {2.4}{\ignorespaces Point A is the initial point. Point B passes {\textbf  {T1}}\hbox {} with $c_1 = 0.5$ and passes {\textbf  {T2}}\hbox {} with $c_2 = 0.9.$ Point C fails {\textbf  {T1}}\hbox {} with $c_1 = 0.5$ and also fails {\textbf  {T3}}\hbox {}, but passes {\textbf  {T4}}\hbox {}, and passes {\textbf  {T2}}\hbox {} with $c_2 = 0.9.$ Point D fails all four tests.\relax }}{44}}
 \newlabel{fig:data2ld_line_search_tests}{{2.4}{44}}
@@ -381,56 +387,57 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {B.2}{\ignorespaces Without a penalty term, Implicit Filtering entirely fails to fit the ODE (B.3\hbox {}) to the melanoma data.\relax }}{120}}
 \newlabel{fig:implicit_filtering_no_penalty}{{B.2}{120}}
 \bibcite{barzilai1982nonpolynomial}{{1}{}{{}}{{}}}
-\bibcite{boyd2001chebyshev}{{2}{}{{}}{{}}}
-\bibcite{boyd2004convex}{{3}{}{{}}{{}}}
-\bibcite{brent2013algorithms}{{4}{}{{}}{{}}}
-\bibcite{cao2007parameter}{{5}{}{{}}{{}}}
-\bibcite{chan2017acceleration}{{6}{}{{}}{{}}}
-\bibcite{chong2013introduction}{{7}{}{{}}{{}}}
-\bibcite{dempster1977maximum}{{8}{}{{}}{{}}}
-\bibcite{fisher1937wave}{{9}{}{{}}{{}}}
-\bibcite{fornberg1988generation}{{10}{}{{}}{{}}}
-\bibcite{graves2000epsilon}{{11}{}{{}}{{}}}
-\bibcite{hooker2016collocinfer}{{12}{}{{}}{{}}}
-\bibcite{hunter2004tutorial}{{13}{}{{}}{{}}}
-\bibcite{hydon2000symmetry}{{14}{}{{}}{{}}}
+\bibcite{bobrowski2005functional}{{2}{}{{}}{{}}}
+\bibcite{boyd2001chebyshev}{{3}{}{{}}{{}}}
+\bibcite{boyd2004convex}{{4}{}{{}}{{}}}
+\bibcite{brent2013algorithms}{{5}{}{{}}{{}}}
+\bibcite{cao2007parameter}{{6}{}{{}}{{}}}
+\bibcite{chan2017acceleration}{{7}{}{{}}{{}}}
+\bibcite{chong2013introduction}{{8}{}{{}}{{}}}
+\bibcite{dempster1977maximum}{{9}{}{{}}{{}}}
+\bibcite{fisher1937wave}{{10}{}{{}}{{}}}
+\bibcite{fornberg1988generation}{{11}{}{{}}{{}}}
+\bibcite{graves2000epsilon}{{12}{}{{}}{{}}}
+\bibcite{hooker2016collocinfer}{{13}{}{{}}{{}}}
+\bibcite{hunter2004tutorial}{{14}{}{{}}{{}}}
 \@writefile{toc}{\contentsline {chapter}{Bibliography}{121}}
-\bibcite{iacus2009simulation}{{15}{}{{}}{{}}}
-\bibcite{isaacson2012analysis}{{16}{}{{}}{{}}}
-\bibcite{kelley1995iterative}{{17}{}{{}}{{}}}
-\bibcite{kelley2011implicit}{{18}{}{{}}{{}}}
-\bibcite{kelley2001implicit}{{19}{}{{}}{{}}}
-\bibcite{kelly2002filtering}{{20}{}{{}}{{}}}
-\bibcite{kiefer1953sequential}{{21}{}{{}}{{}}}
-\bibcite{kloeden2013numerical}{{22}{}{{}}{{}}}
-\bibcite{lange2004optimization}{{23}{}{{}}{{}}}
-\bibcite{lange2010numerical}{{24}{}{{}}{{}}}
-\bibcite{lange2007slides}{{25}{}{{}}{{}}}
-\bibcite{leveque2007finite}{{26}{}{{}}{{}}}
-\bibcite{mcconnell2004code}{{27}{}{{}}{{}}}
-\bibcite{mclachlan2007algorithm}{{28}{}{{}}{{}}}
-\bibcite{nocedalnumerical}{{29}{}{{}}{{}}}
-\bibcite{osada1993acceleration}{{30}{}{{}}{{}}}
-\bibcite{pawitan2001all}{{31}{}{{}}{{}}}
-\bibcite{rlanguage}{{32}{}{{}}{{}}}
-\bibcite{fdapackage}{{33}{}{{}}{{}}}
-\bibcite{ramsay2005functional}{{34}{}{{}}{{}}}
-\bibcite{data2ld}{{35}{}{{}}{{}}}
-\bibcite{ramsay2017dynamic}{{36}{}{{}}{{}}}
-\bibcite{ramsay2007parameter}{{37}{}{{}}{{}}}
-\bibcite{ramsay2009functional}{{38}{}{{}}{{}}}
-\bibcite{rudin1964principles}{{39}{}{{}}{{}}}
-\bibcite{schilling2017measures}{{40}{}{{}}{{}}}
-\bibcite{schumaker2007spline}{{41}{}{{}}{{}}}
-\bibcite{shor2012minimization}{{42}{}{{}}{{}}}
-\bibcite{small1990survey}{{43}{}{{}}{{}}}
-\bibcite{soetaert2012solving}{{44}{}{{}}{{}}}
-\bibcite{desolve}{{45}{}{{}}{{}}}
-\bibcite{strauss2007partial}{{46}{}{{}}{{}}}
-\bibcite{tamir1976line}{{47}{}{{}}{{}}}
-\bibcite{teschl2012ordinary}{{48}{}{{}}{{}}}
-\bibcite{vandebogart2017method}{{49}{}{{}}{{}}}
-\bibcite{wimp1981sequence}{{50}{}{{}}{{}}}
-\bibcite{mathematicsdata2018}{{51}{}{{}}{{}}}
-\bibcite{wu2010mm}{{52}{}{{}}{{}}}
+\bibcite{hydon2000symmetry}{{15}{}{{}}{{}}}
+\bibcite{iacus2009simulation}{{16}{}{{}}{{}}}
+\bibcite{isaacson2012analysis}{{17}{}{{}}{{}}}
+\bibcite{kelley1995iterative}{{18}{}{{}}{{}}}
+\bibcite{kelley2011implicit}{{19}{}{{}}{{}}}
+\bibcite{kelley2001implicit}{{20}{}{{}}{{}}}
+\bibcite{kelly2002filtering}{{21}{}{{}}{{}}}
+\bibcite{kiefer1953sequential}{{22}{}{{}}{{}}}
+\bibcite{kloeden2013numerical}{{23}{}{{}}{{}}}
+\bibcite{lange2004optimization}{{24}{}{{}}{{}}}
+\bibcite{lange2010numerical}{{25}{}{{}}{{}}}
+\bibcite{lange2007slides}{{26}{}{{}}{{}}}
+\bibcite{leveque2007finite}{{27}{}{{}}{{}}}
+\bibcite{mcconnell2004code}{{28}{}{{}}{{}}}
+\bibcite{mclachlan2007algorithm}{{29}{}{{}}{{}}}
+\bibcite{nocedalnumerical}{{30}{}{{}}{{}}}
+\bibcite{osada1993acceleration}{{31}{}{{}}{{}}}
+\bibcite{pawitan2001all}{{32}{}{{}}{{}}}
+\bibcite{rlanguage}{{33}{}{{}}{{}}}
+\bibcite{fdapackage}{{34}{}{{}}{{}}}
+\bibcite{ramsay2005functional}{{35}{}{{}}{{}}}
+\bibcite{data2ld}{{36}{}{{}}{{}}}
+\bibcite{ramsay2017dynamic}{{37}{}{{}}{{}}}
+\bibcite{ramsay2007parameter}{{38}{}{{}}{{}}}
+\bibcite{ramsay2009functional}{{39}{}{{}}{{}}}
+\bibcite{rudin1964principles}{{40}{}{{}}{{}}}
+\bibcite{schilling2017measures}{{41}{}{{}}{{}}}
+\bibcite{schumaker2007spline}{{42}{}{{}}{{}}}
+\bibcite{shor2012minimization}{{43}{}{{}}{{}}}
+\bibcite{small1990survey}{{44}{}{{}}{{}}}
+\bibcite{soetaert2012solving}{{45}{}{{}}{{}}}
+\bibcite{desolve}{{46}{}{{}}{{}}}
+\bibcite{strauss2007partial}{{47}{}{{}}{{}}}
+\bibcite{tamir1976line}{{48}{}{{}}{{}}}
+\bibcite{teschl2012ordinary}{{49}{}{{}}{{}}}
+\bibcite{vandebogart2017method}{{50}{}{{}}{{}}}
+\bibcite{wimp1981sequence}{{51}{}{{}}{{}}}
+\bibcite{mathematicsdata2018}{{52}{}{{}}{{}}}
+\bibcite{wu2010mm}{{53}{}{{}}{{}}}
 \providecommand\NAT@force@numbers{}\NAT@force@numbers

@@ -34,6 +34,9 @@
 \contentsline {section}{\numberline {1.8}Overview of Appendices}{33}
 \contentsline {chapter}{\numberline {2}Hierarchical Estimation and the Parameter Cascade}{34}
 \contentsline {section}{\numberline {2.1}Fitting the Reflux Data Using a Semi-Parametric ODE Model}{34}
+\contentsline {paragraph}{Explicit Solution:}{35}
+\contentsline {paragraph}{Formulation as a Functional Linear Model:}{37}
+\contentsline {paragraph}{A Hierarchical Approach to Fitting the ODE Model:}{37}
 \contentsline {section}{\numberline {2.2}The Two-Stage Parameter Cascade}{38}
 \contentsline {section}{\numberline {2.3}The Three-Stage Parameter Cascade}{39}
 \contentsline {section}{\numberline {2.4}Investigating the \texttt {Data2LD} Package}{39}

@@ -13,7 +13,7 @@ The approach taken here is to assume that an unknown differential equation can a
 
 The functions in question are generally all assumed to be members of some  countably infinite dimensional vector space, such as  the set of all functions $f(\cdot)$ such that $\int_0^T  |f''(t)|^2 dt < \infty$ over some interval $[0, T].$
 
-This assumption implies that any given function can be represented as a countably infinite combination of basis elements, which are themselves functions. This means for a chosen set of basis elements $\{\phi_1(t), \phi_2(t), \dots\}$ and any given function $f(t),$ there is a set of coefficients $\{a_1, a_2, \dots \}$ such that:
+Subject to technical conditions, any given function can be represented as a countably infinite combination of basis elements, which are themselves functions. This means for a chosen set of basis elements $\{\phi_1(t), \phi_2(t), \dots\}$ and any given function $f(t),$ there is a set of coefficients $\{a_1, a_2, \dots \}$ such that:
 
 \[
    f(t) = a_1\phi_1(t) + a_2\phi_2(t) + \dots
@@ -24,9 +24,9 @@ Functional Data Analysis  can thus be regarded as a generalisation of multivaria
 
 Substantial complications are introduced into the statistical analysis because functions are generally much richer objects than real numbers or vectors. A function will generally have a different value for each input value, and the number of non-integer numbers on any interval - and hence potential inputs - is infinite. Functions cannot be trivially represented on paper or in computer memory in a similar fashion as real numbers or vectors.
 
-For the purposes of this thesis, it is assumed that the functions in question are continuous mappings.
-
 In practice one attempts to resolve the problem of potential infinite-dimensionality by constructing a discrete problem that resembles the functional problem, and then solving this approximate problem instead.
+
+Throughout this thesis, it is generally assumed that the functions in question are all continuous, smooth or piecewise smooth, and that both themselves and all necessary derivatives\footnote{The derivatives might not be defined on a finite set of points in some cases, this makes no difference to the integration for technical reasons. Informally speaking, the derivatives still exist `almost surely' and that is good enough for integration.\cite{schilling2017measures}} are integrable as required over the interval of interest. Any function that satisfies  these criteria can be straightforwardly approximated to arbitrary accuracy by taking linear combinations of appropriately chosen basis functions.\cite{schilling2017measures, bobrowski2005functional}
 
 Statistical problems that involve differential equations are particularly difficult. A naive approach is to force the practitioner to solve the ordinary differential equation (ODE) numerically  every time it is desired to evaluate the goodness of fit for a given choice of parameters. For these situations, it is necessary by definition to use numerical analytic techniques to construct a proxy problem that resembles the original problem sufficiently well and that is  sufficiently easy to tackle computationally.
  
@@ -173,7 +173,7 @@ Consider a more difficult penalised regression problem:
 
 The penalty  $f''(t)$ has been replaced with a penalty $f''(t) - f(t).$ Whearas the second derivative penalty ignores functions of the form $a + bt,$ this  penalty term ignores functions of the form $a\sin(t) + b\cos(t).$
 
-$PENSSE$ can be minimised in this case taking by a piecewise function consisting of linear combinations of $\sin(t)$ and $\cos(t)$ over each interval between $t_i$ and $t_{i+1},$ and requring that the points $(y_i, t_i)$ are interpolated exactly so that $f(t_i) = y_i.$ This interpolation condition only eliminates half of the degrees of freedom available. To specify the curve exactly, a further condition imposed is that the piecewise curve must be continous.
+$PENSSE$ can be minimised in this case taking by a piecewise function consisting of linear combinations of $\sin(t)$ and $\cos(t)$ over each interval between $t_i$ and $t_{i+1},$ and requring that the points $(y_i, t_i)$ are interpolated exactly so that $f(t_i) = y_i.$ This interpolation condition only eliminates half of the degrees of freedom available. To specify the curve exactly, a further condition imposed is that the piecewise curve must be continuous. 
 
 Note that a function of the form
 
@@ -304,7 +304,7 @@ Section 1.3 developed FDA algorithms for penalised fitting from scratch. However
 PENSSE(f) = \sum_{i=1}^N[y_i - f(t_i)]^2 + \lambda \int |Lf(t)|^2dt
 \end{equation}
 
-Here $Lf$ is a parameterised linear differential operator of the form $\sum_{j=0}^n \beta_jD^j$ where the $\beta_j$ are constants. The authors of the \texttt{FDA} package introduce the  Melanoma dataset, which describes the incidence of skin cancer per 100,000 people in the state of Connectict from 1936 to 1972.\cite{ramsay2005functional} The result of smoothing the melanoma data with the differential operator $Lf = f - \omega^2f^{(4)}$ with $\omega = 0.65$ is shown in Figure \ref{fig:fda_mela_smooth}. This operator was choosen because a penalty of the form $f - \omega^2f^{(4)}$ ignores functions of the form $c_1 + c_2t + c_3\sin(\omega t) + c_4 \cos(\omega t).$
+Here $Lf$ is a parameterised linear differential operator of the form $\sum_{j=0}^n \beta_jD^j$ where the $\beta_j$ are constants. The authors of the \texttt{FDA} package introduce the  Melanoma dataset, which describes the incidence of skin cancer per 100,000 people in the state of Connectict from 1936 to 1972.\cite{ramsay2005functional} The result of smoothing the melanoma data with the differential operator $Lf = f'' - \omega^2f^{(4)}$ with $\omega = 0.65$ is shown in Figure \ref{fig:fda_mela_smooth}. This operator was choosen because a penalty of the form $f - \omega^2f^{(4)}$ ignores functions of the form $c_1 + c_2t + c_3\sin(\omega t) + c_4 \cos(\omega t).$
 
 The \texttt{FDA} packages is not as powerful as the \texttt{Data2LD} package, which will be introduced in Section \ref{sec:intro_data2ld}. It has the advantage of simplicity and ease of use, and is used throughout this thesis to fit FDA models unless $\texttt{Data2LD}$ is essential. A deficiency of the \texttt{FDA} package is that it provides no guidance on the best choice of  the parameters $\beta_i$ nor the smoothing parameter $\lambda.$\footnote{The \texttt{FDA} package has a command called \texttt{lambda2gcv} whose documentation claims it `[finds] the smoothing parameter that minimises GCV'. \cite{fdapackage} Inspection of the code for this function shows that it only performs a fit based on the value of $\lambda$ passed and then reports the GCV. Incorrect or unclear documentation is unfortunately not an uncommon problem with FDA codes.}
 
@@ -312,7 +312,7 @@ The \texttt{FDA} packages is not as powerful as the \texttt{Data2LD} package, wh
 \begin{figure}
 \centering
 \includegraphics[height=11cm]{mela_standard_plot.pdf}
-\caption{Using the \texttt{FDA} package to smooth the melanoma data with the differential operator $Lf = f - \omega^2f^{(4)}.$}
+\caption{Using the \texttt{FDA} package to smooth the melanoma data with the differential operator $Lf = f'' - \omega^2f^{(4)}.$}
 \label{fig:fda_mela_smooth}
 \end{figure}
 

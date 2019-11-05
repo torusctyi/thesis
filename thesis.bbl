@@ -6,6 +6,12 @@ Jonathan Barzilai and Aharon Ben-Tal.
   and convergence rates.
 \newblock {\em SIAM Journal on Numerical Analysis}, 19(6):1263--1277, 1982.
 
+\bibitem{bobrowski2005functional}
+Adam Bobrowski.
+\newblock {\em Functional analysis for probability and stochastic processes: an
+  introduction}.
+\newblock Cambridge University Press, 2005.
+
 \bibitem{boyd2001chebyshev}
 John~P Boyd.
 \newblock {\em Chebyshev and Fourier spectral methods}.

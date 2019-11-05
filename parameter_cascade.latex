@@ -23,7 +23,7 @@ To introduce some of the ideas behind \texttt{Data2LD,} a semi-parametric ODE mo
 The  forcing function $u(t)$ is unknown and must be estimated alongside $\beta,$ so this is a semi-parametric model. As in Section \ref{sec:reflux_parametric_vs_data2ld}, the breakpoint at $t_0$ will be assumed to be known in advance.
 
 
-The solution to the  homogeneous ODE $y'(t) = \beta y(t)$ is given by $y(t) = Ce^{\beta t}$ where $C$ is an unknown constant. Since $y(0) = 0$, this implies that $y(t) = 0$ if $t < t_0.$ To take into account the forcing function that is turned on for $t \geq t_0,$ variation of parameters will be employed. Assume that the solution for the case with the forcing function can be written as  $y(t) = e^{\beta t} v(t),$ with the time-varying coefficient $v(t)$ to be determined. Substitute this ansatz into the case  for $t \geq t_0\colon$
+\paragraph{Explicit Solution:}The solution to the  homogeneous ODE $y'(t) = \beta y(t)$ is given by $y(t) = Ce^{\beta t}$ where $C$ is an unknown constant. Since $y(0) = 0$, this implies that $y(t) = 0$ if $t < t_0.$ To take into account the forcing function that is turned on for $t \geq t_0,$ variation of parameters will be employed. Assume that the solution for the case with the forcing function can be written as  $y(t) = e^{\beta t} v(t),$ with the time-varying coefficient $v(t)$ to be determined. Substitute this ansatz into the case  for $t \geq t_0\colon$
 \begin{align*}
    e^{\beta t}v'(t) + \beta e^{\beta t}v(t)  &= \beta e^{\beta t}v(t) + u(t)\\
                              \therefore \qquad  v'(t) &= e^{-\beta t}u(t) \\
@@ -49,19 +49,7 @@ Here $\mathbf{1}(t)$ denotes the Heaviside step function:
            \end{cases}
 \]
 
-The ODE model can thus be equivalently formulated as a functional linear model\cite{ramsay2005functional} of the form:
 
-\[
-    y(t) = L_\beta u(t)
-\]
-
-Where the parameterised linear operator $L_\beta$ is defined by:
-
-\[
-   L_\beta f(t) = \mathbf{1}(t-t_0)e^{\beta t} \int_{t_0}^t e^{-\beta t}f(t) dt
-\]
-
-In case the notation is unclear, $L_\beta$ is an operator that takes a function as an argument and returns another function. The parameter $\beta$ and function $u(t)$ are unknown and must be estimated. 
 
 For the special case discussed in Section \ref{sec:reflux_parametric_vs_data2ld} where $u(t) = u_0$ for all $t,$ we find that:
 
@@ -76,9 +64,29 @@ y(t) = \frac{u_0}{\beta}\left(1 - e^{\beta(t - t_0)}\right)\mathbf{1}(t-t_0)
 
 This is the same solution as was found at the start of Section \ref{sec:reflux_parametric_vs_data2ld}, except that the ODE is of the form $y' = \beta y + u_0$ for $t \geq t_0$ here instead of being of the form $y' = -\beta y + u_0$ as in Section \ref{sec:reflux_parametric_vs_data2ld}.
 
-For the sake of illustrating how this model behaves in practice, Figure \ref{fig:reflux_ode_arbitary} plots a solution with $\beta = -1, t_0 = 4,$ and $u(t) = 1 + 0.2\sin(10t).$ In this situation, the constant forcing term is perturbed by high frequency, low amplitude noise. It can be seen that the solution resembles the constant case where $u(t) = u_0$ except that $y(t)$ converges to a sinusoidal function instead of a constant.
+Figure \ref{fig:reflux_ode_arbitary} plots a solution with $\beta = -1, t_0 = 4,$ and $u(t) = 1 + 0.2\sin(10t).$ In this situation, the constant forcing term is perturbed by high frequency, low amplitude noise. It can be seen that the solution resembles the constant case where $u(t) = u_0$ except that $y(t)$ converges to a sinusoidal function instead of a constant.
+\begin{figure}
+\centering
+\includegraphics[height = 12cm]{/home/padraig/latex/high_frequency_perturbation.pdf}
+\caption{A solution to the general Reflux ODE with a constant plus sinusoidal  forcing function.}
+\label{fig:reflux_ode_arbitary}
+\end{figure}
 
-Let $I$ denote the set of indices for which $t_i > t_0.$
+\paragraph{Formulation as a Functional Linear Model:}The ODE model can  be equivalently formulated as a functional linear model\cite{ramsay2005functional} of the form:
+
+\[
+    y(t) = L_\beta u(t)
+\]
+
+Where the parameterised linear operator $L_\beta$ is defined by:\footnote{In case the notation is unclear, $L_\beta$ is an operator that takes a function as an argument and returns another function.}
+
+\[
+   L_\beta f(t) = \mathbf{1}(t-t_0)e^{\beta t} \int_{t_0}^t e^{-\beta t}f(t) dt
+\]
+
+As previously stated, the  parameter $\beta$ and function $u(t)$ are unknown and must be estimated from observations of $y(t).$
+
+\paragraph{A Hierarchical Approach to Fitting the ODE Model:} Let $I$ denote the set of indices for which $t_i > t_0.$
 If $\beta$ were known, $v(t)$ could estimated by non-parameterically\footnote{There is nothing in principle stopping one from attempting to fit $v(t)$ to $y/e^{\beta t}$ using a more basic methodology such as polynomial regression, but it is difficult to concieve of circumstances where this would be a good idea. Even if $u(t)$ were assumed to be some unknown polynomial, the same would not be true of $v(t).$ } regressing 
 the values $y_i/e^{\beta t_i}$ against  $t_i$ where $i \in I.$ The forcing function $u(t)$ could then be estimated by differentiating the estimate for $v(t)$ and multiplying it by $e^{\beta t}.$
 
@@ -100,12 +108,6 @@ The sketch presented here fails to address two important questions: how to  to e
 \texttt{Data2LD} similarly employs a powerful hierarchical fitting methodology for FDA problems known as the Parameter Cascade, which will be introduced in the next section.
 
 
-\begin{figure}
-\centering
-\includegraphics[height = 12cm]{/home/padraig/latex/high_frequency_perturbation.pdf}
-\caption{A solution to the general Reflux ODE with a constant plus sinusoidal  forcing function.}
-\label{fig:reflux_ode_arbitary}
-\end{figure}
 
 \section{The Two-Stage Parameter Cascade}
 
@@ -144,14 +146,14 @@ Figure \ref{fig:twoStageParamSimplified} is a highly idealised sketch of the Par
 
 \begin{figure}
    \centering
-   \includegraphics[width = 13cm]{/home/padraig/programming/R/latex/chapter_2/2_stage_parameter.pdf}
+   \includegraphics[width = 13cm]{2_stage_parameter.pdf}
    \caption{Two Stage Parameter Cascade (Simplified)}
       \label{fig:twoStageParamSimplified}
 \end{figure}
 
 \begin{figure}
    \centering
-   \includegraphics[width = 13cm]{/home/padraig/programming/R/latex/chapter_2/2_stage_parameter_full.pdf}
+   \includegraphics[width = 13cm]{2_stage_parameter_full.pdf}
    \caption{Schematic of the Two Stage Parameter Cascade With the Inner Optimisation Visible}
 \label{fig:twoStageParam}
 \end{figure}
@@ -181,9 +183,9 @@ Only the \texttt{Data2LD.opt} command is  investigated in detail here. The middl
 
 \subsection{How \texttt{Data2LD} Estimates Parameters}
 
-The code for\texttt{Data2LD} can be difficult to understand. While software with such powerful features was  inevitably going to be complex, the authors compound the issue by not heeding best practices recommended for making code easy to read and maintain. For example, \texttt{Data2LD} hardcodes unnamed constants into the code. Allowing such 'Magic Numbers' is strongly discouraged because it makes code more error prone and difficult to understand.\cite{mcconnell2004code}
+The code for\texttt{Data2LD} can be difficult to understand. While software with such powerful features was  inevitably going to be complex, the authors compounded the issue by not heeding best practices recommended for making code easy to read and maintain. For example, \texttt{Data2LD} hardcodes unnamed constants into the code. Such `Magic Numbers' are strongly discouraged because it makes code more error prone and difficult to understand.\cite{mcconnell2004code}
 
-
+The documentation somewhat incorrectly claims that \texttt{Data2LD.opt} is a `quasi-Newton\footnote{Quasi-Newton methods are discussed in more detail in Section \ref{sec:higher_order_methods}.} type optimization algorithm'.\cite{data2ld} As shall be seen below, \texttt{Data2LD.opt} actually uses Newton's Method\footnote{Newton's Method is discussed in more detail in Section \ref{sec:newton_gradient}.} by default unless it fails to reduce the objective function.
 
 For brevity, let $\mathbf{g}_n$ and $\mathbf{H}_n$ respectively denote the gradient vector and Hessian matrix of the objective function $f(\theta)$ at $\theta_n.$ The search directions used by the  \texttt{Data2LD.opt} command are the Gradient Descent direction:
 
@@ -269,7 +271,7 @@ Depending on the outcome of the tests, \texttt{Data2LD} chooses the stepsize as 
 \label{fig:data2ld_line_search_tests}
 \end{figure}
 
-If the line search succeeds in reducing the objective function, \texttt{Data2LD} uses the Newton search direction for the next iteration. If the line search makes the objective function worse, the Gradient Descent direction is used. In the event of the line search making the objective function worse twice in a row, \texttt{Data2LD} returns an error.
+If the line search succeeds in reducing the objective function, or at least doesn't make it worse, \texttt{Data2LD} uses the Newton search direction for the next iteration. If the line search makes the objective function worse, the Gradient Descent direction is used. In the event of the line search making the objective function worse twice in a row, \texttt{Data2LD} returns an error.
 
 Somewhat peculiarly, \texttt{Data2LD} does not make use of $\phi''(\alpha)$ despite being able to compute it easily.\footnote{Differentiating the expression $\phi'(\alpha) =\mathbf{p}_n^\top\nabla f(\mathbf{x}_n + \alpha \mathbf{p}_n)$ with respect to $\alpha$ yields that $\phi''(\alpha) = \mathbf{p}_n^\top \mathbf{H}(\alpha) \mathbf{p}_n,$ where $\mathbf{H}(\alpha)$ denotes the Hessian of $f$ evaluated at $\mathbf{x}_n + \alpha \mathbf{p}_n.$}  One would think that the Newton-Raphson Method would  be the first approach  to perform the line search attempted before resorting to interpolation-based methods since it's both simpler to implement and faster to converge. The effort required to  compute $\phi''(\alpha)$ is mostly a sunk cost because  \texttt{Data2LD} will return the Hessian matrix on each iteration whether it is wanted or not.
 
