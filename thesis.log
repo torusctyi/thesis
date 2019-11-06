@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.10.17)  5 NOV 2019 14:05
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.10.17)  6 NOV 2019 09:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -699,14 +699,14 @@ Chapter 4.
 <mela_l1_l2_plot.pdf, id=461, 505.89pt x 505.89pt>
 File: mela_l1_l2_plot.pdf Graphic file (type pdf)
 <use mela_l1_l2_plot.pdf>
-Package pdftex.def Info: mela_l1_l2_plot.pdf  used on input line 114.
+Package pdftex.def Info: mela_l1_l2_plot.pdf  used on input line 124.
 (pdftex.def)             Requested size: 284.53154pt x 284.52756pt.
 </home/padraig/latex/mela_l1_convergence_plot.pdf, id=462, 505.89pt x 505.89pt>
 
 File: /home/padraig/latex/mela_l1_convergence_plot.pdf Graphic file (type pdf)
 <use /home/padraig/latex/mela_l1_convergence_plot.pdf>
 Package pdftex.def Info: /home/padraig/latex/mela_l1_convergence_plot.pdf  used
- on input line 122.
+ on input line 132.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
 </home/padraig/latex/mela_l1_convergence_log_plot.pdf, id=463, 505.89pt x 505.8
 9pt>
@@ -714,23 +714,23 @@ File: /home/padraig/latex/mela_l1_convergence_log_plot.pdf Graphic file (type p
 df)
 <use /home/padraig/latex/mela_l1_convergence_log_plot.pdf>
 Package pdftex.def Info: /home/padraig/latex/mela_l1_convergence_log_plot.pdf  
-used on input line 123.
+used on input line 133.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
 <mela_coef_convergence_plot.pdf, id=464, 505.89pt x 505.89pt>
 File: mela_coef_convergence_plot.pdf Graphic file (type pdf)
 <use mela_coef_convergence_plot.pdf>
-Package pdftex.def Info: mela_coef_convergence_plot.pdf  used on input line 130
+Package pdftex.def Info: mela_coef_convergence_plot.pdf  used on input line 140
 .
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
 <mela_pensae_plot.pdf, id=465, 505.89pt x 505.89pt>
 File: mela_pensae_plot.pdf Graphic file (type pdf)
 <use mela_pensae_plot.pdf>
-Package pdftex.def Info: mela_pensae_plot.pdf  used on input line 137.
+Package pdftex.def Info: mela_pensae_plot.pdf  used on input line 147.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
  [72] [73 <./mela_l1_l2_plot.pdf>] [74 </home/padraig/latex/mela_l1_convergence
 _plot.pdf> </home/padraig/latex/mela_l1_convergence_log_plot.pdf>] [75 <./mela_
 coef_convergence_plot.pdf> <./mela_pensae_plot.pdf>]
-Overfull \hbox (14.67691pt too wide) in paragraph at lines 146--146
+Overfull \hbox (14.67691pt too wide) in paragraph at lines 156--156
 []\OT1/cmr/bx/n/17.28 The Two-Stage Pa-ram-e-ter Cas-cade with $\OML/cmm/m/it/1
 7.28 L[]$ \OT1/cmr/bx/n/17.28 Norm 
  []
@@ -739,19 +739,19 @@ Overfull \hbox (14.67691pt too wide) in paragraph at lines 146--146
 File: /home/padraig/latex/mela_omega_mae_profile.pdf Graphic file (type pdf)
 <use /home/padraig/latex/mela_omega_mae_profile.pdf>
 Package pdftex.def Info: /home/padraig/latex/mela_omega_mae_profile.pdf  used o
-n input line 164.
+n input line 174.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
 </home/padraig/latex/mela_omega_mae_fit.pdf, id=510, 505.89pt x 505.89pt>
 File: /home/padraig/latex/mela_omega_mae_fit.pdf Graphic file (type pdf)
 <use /home/padraig/latex/mela_omega_mae_fit.pdf>
 Package pdftex.def Info: /home/padraig/latex/mela_omega_mae_fit.pdf  used on in
-put line 165.
+put line 175.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
 </home/padraig/latex/mela_l1_l2_cascade_plot.pdf, id=511, 505.89pt x 505.89pt>
 File: /home/padraig/latex/mela_l1_l2_cascade_plot.pdf Graphic file (type pdf)
 <use /home/padraig/latex/mela_l1_l2_cascade_plot.pdf>
 Package pdftex.def Info: /home/padraig/latex/mela_l1_l2_cascade_plot.pdf  used 
-on input line 172.
+on input line 182.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
 [76
 
@@ -760,25 +760,25 @@ a_omega_mae_fit.pdf>]
 <mela_l1_l2_combinations.pdf, id=532, 505.89pt x 505.89pt>
 File: mela_l1_l2_combinations.pdf Graphic file (type pdf)
 <use mela_l1_l2_combinations.pdf>
-Package pdftex.def Info: mela_l1_l2_combinations.pdf  used on input line 181.
+Package pdftex.def Info: mela_l1_l2_combinations.pdf  used on input line 191.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
 <mela_l1_l2_combinations_perturbed.pdf, id=533, 505.89pt x 505.89pt>
 File: mela_l1_l2_combinations_perturbed.pdf Graphic file (type pdf)
 <use mela_l1_l2_combinations_perturbed.pdf>
 Package pdftex.def Info: mela_l1_l2_combinations_perturbed.pdf  used on input l
-ine 182.
+ine 192.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
  [78 </home/padraig/latex/mela_l1_l2_cascade_plot.pdf>] [79 <./mela_l1_l2_combi
 nations.pdf> <./mela_l1_l2_combinations_perturbed.pdf>] [80
 
 ]
-Overfull \hbox (11.42845pt too wide) in paragraph at lines 208--208
+Overfull \hbox (11.42845pt too wide) in paragraph at lines 218--218
 []\OT1/cmr/bx/n/14.4 Illustrative Ex-am-ple: Us-ing Im-pu-ta-tion to Fit an ANO
 VA
  []
 
 
-Overfull \hbox (18.33145pt too wide) in paragraph at lines 212--213
+Overfull \hbox (18.33145pt too wide) in paragraph at lines 222--223
 \OT1/cmr/m/n/12 statis-tic was com-puted. This de-fines an as-so-ci-ated se-que
 nce $\OMS/cmsy/m/n/12 f\OML/cmm/m/it/12 SSE[]; SSE[]; [] ; SSE[]; [] \OMS/cmsy/
 m/n/12 g\OML/cmm/m/it/12 :$
@@ -788,28 +788,28 @@ m/n/12 g\OML/cmm/m/it/12 :$
 <anova_accel.pdf, id=568, 505.89pt x 505.89pt>
 File: anova_accel.pdf Graphic file (type pdf)
 <use anova_accel.pdf>
-Package pdftex.def Info: anova_accel.pdf  used on input line 267.
+Package pdftex.def Info: anova_accel.pdf  used on input line 277.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
 <anova_double_accel.pdf, id=569, 505.89pt x 505.89pt>
 File: anova_double_accel.pdf Graphic file (type pdf)
 <use anova_double_accel.pdf>
-Package pdftex.def Info: anova_double_accel.pdf  used on input line 275.
+Package pdftex.def Info: anova_double_accel.pdf  used on input line 285.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
  [83 <./anova_accel.pdf>]
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 280.
+               Default added (so using `tbp') on input line 290.
 
 [84 <./anova_double_accel.pdf>] [85]
 <l1_accleration_plot.pdf, id=592, 505.89pt x 505.89pt>
 File: l1_accleration_plot.pdf Graphic file (type pdf)
 <use l1_accleration_plot.pdf>
-Package pdftex.def Info: l1_accleration_plot.pdf  used on input line 327.
+Package pdftex.def Info: l1_accleration_plot.pdf  used on input line 337.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
 <multi_accleration_plot.pdf, id=593, 505.89pt x 505.89pt>
 File: multi_accleration_plot.pdf Graphic file (type pdf)
 <use multi_accleration_plot.pdf>
-Package pdftex.def Info: multi_accleration_plot.pdf  used on input line 334.
+Package pdftex.def Info: multi_accleration_plot.pdf  used on input line 344.
 (pdftex.def)             Requested size: 256.07838pt x 256.0748pt.
 ) (./nonlinear_regress.latex [86
 
@@ -1023,7 +1023,7 @@ ype1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
 ublic/amsfonts/cm/cmtt12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
 amsfonts/symbols/msam10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
 msfonts/symbols/msbm10.pfb>
-Output written on thesis.pdf (126 pages, 1372450 bytes).
+Output written on thesis.pdf (126 pages, 1372670 bytes).
 PDF statistics:
  948 PDF objects out of 1000 (max. 8388607)
  661 compressed objects within 7 object streams

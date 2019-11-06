@@ -80,10 +80,20 @@ For the case of penalised regression, the penalised sum of absolute errors is de
 
 Here $T$ is used instead of $L$ to  denote a differential operator that might not necessarily be linear.\footnote{In some situations $T$ could even be an integral operator. This could easily be the case for example if the observed values were the measured velocities of a vehicle, and the penalty was intended to impose constraints on quantities such as the distance travelled or fuel consumed} As before, this can be majorised by a weighted sum of a residual-weighted penalised sum of squared errors, and a $\sum |x_i - f_n(t_i)|$  term that  can be safely ignored in the course of the optimisation.
 
-\begin{align} \label{eqn:wpensse}
-    PENSAE(f) &\leq \frac{1}{2}WPENSSE(f|f_n, \theta, 2\lambda) + \frac{1}{2} \left(\sum |x_i - f_n(t_i)| \right)\\
+Given a function $g(t),$ the Weighted Penalised Sum of Squared Errors is defined as:
+
+\begin{equation}
+   WPENSSE(f|g, \theta, \lambda) =  \sum \frac{[x_i - f(t_i)]^2}{|x_i - g(t_i)|} + \lambda \int |Tf|^2 dt
+\end{equation}
+
+$PENSAE$ can then be majorised as follows:
+
+\begin{equation} \label{eqn:wpensse}
+   \begin{aligned}[b]
+    PENSAE(f) &\leq \frac{1}{2}WPENSSE(f|f_n, \theta, 2\lambda) + \frac{1}{2} \left(\sum |x_i - f_n(t_i)| \right)\\ 
               &= \frac{1}{2}\left( \sum \frac{[x_i - f(t_i)]^2}{|x_i - f_n(t_i)|} + 2 \lambda \int |Tf|^2 dt\right) +  \frac{1}{2} \left(\sum |x_i - f_n(t_i)|\right)
-\end{align}
+   \end{aligned}
+\end{equation}
 
 To find the function that minimises the penalised $L_1$ error, one repeatedly finds the function that minimises $WPENSSE$ with the previous set of residuals used as inverse weights. This produces a sequence of fitted functions for which the penalised sum of absolute errors is monotonically forced downwards. 
 
@@ -209,7 +219,7 @@ There is an equivalent definition that is easier to generalise \cite{isaacson201
 
 For illustrative purposes, we will make use of an example from chapter 2 of \cite{mclachlan2007algorithm}. The authors discuss fitting an ANOVA model to a factorial experiment where some of the values are missing. They proceed by using the fitted model to estimate the missing values; fitting the model again with the new imputed values; and using the new fitted values in turn to again update the estimates of missing values. The process is repeated until convergence. In the text, the authors do not work with likelihood or any probabilistic models and treat the question as purely a regression problem. This is similar to our $L_1$ fitting problem.
 
-The authors' example was implemented again in R.\footnote{The $SSE$ statistic here is different from the $RSS$ statistic presented in the text this example was taken from. The new code converges to the same estimates as in the original, so the example has been re-implemented correctly. It was not possible to determine with what degrees of freedom  $RSS$ was associated with.}. For each iteration, the $SSE$ statistic was computed. This defines an associated sequence $\{SSE_1, SSE_2,\dots, SSE_n, \dots\}.$ Applying Aitken's method to this sequence produces a new sequence $\{ASSE_n\}.$ As can be seen in Figure \ref{fig:sse_error} and Table \ref{tab:sse_error}, the accelerated sequence converges far more quickly to the limit of the $\{SSE_i\}$ sequence than the original sequence.
+The authors' example was implemented again in R.\footnote{The $SSE$ statistic here is different from the $RSS$ statistic presented in the text this example was taken from. The new code converges to the same estimates as in the original, so the example has been re-implemented correctly. It was not possible to determine with what degrees of freedom  $RSS$ was associated with.} For each iteration, the $SSE$ statistic was computed. This defines an associated sequence $\{SSE_1, SSE_2,\dots, SSE_n, \dots\}.$ Applying Aitken's method to this sequence produces a new sequence $\{ASSE_n\}.$ As can be seen in Figure \ref{fig:sse_error} and Table \ref{tab:sse_error}, the accelerated sequence converges far more quickly to the limit of the $\{SSE_i\}$ sequence than the original sequence.
 
 \subsection{Generalisations}
 
@@ -260,7 +270,7 @@ Both these approaches were attempted for the missing data model, and the results
 One can take the process further. For the missing values linear model, these higher-order methods converge very rapidly and are prone to numerical instability thereafter due to the error terms being so small. If the Aitken method is applied three times to the original sequence, the first entry yields the limit immediately and there is no need to go any further. Applying the quadratic method twice in a row produces a new sequence for which the first entry is within $10^{-12}$ of the limit.
 
 
-\paragraph{Other Approaches:} There are alternative approaches besides those described here. For example, the EM and MM algorithms generate a sequence of coefficient vectors $\{\mathbf{c}_0, \mathbf{c}_1, \dots, \mathbf{c}_n, \dots \}$ with $\mathbf{c}_{n+1} = \mathbf{F}(\mathbf{c}_n)$ for some function $\mathbf{F}(\cdot).$ In our particular situation, the  function $\mathbf{F}(\cdot)$ would denote the operator that  takes a coefficient vector and returns the coefficient vector that minimises the associated $WPENSSE$ problem (\ref{eqn:wpensse}). The limit of this sequence - should it exist - is a solution to the equation $\mathbf{c} = \mathbf{F}(\mathbf{c}).$ It is  proposed in the literature to use Newton or Quasi-Newton methods  such as those described in the chapter on Brent's method to  numerically solve this fixed point equation \cite{chan2017acceleration, dempster1977maximum}. The idea is that such methods will find the fixed point more rapidly than simply iterating $\mathbf{F}(\cdot)$ until one gets sufficiently close to the limit. These methods have  the disadvantage of being more complex and time consuming to implement than the univariate acceleration methods.
+\paragraph{Other Approaches:} There are alternative approaches besides those described here. For example, the EM and MM algorithms generate a sequence of coefficient vectors $\{\mathbf{c}_0, \mathbf{c}_1, \dots, \mathbf{c}_n, \dots \}$ with $\mathbf{c}_{n+1} = \mathbf{F}(\mathbf{c}_n)$ for some function $\mathbf{F}(\cdot).$ In our particular situation, the  function $\mathbf{F}(\cdot)$ would denote the operator that  takes a coefficient vector and returns the coefficient vector that minimises the associated $WPENSSE$ problem (\ref{eqn:wpensse}). The limit of this sequence - should it exist - is a solution to the equation $\mathbf{c} = \mathbf{F}(\mathbf{c}).$ It was proposed in the literature to use Newton or Quasi-Newton methods as enumerated in  Appendix \ref{chap:optimisation_methods} to  numerically solve this fixed point equation.\cite{chan2017acceleration, dempster1977maximum} The idea is that such methods will find the fixed point more rapidly than simply iterating $\mathbf{F}(\cdot)$ until one gets sufficiently close to the limit. These methods have  the disadvantage of being more complex and time consuming to implement than the univariate acceleration methods.
 
 \begin{figure}
 \centering
@@ -273,7 +283,7 @@ One can take the process further. For the missing values linear model, these hig
 \begin{figure}
 \centering
    \includegraphics[height=9cm]{anova_double_accel.pdf}
-   \caption{More sophisticated acceleration methods can provide a further boost to convergence. There are gaps in the plot because the more accelerated iterations have no valid log error  since  R cannot numerically distinguish them from the final limit.}
+   \caption{More sophisticated acceleration methods can provide a further boost to convergence. There are gaps in the plot - some iterates have no valid log error  since  R cannot numerically distinguish them from the final limit.}
    \label{fig:double_sse_error}
 \end{figure}
 \newpage
@@ -317,7 +327,7 @@ $\infty$ & 3203.7829457364 & 3203.7829457364 &  3203.7829457364 & 3203.782945736
 \clearpage
 \subsection{Accelerating the $L_1$ Fitting Algorithm}
 
-The $L_1$ fitting algorithm devised in Section \ref{sec:mm_l1_problem} is much more difficult to accelerate as can be seen in Figures \ref{fig:sae_accel} and \ref{fig:sae_multi_accel}. Figure \ref{fig:sae_accel}  shows the result of applying Aitken acceleration to the $SAE$ sequence generated, and Figure \ref{fig:sae_multi_accel} shows the results of attempting an entire battery of acceleration methods, including methods specifically designed for accelerating slowly converging sequences that Aitken acceleration cannot accelerate such as Epsilon Algorithm and Lubkin's W transform. \cite{graves2000epsilon, osada1993acceleration,wimp1981sequence} No method performs substantially better than Aitken acceleration. The $SAE$ sequence is apparently either numerically ill-behaved or of a very unusual form.
+The $L_1$ fitting algorithm devised in Section \ref{sec:mm_l1_problem} is much more difficult to accelerate as can be seen in Figures \ref{fig:sae_accel} and \ref{fig:sae_multi_accel}. Figure \ref{fig:sae_accel}  shows the result of applying Aitken acceleration to the $SAE$ sequence generated, and Figure \ref{fig:sae_multi_accel} shows the results of attempting an entire battery of acceleration methods, including methods specifically designed for accelerating slowly converging sequences that Aitken acceleration cannot accelerate such as Epsilon Algorithm and Lubkin's W transform.\cite{graves2000epsilon, osada1993acceleration,wimp1981sequence} No method performs substantially better than Aitken acceleration. The $SAE$ sequence is apparently either numerically ill-behaved or of a very unusual form.
 
 To conclude, it is possible to save some time by acceleration, but the scope for doing so is limited and the process would have to be monitored carefully to ensure that numerical instability isn't causing trouble. 
 
