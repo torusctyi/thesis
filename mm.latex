@@ -86,8 +86,7 @@ Given a function $g(t),$ the Weighted Penalised Sum of Squared Errors is defined
    WPENSSE(f|g, \theta, \lambda) =  \sum \frac{[x_i - f(t_i)]^2}{|x_i - g(t_i)|} + \lambda \int |Tf|^2 dt
 \end{equation}
 
-$PENSAE$ can then be majorised as follows:
-
+With $WPENSSE$ so defined, $PENSAE$ can then  be straightforwardly  majorised as follows:
 \begin{equation} \label{eqn:wpensse}
    \begin{aligned}[b]
     PENSAE(f) &\leq \frac{1}{2}WPENSSE(f|f_n, \theta, 2\lambda) + \frac{1}{2} \left(\sum |x_i - f_n(t_i)| \right)\\ 
@@ -200,7 +199,7 @@ In Figure \ref{fig:mela_l1_cascade}, the result of fitting a two level $L_1$ Par
 
 The MM Algorithm is very sluggish, and this is a well known weakness of both itself and the EM algorithm. The literature however suggests that this problem could be easily ameliorated in this particular case because of a special feature present.\cite{mclachlan2007algorithm} In practice one doesn't  want to fit the full model, but only wants to compute an associated summary statistic that determines how good a given choice of parameters is. It will often be the case that  only the value of $PENSSAE$ or $GCV$ or $SAE$  associated with a given choice of parameters is required as inputs to an optimisation routine, and it is not desirable to iterate until the full model converges if this effort can be avoided. 
 
-MacLanan and Krishnan\cite{mclachlan2007algorithm} discuss the situation where one only wants to compare the likelihoods between a restricted model and a full model. They suggest the use of sequence acceleration methods to rapidly extract the likelihoods \cite{mclachlan2007algorithm} instead of running the EM algorithm to completion since  the full models aren't needed. The literature on the MM algorithm claims that acceleration methods for the EM algorithm translate quite easily to the MM case \cite{wu2010mm}. On this basis, we explored whether this approach might be applied here.
+MacLanan and Krishnan\cite{mclachlan2007algorithm} discuss the situation where one only wants to compare the likelihoods between a restricted model and a full model. They suggest the use of sequence acceleration methods to rapidly extract the likelihoods \cite{mclachlan2007algorithm} instead of running the EM algorithm to completion since  the full models aren't needed. The literature on the MM algorithm claims that acceleration methods for the EM algorithm translate quite easily to the MM case.\cite{wu2010mm} On this basis, we explored whether this approach might be applied here.
 
 The approach employed is known as Aitken Acceleration\cite{dempster1977maximum, mclachlan2007algorithm}. Suppose that there is a sequence $x_0, x_1, x_3, \dots$ converging to a limit $x^*$. Aitken's method makes the ansatz that $ x_{n+1} - x^* \approx C(x_n - x^*)$  for some constant $C$. Many iterative algorithms in statistics exhibit this pattern as discussed in Section \ref{sec:discuss}. 
 This suggests the following equation:
