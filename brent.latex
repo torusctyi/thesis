@@ -1,13 +1,11 @@
 
 \chapter{Derivative-Free Optimisation and the Parameter Cascade} \label{chap:brent}
 
-The Parameter Cascade as presented in the previous chapter requires the computation of derivatives to perform optimisation. However, computing the necessary derivatives can be a time-consuming and complex task. This is especially the case for the higher levels of the Parameter Cascade.\cite{cao2007parameter} In some cases the derivatives might not even exist, such as when the loss function used to measure goodness of fit is non-differentiable.
-
-In this chapter, the use of derivative-free methods for fitting FDA problems is explored. Derivative-free methods are used to tackle a series of increasingly complex problems, culminating in fitting one level of the Parameter Cascade without derivatives.
+The Parameter Cascade as presented in Chapter \ref{chap:paramcascade} requires the computation of derivatives to perform optimisation. However, computing the necessary derivatives can be a time-consuming and complex task. This is especially the case for the higher levels of the Parameter Cascade \cite{cao2007parameter}. In some cases the derivatives might not even exist, such as when the loss function used to measure goodness-of-fit is non-differentiable. In this chapter, the use of derivative-free methods for fitting FDA problems is explored. Derivative-free methods are used to tackle a series of increasingly complex problems, culminating in fitting one level of the Parameter Cascade without derivatives.
 
 \section{Overview of Quadratic Optimisation Methods} \label{sec:quad_methods}
 
-A large class of numerical optimisation methods rely on constructing a quadratic approximation to objective function $f(\theta).$ Given an iterate $\theta_n$ and possibly some associated data, a quadratic approximation $m_n(\theta)$ to the objective function is constructed. The next iterate $\theta_{n+1}$ is then found by minimising $m_n(\theta).$ Constructing the approximate quadratic and then minimising it tends to be straightforward. If the next iterate $\theta_{n+1}(\theta)$ is unsatisfactory, a new quadratic model function $m_{n+1}(\theta)$ is again minimised, producing the next iterate $\theta_{n+2}.$ Ideally, the $\theta_n$ will approach the optimal point as the sequence of quadratic models become increasingly accurate approximations to $f(\theta)$ in the neighbourhood of  the optimal point, so that the process can be repeated until convergence.\cite{nocedalnumerical}
+A large class of numerical optimisation methods rely on constructing a quadratic approximation to an objective function $f(\theta).$ Given an iterate $\theta_n$ and possibly some associated data, a quadratic approximation $m_n(\theta)$ to the objective function is constructed. The next iterate $\theta_{n+1}$ is then found by minimising $m_n(\theta).$ Constructing the approximate quadratic and then minimising it tends to be straightforward. If the next iterate $\theta_{n+1}(\theta)$ is unsatisfactory, a new quadratic model function $m_{n+1}(\theta)$ is again minimised, producing the next iterate $\theta_{n+2}.$ Ideally, the $\theta_n$ will approach the optimal point as the sequence of quadratic models become increasingly accurate approximations to $f(\theta)$ in the neighbourhood of the optimal point, so that the process can be repeated until convergence \cite{nocedalnumerical}.
 
 \subsection{Newton's Method}
 
@@ -17,37 +15,37 @@ The Newton-Raphson Method is a well-known member of this class. Newton's method 
 	f(\theta) \approx m_n(\theta) = f(\theta_n) + f'(\theta_n)(\theta - \theta_n) + \frac{1}{2}f''(\theta_n)(\theta - \theta_n)^2
 \]
 
-It is not difficult to show that the critical point of $m_n(\theta)$ is given by $\theta_{n+1} = \theta_n - f'(\theta_n)/f''(\theta_n),$ which is the usual Newton formula.\cite{nocedalnumerical, isaacson2012analysis, lange2004optimization, lange2010numerical}
+\noindent It is not difficult to show that the critical point of $m_n(\theta)$ is given by $\theta_{n+1} = \theta_n - f'(\theta_n)/f''(\theta_n),$ which is the usual Newton formula \cite{nocedalnumerical, isaacson2012analysis, lange2004optimization, lange2010numerical}. \\
 
-For a point close to $\theta_n,$ the difference between $f(\theta)$ and $m_n(\theta)$ is roughly equal to $[f'''(\theta_n)/3!](\theta-\theta_n)^3$ so long as $f(\theta)$ is sufficiently well behaved\cite{isaacson2012analysis}. This formula suggests that if $\theta_n$ is close to the optimal point $\theta^*$ so that $|\theta^* -\theta_n|$ is sufficiently small, then $|\theta_n - \theta^*|^3$ will be very small indeed and so the quadratic model will be a very accurate approximation of $f(\theta)$ around $\theta^*.$ As a result, $\theta_{n+1}$ will be quite close to $\theta^*.$ The next model $m_{n+1}(\theta)$ will thus be substantially better than $m_{n}(\theta)$ at approximating $f(\theta)$ around $\theta^*,$ and so $\theta_{n+2}$ will be much closer to $\theta^*$ than $\theta_{n+1}.$ Newton's method converges very rapidly so long as one is sufficiently close to $\theta^*$ to start with. In fact, Newton's method converges quadratically, as discussed in Section \ref{sec:newton_gradient}.
+\noindent For a point close to $\theta_n,$ the difference between $f(\theta)$ and $m_n(\theta)$ is roughly equal to $[f'''(\theta_n)/3!](\theta-\theta_n)^3$ so long as $f(\theta)$ is sufficiently well behaved \cite{isaacson2012analysis}. This formula suggests that if $\theta_n$ is close to the optimal point $\theta^*$ so that $|\theta^* -\theta_n|$ is sufficiently small, then $|\theta_n - \theta^*|^3$ will be very small indeed and so the quadratic model will be a very accurate approximation of $f(\theta)$ around $\theta^*.$ As a result, $\theta_{n+1}$ will be quite close to $\theta^*.$ The next model $m_{n+1}(\theta)$ will thus be substantially better than $m_{n}(\theta)$ at approximating $f(\theta)$ around $\theta^*,$ and $\theta_{n+2}$ will be much closer to $\theta^*$ than $\theta_{n+1}.$ Newton's method converges very rapidly so long as one is sufficiently close to $\theta^*$ to start with. In fact, Newton's method converges quadratically, as discussed in Section \ref{sec:newton_gradient}. \\
 
-Newton's method is a very effective estimation algorithm so long as the derivatives $f'(\theta)$ and $f''(\theta)$ can be computed, and so long as the initial starting value is not too far from the optimal value. Choosing a good initial value is thus very important. For maximum likelihood  estimation for example, a method of moments estimator or the median could be used  to provide an initial starting value. 
+\noindent Newton's method is a very effective estimation algorithm so long as the derivatives $f'(\theta)$ and $f''(\theta)$ can be computed, and so long as the initial starting value is not too far from the optimal value. Choosing a good initial value is thus very important. For maximum likelihood estimation for example, a method of moments estimator could be used to provide an initial starting value. 
 
 \subsection{Secant Method}
 
-If the second derivative is difficult to calculate, one can approximate it with a difference quotient instead \cite{isaacson2012analysis, nocedalnumerical}\footnote{The Secant Method is denoted as the \emph{Method of False Position} in \cite{isaacson2012analysis}}:
+If the second derivative is difficult to calculate, one can approximate it with a difference quotient instead \cite{isaacson2012analysis, nocedalnumerical}:
 
 \begin{equation}\label{eqn:seq_finite_diff}
 	f''(\theta) \approx \frac{f'(\theta_n) - f'(\theta_{n-1})}{\theta_n - \theta_{n-1}}
 \end{equation}
 
-This leads to the quadratic approximation:
+\noindent This leads to the quadratic approximation:
 
 \[
-	m_n(\theta) = f(\theta_n)  + f'(\theta_n)(\theta - \theta_n) + \frac{1}{2}\left(\frac{f'(\theta_n) - f'(\theta_{n-1})}{\theta_n - \theta_{n-1}}\right)(\theta - \theta_n)^2
+	m_n(\theta) = f(\theta_n)  + f'(\theta_n)(\theta - \theta_n) + \frac{1}{2}\left(\frac{f'(\theta_n) - f'(\theta_{n-1})}{\theta_n - \theta_{n-1}}\right)(\theta - \theta_n)^2,
 \]
 
-And the update formula:
+\noindent and the update formula:
 
 \begin{align*}
 	\theta_{n+1} &= \theta_{n} - \left[\frac{f'(\theta_n) - f'(\theta_{n-1})}{\theta_n - \theta_{n-1}}\right]^{-1}f'(\theta_n) \\
 	             &= \theta_{n} - \frac{f'(\theta_n)[\theta_n - \theta_{n-1}]}{f'(\theta_n) -f'(\theta_{n-1})}\\
-		     &= \frac{\theta_{n-1}f'(\theta_n) - \theta_nf'(\theta_{n-1})}{f'(\theta_n) - f'(\theta_{n-1})}
+		     &= \frac{\theta_{n-1}f'(\theta_n) - \theta_nf'(\theta_{n-1})}{f'(\theta_n) - f'(\theta_{n-1}).}
 \end{align*}
 
-The Secant Method is straightforward to implement, and only requires first derivatives. Relying on on $f(\theta_n), f'(\theta_n)$ and $f'(\theta_{n-1})$ instead of $f(\theta), f'(\theta_n)$ and $f''(\theta_n)$ has a drawback however. The Secant Method's model is less accurate because $\theta_{n-1}$ tends to be further from $\theta^*$ than $\theta_n$. More formally, the error for the model is roughly equal to $[f'''(\theta_n)/3!](\theta_n - \theta)^2(\theta_{n-1} - \theta).$ If the sequence is converging to $\theta^*,$ substituting in the $(\theta - \theta_{n-1})$ term inflates the error relative to Newton's Method and acts as a drag on convergence. It can be shown that the Secant Method convergences superlinearly with order  1.618, but avoiding the cost of computing a second derivative on each step means that more iterations can be completed in a given period of time. The Secant Method is comparable with Newton's Method, and can be faster if computing the second derivative is difficult. 
+\noindent The Secant Method is straightforward to implement, and only requires first derivatives. Relying on $f(\theta_n), f'(\theta_n)$ and $f'(\theta_{n-1})$ instead of $f(\theta), f'(\theta_n)$ and $f''(\theta_n)$ has a drawback however. The Secant Method's model is less accurate because $\theta_{n-1}$ tends to be further from $\theta^*$ than $\theta_n$. More formally, the error for the model is roughly equal to $[f'''(\theta_n)/3!](\theta_n - \theta)^2(\theta_{n-1} - \theta).$ If the sequence is converging to $\theta^*,$ substituting in the $(\theta - \theta_{n-1})$ term inflates the error relative to Newton's Method and acts as a drag on convergence. It can be shown that the Secant Method convergences superlinearly with order 1.618. However avoiding the cost of computing a second derivative on each step means that more iterations can be completed in a given period of time. The Secant Method is comparable with Newton's Method, and can be faster if computing the second derivative is difficult. \\
 
-The Secant Method is a widely used method that provides a good trade-off between convergence speed and ease of implementation\cite{isaacson2012analysis}. Multivariate generalisations of the Secant Method when used for optimisation are usually referred to as \emph{Quasi-Newton Methods,}  and are discussed in Section \ref{sec:higher_order_methods}. 
+\noindent The Secant Method is a widely used method that provides a good trade-off between convergence speed and ease of implementation \cite{isaacson2012analysis}. Multivariate generalisations of the Secant Method when used for optimisation are usually referred to as \emph{Quasi-Newton Methods,} and are discussed in Section \ref{sec:quasi_newton_methods}. 
 
 \subsection{Successive Parabolic Interpolation}
 
@@ -59,41 +57,33 @@ Parabolic interpolation goes one step further than the Secant Method and dispens
 		      & \qquad + f(\theta_{n-2})\frac{(\theta - \theta_{n-1})(\theta - \theta_{n})}{(\theta_n - \theta_{n-1})(\theta_n - \theta_{n})}
 \end{align*}
 
-This model has a approximate error of $[f'''(\theta_n)/3!](\theta - \theta_n)(\theta - \theta_{n-1})(\theta - \theta_{n-2}).$ By relying on the past two iterates, the rate of convergence is slowed further. Parabolic interpolation has an order of convergence of 1.32.\cite{vandebogart2017method}
-
-An issue with parabolic interpolation is providing enough initial points to seed the method.\cite{nocedalnumerical} This difficulty is more acute for the  multivariate case. One approach is to provide enough points at the start and run the algorithm from there. Alternatively, one can start off with just enough points needed to estimate an ascent or descent direction and construct a linear approximation, and then run the optimisation routine using a sequence of  linear approximations until there enough points to construct a parabola. 
-
-If one is using a linear approximation, one must impose a limit on the maximum distance that the routine  can travel on each iteration  since linear functions do not have a minimum or maximum and diverge off to infinity.
+\noindent This model has an approximate error of $[f'''(\theta_n)/3!](\theta - \theta_n)(\theta - \theta_{n-1})(\theta - \theta_{n-2}).$ By relying on the past two iterates, the rate of convergence is slowed further. Parabolic interpolation has an order of convergence of 1.32 \cite{vandebogart2017method}. An issue with parabolic interpolation is providing enough initial points to seed the method \cite{nocedalnumerical}. This difficulty is more acute for the multivariate case. One approach is to provide enough points at the start, and run the algorithm from there. Alternatively, one can start off with just enough points needed to estimate an ascent or descent direction and construct a linear approximation, and then run the optimisation routine using a sequence of linear approximations until there are enough points to construct a parabola. If one is using a linear approximation, a limit must be imposed on the maximum distance that the routine can travel on each iteration since linear functions do not have a minimum or maximum and diverge off to infinity.
 
 \subsection{Discussion} \label{sec:quad_discussion}
 
-All three approaches are governed by the same fundamental theory of approximating functions by polynomials. The only difference is the precise inputs used to construct an approximation. This means that if a problem is suitable for Newton's Method,  the other two methods will very likely perform well. If one applies parabolic interpolation to a sufficiently smooth objective function, then one is in a sense automatically employing Newton's Method even if one made no effort to investigate the differentiabilty of the objective function. 
+All three approaches are governed by the same fundamental theory - approximating functions by polynomials. The difference between the methods centres on the precise inputs used to construct an approximation. This means that if a problem is suitable for Newton's Method, the other two methods will very likely perform well too. On the other hand, the methods all share the same fundamental handicap; these methods are not guaranteed to converge unless the starting point is close to the optimal value. Local convergence does not necessarily imply global convergence. The error terms in the quadratic approximations are all of the form $(\theta-\theta_n)^3.$ If $|(\theta-\theta_n)|$ and any other error terms are small, the error in the approximation will be much smaller since it is proportional to the product of three such errors. If however the errors are  large,their product might be so large that the method fails to converge \cite{nocedalnumerical, isaacson2012analysis, lange2010numerical}. \\
 
-On the other hand, the methods all share the same fundamental handicap as well; these methods  are not guaranteed to converge unless the starting point is close to the optimal value. Local convergence does not necessarily imply global convergence. The error terms in the quadratic approximations are all something like $(\theta-\theta_n)^3.$ If $|(\theta-\theta_n)|$ and any other error terms are small, the error in the approximation will be much smaller since it is proportional to the product of three such errors. If however the errors are  large, their product might be so large that the method fails to converge. \cite{nocedalnumerical, isaacson2012analysis, lange2010numerical}
-
-This is less academic than it might seem. Suppose one had a complicated likelihood function $L(\theta).$ Perhaps to evaluate the likelihood one must numerically integrate a complex marginal distribution that depends on $\theta.$ Instead of attempting to find explicit formulae for  the score and information functions,  if one could produce a crude estimate $\hat{\theta}$ and crude estimate of the error $\hat{\sigma}_{\theta},$ then one could use successive parabolic interpolation with $\{\hat{\theta}, \hat{\theta} - 2\hat{\sigma}_{\theta},\hat{\theta} + 2\hat{\sigma}_\theta\}$ as a set of starting points. If $L(\theta)$ is in fact a well behaved smooth function, then parabolic interpolation will find the value of $\theta$ that maximises $L(\theta)$ fairly quickly. It is necessary to provide plausible starting values for $\theta$ because the quadratic model is only certain to be valid if one is already near the optimal value.
+\noindent This is less academic than it might seem. Suppose one had a complicated likelihood function $L(\theta).$ Perhaps to evaluate the likelihood it is necessary to numerically integrate a complex marginal distribution that depends on $\theta.$ Instead of attempting to find explicit formulae for  the score and information functions, if crude estimates of $\hat{\theta}$ and of the error $\hat{\sigma}_{\theta}$ were available, then successive parabolic interpolation with $\{\hat{\theta}, \hat{\theta} - 2\hat{\sigma}_{\theta},\hat{\theta} + 2\hat{\sigma}_\theta\}$ could be used as a set of starting points. If $L(\theta)$ is in fact a well behaved smooth function, then parabolic interpolation will find the value of $\theta$ that maximises $L(\theta)$ fairly quickly. It is necessary to provide plausible starting values for $\theta$ because the quadratic model is only certain to be valid if one is already near the optimal value.
 
 \section{Modifying the \texttt{Data2LD.opt} Routine}
 
-In Section \ref{sec:intro_fda_package}, for fitting the Melanoma data, the following penalised regression model is used:\footnote{In this section, for the sake of  consistency with the notation used by \texttt{Data2LD}$,\theta$ is used to denote the frequency parameter instead of the usual $\omega,$ and $\rho = \lambda/(1 +\lambda)$ is used to determine the trade-off between fit to the data and fit to the ODE model instead of  $\lambda.$}
+In Section \ref{sec:intro_fda_package}, the following penalised regression model is used for fitting the melanoma data:\footnote{In this section, for the sake of  consistency with the notation used by \texttt{Data2LD}$,\theta$ is used to denote the frequency parameter instead of the usual $\omega,$ and $\rho = \lambda/(1 +\lambda)$ is used to determine the trade-off between fit to the data and fit to the ODE model instead of $\lambda.$}
 
 \[
   PENSSE(f|\theta, \rho) = (1 - \rho) \sum [y_i - f(t_i]^2 + \rho\lambda \int |f - \theta f^{(4)}|^2 dt
 \]
 
-While \texttt{Data2LD} can fit a penalty of the form $f - \theta f^{(4)},$ and it can enforce linear equality constraints such as $\theta_1 - \theta_2 = 0,$ it cannot enforce linear inequality constraints such as  $\theta \geq 0,$  nor can it work with penalties of the form $f - \theta^2 f^{(4).}$\cite{data2ld} This means that it's possible in principle that the estimated value of $\theta$ returned by \texttt{Data2LD.opt} is negative even though this value is not valid for the modelling problem at hand since it is desired that $\theta \geq 0.$
+\noindent While \texttt{Data2LD} can fit a penalty of the form $f - \theta f^{(4)},$ and it can enforce linear equality constraints such as $\theta_1 - \theta_2 = 0,$ it cannot enforce linear inequality constraints such as $\theta \geq 0,$  nor can it work with penalties of the form $f - \theta^2 f^{(4)} $\cite{data2ld}. This means that it is possible, in principle, that the estimated value of $\theta$ returned by \texttt{Data2LD.opt} is negative even though this value is not valid for the modelling problem at hand since it is desired that $\theta \geq 0.$
 
 
-\paragraph{Approximating the Derivative:} We modified a single line in the code for the  \texttt{Data2LD.opt} routine introduced in Section \ref{sec:data2ld_investigation} to use a finite difference approximation to the first derivative of the objective function. 
+\paragraph{Approximating the Derivative:} 
+We modified a single line in the code for the \texttt{Data2LD.opt} routine introduced in Section \ref{sec:data2ld_investigation} to use a finite difference approximation to the first derivative of the objective function rather than Newton's method. 
 
 \begin{equation}\label{eqn:secant_diff_approx}
 	f'(\theta) \approx  \frac{f(\theta_n) - f(\theta_{n-1})}{\theta_n - \theta_{n-1}}
 \end{equation}
 
-Because only a single line was changed, \texttt{Data2LD.opt} still computes the second derivatives and makes use of them in the same fashion as before. Note as well that this modified code will only work for problems with only one parameter to be estimated because it will only compute the derivative in one direction.
-
-
-Ignoring the line search, the optimisation routine thus takes the following form now: 
+\noindent Because only a single line was changed, \texttt{Data2LD.opt} still computes the second derivatives and makes use of them in the same fashion as before. Note also that this modified code will only work for problems with a single parameter to be estimated because it will only compute the derivative in one direction. Ignoring the line search, the optimisation routine thus now takes the following form: 
 
 
 \begin{equation}\label{eqn:data_2ld_secant}
@@ -104,51 +94,48 @@ Ignoring the line search, the optimisation routine thus takes the following form
 \end{equation}
 
 
-The first derivative is approximated using a secant equation, but the second derivative is computed exactly. 
+\noindent The first derivative is approximated using a secant equation, but the second derivative is computed exactly. 
 
-\paragraph{Error Analysis:} An error analysis must be done from scratch, as a result of the  unusual situation where there are errors in the gradient, but the second derivative can be found exactly.
+%\paragraph{Error Analysis:} An error analysis must be done from scratch, as a result of the unusual situation where there are errors in the gradient, but the second derivative can be found exactly. Suppose that instead of the true derivative $f'(\theta),$ the value $f'(\theta) + \epsilon(\theta)$ is used instead. Assume that there exists $\bar{\epsilon}_n >0$ such that for the $n$th iteration, $|\epsilon(\theta) < \bar{\epsilon}$ for all $\theta$ in  some neighbourhood of the optimal point $\theta^*.$ Let $e_n = |\theta_n - \theta^*|$ denote the absolute error on the $n$th iteration.  Then it is the case that:\footnote{This result is a special case of Theorem 5.4.1 in \cite{kelley1995iterative}.}
+%
+%\begin{equation} \label{eqn:convergence_rate_error_in_deriv}
+%    e_{n+1} \leq K(\bar{\epsilon}_n + e_n^2)
+%\end{equation}
+%
+%
+%To determine $\bar{\epsilon}_n,$ it is necessary to estimate the error introduced by the approximation (\ref{eqn:secant_diff_approx}). It straightforward\footnote{Using Taylor's theorem, it can be seen that $f(\theta_n) - f(\theta_{n-1}) = f(\theta_n) - [f(\theta_{n}) - f'(\theta_n)(\theta_n - \theta_{n-1}) + \frac{1}{2}f''(\eta)(\theta_n - \theta_{n-1})^2] = f'(\theta_n)(\theta_n - \theta_{n-1}) - \frac{1}{2}f''(\eta)(\theta_n - \theta_{n-1})^2.$ Divide across by $(\theta_n - \theta_{n-1})$ and it is then easy to get the desired result. The  $-f'(\theta_n)(\theta_n - \theta_{n-1})$ term  arises because $f(\theta_{n-1}) = f(\theta_{n} - (\theta_n - \theta_{n-1})) \approx f(\theta_n) - f'(\theta_n)(\theta_n - \theta_{n-1}).$} to show that the absolute value of the error is approximately equal to $\frac{1}{2}f''(\eta)|\theta_n - \theta_{n-1}|.$ If it is further assumed that the second derivative is continuous and positive around $\theta^*$,\footnote{If this assumption fails, there are bigger problems than the rate of convergence since $f''(\theta^*) <0$ implies that $\theta^*$ is not a local minimiser of the objective function.} and the sequence is sufficiently close to $\theta^*$, then there are  constants $c$ and $C$ such that $ 0 < cf''(\theta^*) \leq  f''(\eta) \leq Cf''(\theta^*).$
+%
+%Combining this with the Triangle Inequality, it is possible to find an upper bound that can be expressed in terms of $e_n$ and $e_{n-1}:$
+%
+%\begin{align*}
+%f''(\theta^*)|\theta_n - \theta_{n-1}| &\leq Cf''(\theta^*)[|\theta_n - \theta^*| +|\theta_{n-1} - \theta^*|] \\ 
+%                                       &= Cf''(\theta^*)[e_{n} + e_{n-1}]
+%\end{align*}
+%
+%Plugging this particular choice of $\bar{\epsilon}_n$ into (\ref{eqn:convergence_rate_error_in_deriv}) yields:
+%
+%\begin{equation*}
+%  e_{n+1} \leq K\{Cf''(\theta^*)[e_{n} + e_{n-1}] + e_n^2\}
+%\end{equation*}
+%
+%Neglecting the quadratic $ e_n^2$ term, and letting $M = KCf''(\theta^*),$ we get that:
+%
+%\[
+%   e_{n+1} \leq M(e_n +  e_{n-1})
+%\]
+%
+%Since $e_n \geq 0$ for all $n$ and $M >0,$ this recurrence inequality implies that $e_n \leq a_n$ for all $n,$ where $a_{n+1} = M(a_n + a_{n-1}), a_0 = e_0$ and  $a_1 = e_1.$ The method thus converges linearly (in the extended sense) provided $M$ is not too big and provided the starting position is not too far away from the optimal point.
+%
+%\paragraph{Comparison with the Secant Method and Successive Parabolic Interpolation:}This method only converges linearly while Successive Parabolic interpolation and the usual secant method both converge superlinearly. A crude explanation for this behaviour is that the Secant method and Parabolic Interpolation methods both effectively use three points to construct a quadratic approximation, while this method only uses two points to construct a linear approximation. While an exact second derivative is used, the gains from this are nonetheless dwarfed by the error introduced by approximating the first derivative with two points.
+%
+%For the Secant Method, one finds that $e_{n+1} \leq \bar{M}e_{n}e_{n-1}.$ For successive parabolic interpolation, one ends up with a recurrence relation of the form $e_{n+1} \leq \tilde{M}[e_{n}e_{n-1} + e_{n}e_{n-2} + e_{n-1}e_{n-2}]$ It can be shown that these inequalities become equalities as the method converges, and this implies superlinear convergence subject to some mild technical conditions. \cite{vandebogart2017method}
 
- Suppose that instead of the true derivative $f'(\theta),$ the value $f'(\theta) + \epsilon(\theta)$ is used instead. Assume that there exists $\bar{\epsilon}_n >0$ such that for the $n$th iteration, $|\epsilon(\theta) < \bar{\epsilon}$ for all $\theta$ in  some neighbourhood of the optimal point $\theta^*.$ Let $e_n = |\theta_n - \theta^*|$ denote the absolute error on the $n$th iteration.  Then it is the case that:\footnote{This result is a special case of Theorem 5.4.1 in \cite{kelley1995iterative}.}
+\paragraph{Comparing the Modfied Method with the Original Method:} 
+The fitting algorithm used by \texttt{Data2LD.opt} is hierarchical because there are two levels of optimisation, an outer level that computes search directions, and an inner level that conducts line searches. This makes charting the course of the method a little tricky. The easiest approach is to  reproduce the output of \texttt{Data2LD.opt}. \\
 
-\begin{equation} \label{eqn:convergence_rate_error_in_deriv}
-    e_{n+1} \leq K(\bar{\epsilon}_n + e_n^2)
-\end{equation}
+\noindent Below the output for the original method and the modified method when applied to fitting the melanoma data are presented. The workings of the two different levels can be seen. At the top level, \texttt{Data2LD.opt} computes the value of the objective function and the magnitude of the gradient used for the search direction. It then reports the values of the objective function and directional derivatives along the search direction computed in the course of conducting a line search. For the modified method, the computed gradients and directions are approximate. Both methods achieve a similar value of the objective function, but the estimated values of $\theta$ differ somewhat. The modified method is clearly much slower than the original, which is congruent with our theoretical analysis. The associated values of the objective function for the two estimates are so similar it is difficult to conclusively say which computed estimate is better.
 
-
-To determine $\bar{\epsilon}_n,$ it is necessary to estimate the error introduced by the approximation (\ref{eqn:secant_diff_approx}). It straightforward\footnote{Using Taylor's theorem, it can be seen that $f(\theta_n) - f(\theta_{n-1}) = f(\theta_n) - [f(\theta_{n}) - f'(\theta_n)(\theta_n - \theta_{n-1}) + \frac{1}{2}f''(\eta)(\theta_n - \theta_{n-1})^2] = f'(\theta_n)(\theta_n - \theta_{n-1}) - \frac{1}{2}f''(\eta)(\theta_n - \theta_{n-1})^2.$ Divide across by $(\theta_n - \theta_{n-1})$ and it is then easy to get the desired result. The  $-f'(\theta_n)(\theta_n - \theta_{n-1})$ term  arises because $f(\theta_{n-1}) = f(\theta_{n} - (\theta_n - \theta_{n-1})) \approx f(\theta_n) - f'(\theta_n)(\theta_n - \theta_{n-1}).$} to show that the absolute value of the error is approximately equal to $\frac{1}{2}f''(\eta)|\theta_n - \theta_{n-1}|.$ If it is further assumed that the second derivative is continuous and positive around $\theta^*$,\footnote{If this assumption fails, there are bigger problems than the rate of convergence since $f''(\theta^*) <0$ implies that $\theta^*$ is not a local minimiser of the objective function.} and the sequence is sufficiently close to $\theta^*$, then there are  constants $c$ and $C$ such that $ 0 < cf''(\theta^*) \leq  f''(\eta) \leq Cf''(\theta^*).$
-
-Combining this with the Triangle Inequality, it is possible to find an upper bound that can be expressed in terms of $e_n$ and $e_{n-1}:$
-
-\begin{align*}
-f''(\theta^*)|\theta_n - \theta_{n-1}| &\leq Cf''(\theta^*)[|\theta_n - \theta^*| +|\theta_{n-1} - \theta^*|] \\ 
-                                       &= Cf''(\theta^*)[e_{n} + e_{n-1}]
-\end{align*}
-
-Plugging this particular choice of $\bar{\epsilon}_n$ into (\ref{eqn:convergence_rate_error_in_deriv}) yields:
-
-\begin{equation*}
-  e_{n+1} \leq K\{Cf''(\theta^*)[e_{n} + e_{n-1}] + e_n^2\}
-\end{equation*}
-
-Neglecting the quadratic $ e_n^2$ term, and letting $M = KCf''(\theta^*),$ we get that:
-
-\[
-   e_{n+1} \leq M(e_n +  e_{n-1})
-\]
-
-Since $e_n \geq 0$ for all $n$ and $M >0,$ this recurrence inequality implies that $e_n \leq a_n$ for all $n,$ where $a_{n+1} = M(a_n + a_{n-1}), a_0 = e_0$ and  $a_1 = e_1.$ The method thus converges linearly (in the extended sense) provided $M$ is not too big and provided the starting position is not too far away from the optimal point.
-
-\paragraph{Comparison with the Secant Method and Successive Parabolic Interpolation:}This method only converges linearly while Successive Parabolic interpolation and the usual secant method both converge superlinearly. A crude explanation for this behaviour is that the Secant method and Parabolic Interpolation methods both effectively use three points to construct a quadratic approximation, while this method only uses two points to construct a linear approximation. While an exact second derivative is used, the gains from this are nonetheless dwarfed by the error introduced by approximating the first derivative with two points.
-
-For the Secant Method, one finds that $e_{n+1} \leq \bar{M}e_{n}e_{n-1}.$ For successive parabolic interpolation, one ends up with a recurrence relation of the form $e_{n+1} \leq \tilde{M}[e_{n}e_{n-1} + e_{n}e_{n-2} + e_{n-1}e_{n-2}]$ It can be shown that these inequalities become equalities as the method converges, and this implies superlinear convergence subject to some mild technical conditions.\cite{vandebogart2017method}
-
-\paragraph{Comparing the Modfied Method with the Original Method:}The fitting algorithm used by \texttt{Data2LD.opt} is hierarchial because there are two levels of optimisation, an outer level that computes search directions, and an inner level that conducts line searches. This makes charting the course of the method a little tricky. The easiest approach is to  simply reproduce verbatim the output of \texttt{Data2LD.opt}. 
-
-Below the output for the original method and the modified method when applied to fitting the Melanoma data are presented.  The workings of the two different levels can be seen. At the top level, \texttt{Data2LD.opt} computes the value of the objective function and the magnitude of the gradient used for the search direction. It then reports the values of the objective function and directional derivatives along the search direction computed in the course of conducting a line search. For the modified method, the computed gradients and directions are approximate.
-
-Both methods achieve a similar value of the objective function, but the estimated values of $\theta$ differ somewhat. The modified method is clearly much slower than the original, which is congruent with our theoretical analysis. The associated values of the objective function for the two estimates are so similar it is difficult to conclusively say which computed estimate is better.
-
-\paragraph{Newton Method with Gradient Line Search}
+\paragraph{Newton Method with Gradient Line Search (Data2LD.opt)}
 \begin{verbatim}
 Iter.    Criterion   Grad Length
 0        0.03974      0.002238
@@ -164,11 +151,7 @@ Convergence reached.
 
 \end{verbatim}
 
-\paragraph{Newton Method with Secant Approximation To First Derivative}
-
-
-
-
+\paragraph{Newton Method with Secant Approximation To First Derivative (Modified)}
 \begin{verbatim}
 Iter.    Criterion   Grad Length
 0        0.03974      0.002238
@@ -207,60 +190,46 @@ Convergence reached.
 
 \section{Golden-Section Search}
 
-In contrast to the methods discussed above, methods that repeatedly split the interval of interest in two parts and pick one, which is in turn split into two parts and so on, tend to be slow. They have the advantage  in  that they  are  guaranteed to ensure consistent and steady progress towards the optimal point subject to technical conditions.
+In contrast to the methods discussed above, methods that repeatedly split the interval of interest in two parts and pick one, which is in turn split into two parts and so on, tend to be slow. They have the advantage in that they are guaranteed to ensure consistent and steady progress towards the optimal point subject to technical conditions. A generic bisection algorithm starts with an interval $[a,b]$ and a third point $c$ between $a$ and $b$ such that $f(c) < f(a)$ and $f(c) < f(b).$ A fourth point $d$ within the interval $[a,b]$ is selected, and $f(d)$ is computed. If $d$ is between $a$ and $c$, and $f(d) < f(a)$ and $f(d) < f(c),$ then $[a,c]$ becomes the new interval and $d$ becomes the new provisional minimum. If $f(c) < f(d),$ then the new interval becomes $[d,b],$ - $c$ remains the provisional minimum, but the interval has been narrowed. A similar approach applies if $d$ is between $c$ and $b.$ The bisection method used in practice is known as golden-section search, where the point $d$ is chosen so that the width of the new interval is equal to that of the old one divided by the Golden Ratio $\phi \approx 1.618$ \cite{lange2010numerical,chong2013introduction}. The process is illustrated in Figure \ref{fig:golden_section}.
 
-A generic bisection algorithm starts with an interval $[a,b]$ and a third point $c$ between $a$ and $b$ such that $f(c) < f(a)$ and $f(c) < f(b).$ A fourth point $d$ within the interval $[a,b]$ is selected, and $f(d)$ is computed. If $d$ is between $a$ and $c$, and $f(d) < f(a)$ and $f(d) < f(c),$ then $[a,c]$ becomes the new interval and $d$ becomes the new provisional minimum. If $f(c) < f(d),$ then the new interval becomes $[d,b],$ - $c$ remains the provisional minimum, but the interval has been narrowed. A similar approach applies if $d$ is between $c$ and $b.$
-
-The only bisection method used in practice is known as Golden-Section Search, where the point $d$ is chosen so that the width of the new interval is equal to that of the old one divided by the Golden Ratio $\phi \approx 1.618.$\cite{lange2010numerical,chong2013introduction} The process is illustrated in Figure \ref{fig:golden_section}.
-
-\begin{figure}
+\begin{figure}[h]
 \centering
 \includegraphics[height=9cm]{golden_section.pdf}
 \caption{Golden-Section search. If $f(c) < f(d),$ the next triplet is given by $\{a,c,d\},$ otherwise $\{c, d, b\}$ is used.}
-
 \label{fig:golden_section}
-
 \end{figure}
 
 \section{Brent's Method}
 
-Brent's Method is a hybrid of successive parabolic interpolation and golden-section search.\cite{brent2013algorithms} If parabolic interpolation is failing to provide a sufficiently rapid decrease in the objective function, a bisection step is performed. While the bisection steps might not produce as much progress as the parabolic steps, they are certain to produce a consistent rate of improvement no matter how close the algorithm is to the optimal point, while parabolic interpolation is only certain to work if one is already within a neighbourhood of the optimal point as noted in Section \ref{sec:quad_discussion}. Brent's method will also perform a bisection step if the interpolating parabola is ill-conditioned, or if a bisection step has not been performed recently.
-
-The hybrid method is robust as a result of the golden section steps, and the parabolic steps ensure it performs well when applied to smooth functions along with a decent starting value.
+Brent's Method is a hybrid of successive parabolic interpolation and golden-section search \cite{brent2013algorithms}. If parabolic interpolation is failing to provide a sufficiently rapid decrease in the objective function, a bisection step is performed. While the bisection steps might not produce as much progress as the parabolic steps, they are certain to produce a consistent rate of improvement no matter how close the algorithm is to the optimal point. In contrast, parabolic interpolation is only certain to work if one is already within a neighbourhood of the optimal point as noted in Section \ref{sec:quad_discussion}. Brent's method will also perform a bisection step if the interpolating parabola is ill-conditioned, or if a bisection step has not been performed recently. The hybrid method is robust as a result of the golden-section steps, and the parabolic steps ensure it performs well when applied to smooth functions along with a decent starting value.
 
 \section{Estimation Of Parameters For a Standard Cauchy Distribution Using Brent's Method} \label{sec:cauchy_estimation}
-To illustrate how Brent's metthod is employed in practice it will be used on a straightforwards estimation problem first. Consider the question of fitting a Cauchy distribution to some data. Given $n$ observations $x_1,\dots, x_n$ from an unknown  Cauchy distribution, the likelihood function is given by:
+To illustrate how Brent's method is employed in practice, it will be used on a straightforward estimation problem first. Consider the question of fitting a Cauchy distribution to some data. Given $n$ observations $x_1,\dots, x_n$ from an unknown Cauchy distribution, the likelihood function is given by:
 
 \[
 	L(\mu, \sigma) = \prod_{i=1}^n\frac{1}{\pi\sigma\left[1 + \left(\frac{x - \mu}{\sigma}\right)^2\right]}
 \]
 
-Attempting to maximise this likelihood by the usual method entails solving a fairly complex system of equations in $\mu$ and $\sigma.$ Our purpose is to demonstrate that Brent's Method can tackle this problem without much difficulty.
-
-Brent's Method can only optimise a function in one dimension at a time, so it is necessary to attempt to optimise for $\mu$ and $\sigma$ separately. The profile log-likelihood of $\sigma$ is computed:
+\noindent Attempting to maximise this likelihood entails solving a complex system of equations in $\mu$ and $\sigma.$ Our purpose is to demonstrate that Brent's Method can tackle this problem without much difficulty. Brent's Method can only optimise a function in one dimension at a time, so it is necessary to attempt to optimise for $\mu$ and $\sigma$ separately. The profile log-likelihood of $\sigma$ is computed:
 
 \[
 	\ell(\sigma) = \sup_\mu \log(L(\mu, \sigma))
 \]
 
-R can evaluate $\ell(\sigma)$ straightforwardly by using Brent's method to optimise $L(\mu, \sigma)$ with respect to  $\mu$ and holding $\sigma$ constant. The function $\ell(\sigma)$ can then in turn be  optimised to find the optimal value of $\sigma.$ This procedure is illustrated in Figure \ref{fig:cauchy_likelihood}.
-
-One subtlety with optimising a Cauchy likelihood is that the likelihood function can have multiple local maxima since the likelihood function is the ratio of two multivariate polynomials in $\mu$ and $\sigma.$ To ensure that the algorithm was sufficiently close to the MLE, the median was used as an initial estimate of $\mu,$ and half the interquartile range was used as an initial estimate for $\sigma.$ Given these somewhat crude estimates $\tilde{\mu}$ and $\tilde{\sigma},$ the the standard error of the median $\sigma_{\tilde{\mu}}$ is approximately given by:
+\noindent R can evaluate $\ell(\sigma)$ straightforwardly by using Brent's method to optimise $L(\mu, \sigma)$ with respect to  $\mu$ and holding $\sigma$ constant. The function $\ell(\sigma)$ can then in turn be  optimised to find the optimal value of $\sigma.$ This procedure is illustrated in Figure \ref{fig:cauchy_likelihood}. One subtlety with optimising a Cauchy likelihood is that the likelihood function can have multiple local maxima since the likelihood function is the ratio of two multivariate polynomials in $\mu$ and $\sigma.$ To ensure that the algorithm was sufficiently close to the MLE, the median was used as an initial estimate of $\mu,$ and half the interquartile range was used as an initial estimate for $\sigma.$ Given these somewhat crude estimates, $\tilde{\mu}$ and $\tilde{\sigma},$ the the standard error of the median $\sigma_{\tilde{\mu}}$ is approximately given by:
 
 \[ 
-\hat{\sigma}_{\tilde{\mu}} \approx \frac{1}{2f(\tilde{\mu}; \tilde{\mu}, \tilde{\sigma})\sqrt{n}}
+\hat{\sigma}_{\tilde{\mu}} \approx \frac{1}{2f(\tilde{\mu}; \tilde{\mu}, \tilde{\sigma})\sqrt{n}},
 \]
 
-Where $f(x; \mu, \sigma)$ is the Cauchy density function with location parameter $\mu$ and scale parameter $\sigma.$ The values $\tilde{\mu} \pm 2\hat{\sigma}_{\tilde{\mu}}$ are then used to provide the initial lower and upper bounds for the optimiser. The aim is to  construct a confidence interval that is highly likely to contain the MLE for $\mu$ (rather than the actual true parameter), but isn't so wide that the interval is in danger of containing multiple local maxima for the likelihood.
+\noindent where $f(x; \mu, \sigma)$ is the Cauchy density function with location parameter $\mu$ and scale parameter $\sigma.$ The values $\tilde{\mu} \pm 2\hat{\sigma}_{\tilde{\mu}}$ are then used to provide the initial lower and upper bounds for the optimiser. The aim is to construct a confidence interval that is highly likely to contain the MLE for $\mu$, but isn't so wide that the interval is in danger of containing multiple local maxima for the likelihood. \\
 
-Not only can the likelihood be maximised without derivatives, but asymptotic inference can be done without derivatives as well. Given  the score function and the Fisher  information at the maximum likelihood estimates, it is possible to compute an approximate confidence interval for $\sigma$ and $\mu.$\cite{pawitan2001all} Instead of analytic methods, one can use finite differences to approximately compute the necessary derivatives to the desired degree of accuracy.\cite{leveque2007finite, fornberg1988generation} This was successful at producing a valid approximation for the profile likelihood, shown as a red dotted parabola in Figure \ref{fig:cauchy_likelihood}. 
+\noindent Not only can the likelihood be maximised without derivatives, asymptotic inference can be done without derivatives as well. Given the score function and the Fisher information at the maximum likelihood estimates, it is possible to compute an approximate confidence interval for $\sigma$ and $\mu $\cite{pawitan2001all}. Instead of analytic methods, one can use finite differences to approximately compute the necessary derivatives to the desired degree of accuracy \cite{leveque2007finite, fornberg1988generation}. This was successful at producing a valid approximation for the profile likelihood, shown as a red dotted parabola in Figure \ref{fig:cauchy_likelihood}. It is thus possible to compute a confidence interval using the score test. The test statistic $S(\sigma)^2/I(\sigma)$ could be accurately approximated using finite differences. One takes the value of $\sigma$ for which the test statistic is less than or equal to the appropriate critical value from a chi-squared distribution. By inspecting the plot in Figure \ref{fig:profile_score_statistic} and then solving for $\sigma$, an approximate confidence interval for $\sigma$ can be computed such that  $\sigma$ lies in $(0, 2.20)$ with 95 percent confidence. \\
 
-It is thus possible to compute a confidence interval using the Score test.  The test statistic $S(\sigma)^2/I(\sigma)$ could be accurately approximated using finite differences. One takes the value of $\sigma$ for which the test statistic is less than or equal to the appropriate critical value  from a chi-squared distribution. By inspecting the plot in Figure \ref{fig:profile_score_statistic} and then solving for $\sigma$, an approximate confidence interval for $\sigma$ can be computed such that  $\sigma$ lies in $(0, 2.20)$ with 95 percent confidence. 
-
-An important assumption underpinning such asymptotic confidence  intervals is that the two term quadratic Taylor expansion based on the score and information functions is valid over the range of interest. This is not necessarily the case here as can bee seen in Figure \ref{fig:profile_score_statistic}. There is a  spike in the score statistic on the right caused by the Fisher information changing sign at approximately $\sigma = 2.35$.  This indicates that the confidence interval might be wider than the range of for which a quadratic approximation around the MLE is valid, and should perhaps be treated with some scepticism.
+\noindent An important assumption underpinning such asymptotic confidence intervals is that the two term quadratic Taylor expansion based on the score and information functions is valid over the range of interest. This is not necessarily the case here as can be seen in Figure \ref{fig:profile_score_statistic}. There is a spike in the score statistic on the right caused by the Fisher information changing sign at approximately $\sigma = 2.35$. This indicates that the confidence interval might be wider than the range over which a quadratic approximation around the MLE is valid, and should perhaps be treated with some scepticism.
 
 
-\begin{figure}
+\begin{figure}[h]
 \centering
  \includegraphics[height=9cm]{profile.pdf}
  \includegraphics[height=9cm]{contour.pdf} 
@@ -269,7 +238,7 @@ An important assumption underpinning such asymptotic confidence  intervals is th
 \end{figure}
 
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 	\includegraphics[height=10cm]{test.pdf}
 	\caption{Plot of profile score statistic.}
@@ -280,11 +249,9 @@ An important assumption underpinning such asymptotic confidence  intervals is th
 
 \section{Robust ODE Parameter Estimation} \label{cauchy_ode}
 
-If observations of values from an ODE are subject to heavy-tailed noise such as in the Cauchy case, least squares regression becomes unsuitable. An obvious candidate is $L_1$ regression, which attempts to minimise the sum of the absolute values of the residuals instead of the sum of the squared residuals. An important property of $L_1$ regression is that median is naturally associated with this approach; the sample median of a set of numbers is the constant value that minimises the $L_1$ error just as the sample mean is the constant value that minimises the least squares error\cite{small1990survey}\footnote{This is discussed in more detail in Chapter \ref{chap:mm_methods}.}. $L_1$ regression can greatly complicate the process of estimation however, because the the function $|x|$ is not everywhere differentiable. This means that the usual gradient-based approaches to nonlinear regression such as gradient descent should not be applied. Even methods that attempt to numerically approximate the derivatives such as parabolic interpolation are either entirely unsuitable at worst,  or not guaranteed to converge quickly at best.
+If observations of values from an ODE are subject to heavy-tailed noise such as in the Cauchy case described above, least squares regression becomes unsuitable. An obvious candidate is $L_1$ regression, which attempts to minimise the sum of the absolute values of the residuals instead of the sum of the squared residuals. An important property of $L_1$ regression is that median is naturally associated with this approach; the sample median of a set of numbers is the value that minimises the $L_1$ error just as the sample mean is the value that minimises the least squares error \cite{small1990survey}\footnote{This is discussed in more detail in Chapter \ref{chap:mm_methods}.}. $L_1$ regression can greatly complicate the process of estimation however, because the the function $|x|$ is not everywhere differentiable. This means that the usual gradient-based approaches to nonlinear regression such as gradient descent should not be applied. Even methods that attempt to numerically approximate the derivatives such as parabolic interpolation are either not guaranteed to converge quickly or entirely unsuitable. \\
 
-Brent's Method can tackle such problems however, being robust against non differentiabilty. For nonlinear $L_1$ regression, the objective function tends to be piecewise smooth - between the ``kinks'', the function is differentiable and amenable to parabolic interpolation. Once the bisection steps have reached a neighbourhood of the optimal value, parabolic interpolation will find it fairly quickly.
-
-Consider for example, the following ODE  with $\beta = -0.5:$ 
+\noindent Brent's Method can tackle such problems however, as it is robust against non differentiability. For nonlinear $L_1$ regression, the objective function tends to be piecewise smooth. Between the ``kinks'', the function is differentiable and amenable to parabolic interpolation. Once the bisection steps have reached a neighbourhood of the optimal value, parabolic interpolation will find the optimum reasonably quickly. Consider for example, the following ODE with $\beta = -0.5:$ 
 
 \begin{equation} \label{eqn:nonlinear_ode}
    \begin{cases}
@@ -294,99 +261,74 @@ Consider for example, the following ODE  with $\beta = -0.5:$
    \end{cases}
 \end{equation}
 
-This ODE describes a non-linear oscillator, and is representative of quasi-linear mathematical models that can't be tackled by the \texttt{FDA} package or \texttt{Data2LD.} Note that this ODE is of the form $y'' + \beta(y)y' + y = 0$ with $\beta(y) = - \beta(1-y^2).$ By definition, the  linear ODEs usually used in FDA cannot model systems where the $\beta(\cdot)$ terms have  $y$ as a dependent variable, they can only model situations where the parameters vary with time alone (and/or space in the case of a linear PDE). 
+\noindent This ODE describes a non-linear oscillator, and is representative of quasi-linear mathematical models that can't be tackled by the \texttt{FDA} package or \texttt{Data2LD.} Note that this ODE is of the form $y'' + \beta(y)y' + y = 0$ with $\beta(y) = - \beta(1-y^2).$ By definition, the linear ODEs usually used in FDA cannot model systems where the $\beta(\cdot)$ terms have  $y$ as a dependent variable. Instead they can only model situations where the parameters vary with time alone (and/or space in the case of a linear PDE). \\
 
-We wish to investigate the problem of estimating $\beta$ from noisy observations.
-
-The \texttt{deSolve} package \cite{desolve} was used to numerically  find the values of $y(t)$ at chosen time points $\{t_1, \dots, t_K\}.$ The values of $y(t)$ at these points - corrupted by random Cauchy noise - were independently sampled $N$ times. This produced a set of $KN$ observations: $\{y_{11}, y_{12}, \dots, y_{1N}, \dots, y_{K1} \dots, y_{KN}\}.$ Because the data is heavy-tailed, least squares regression is inappropriate. Instead, the  goodness of fit associated with a given choice of $\beta$ was measured by the sum of absolute errors associated with a given choice of $\beta:$
+\noindent We wish to investigate the problem of estimating $\beta$ from noisy observations. The \verb|desolve| package \cite{desolve} was used to numerically find the values of $y(t)$ at chosen time points $\{t_1, \dots, t_n\}.$ The values of $y(t)$ at these points, were corrupted by random Cauchy noise and were independently sampled $N$ times. This produced a set of $nN$ observations: $\{y_{11}, y_{12}, \dots, y_{1N}, \dots, y_{n1} \dots, y_{nN}\}.$ Because the data is heavy-tailed, least squares ($L_2$) regression is inappropriate. Instead, the  goodness-of-fit associated with a given choice of $\beta$ is measured by the sum of absolute errors associated with a given choice of $\beta$ such that:
 
 \[
    SAE(\beta) = \sum_{i=1}^K \sum_{j=1}^N |y(t_{i};\beta) - y_{ij}|
 \]
 
-Here $y(t;\beta)$ denotes the solution of Equation \ref{eqn:nonlinear_ode} for a given choice of $\beta.$ To evaluate $SAE(\beta)$ at a given value of $\beta,$ it is necessary to use \texttt{deSolve} to numerically find the values of $y(t_{i}|\beta).$ Brent's method was used to find the number $\hat{\beta}$ that minimised $SAE(\beta).$  Figure \ref{fig:cauchy_ode} shows the original curve, the generated points, the realisation of $SAE(\beta),$ and the fitted curve generated by $\hat{\beta}.$ Both the  original curve and the original value of $\beta$ are recovered with reasonable accuracy.
+\noindent Here $y(t;\beta)$ denotes the solution of Equation \ref{eqn:nonlinear_ode} for a given choice of $\beta.$ To evaluate $SAE(\beta)$ at a given value of $\beta,$ it is necessary to use \verb|desolve| to numerically find the values of $y(t_{i}|\beta).$ Brent's method was used to find the number $\hat{\beta}$ that minimised $SAE(\beta).$ The top panel of Figure \ref{fig:cauchy_ode} displays the realisation of $SAE(\beta),$ which is minimised at $\hat{\beta} \approx -0.25$. The bottom panel of Figure \ref{fig:cauchy_ode} shows the original curve, the generated data points corrupted with Cauchy noise, and the fitted curve generated by $\hat{\beta}.$  It can be seen that the original curve and the original value of $\beta = -0.5$ are recovered with reasonable accuracy.
 
-\begin{figure}
+\begin{figure}[h]
 \centering
+\includegraphics[height=10cm]{MAE.pdf}
 	\includegraphics[height=10cm]{cauchy_fit.pdf}
-	\includegraphics[height=10cm]{MAE.pdf}
-        \caption{Original curve, fitted curve, and objective function.}
+        \caption{Top: Displays the SAE objective function; Bottom: Displays the true curve, the generated data corrupted with Cauchy noise, and the resulting fitted curve using Brent's method.}
         \label{fig:cauchy_ode}
 \end{figure}
 
 \newpage
 \section{The Parameter Cascade and Brent's Method} \label{brent_param}
 
-Recall that the Parameter Cascade has three levels. 
+Recall that the Parameter Cascade has three levels: (1) the inner problem, (2) the middle problem and (3) the outer problem. For the inner problem there is a given functional $J(f; \theta, \lambda)$ that takes a function $f$, and associated parameters $\theta$ and $\lambda$, and returns a real number. Usually, the function $f$ is represented by a vector of coefficients $\mathbf{c}$, associated with a chosen set of basis functions. The function $\hat{f}(t|\omega, \lambda)$ that optimises $J(\cdot; \theta, \lambda)$ is then found. Outside of simple cases such as those discussed in Section \ref{sec:fda_quadratic_basis}, this problem cannot be solved analytically and is nearly always solved numerically by restricting the space of functions to the span of some set of chosen basis functions and optimising over that. \\
 
-For the inner problem there is a given functional $J(f; \theta, \lambda)$ that takes a function $f$ and associated parameters $\theta$ and $\lambda$ and returns a real number. Usually, the function $f$ is represented by a vector of coefficients with a given associated basis. The function $\hat{f}(t|\omega, \lambda)$ that optimises $J(\cdot; \theta, \lambda)$ is then found. Outside of simple cases such as in Section \ref{sec:fda_quadratic_basis}, this problem cannot be solved analytically. The problem is nearly always solved numerically by restricting the space of functions to the span of some set of chosen basis functions and optimising over that.
-
-This in turn defines the middle problem, $H(\theta, \hat{f}(t|\omega, \lambda); \lambda ) = H(\theta; \lambda),$ which is usually defined as the least squares error associated with the optimal $f$ given $\theta$ and $\lambda:$
+\noindent This in turn defines the middle problem, $H(\theta, \hat{f}(t|\omega, \lambda); \lambda ) = H(\theta; \lambda),$ which is usually defined as the least squares error associated with the optimal $f$ given $\theta$ and $\lambda$, i.e.\
 
 \[
  H(\theta; \lambda) = \sum [x_i -\hat{f}(t_i|\omega, \lambda)]^2
 \]
 
-As suggested in the previous section on fitting an ODE with Cauchy noise, the middle error might be another loss function besides least squares error such as the sum of absloute errors.
-As before, value of $\theta$ that optimises $H(\cdot)$ holding $\lambda$ constant, defined by $\hat{\theta}(\lambda),$ is computed.
+\noindent As suggested in Section \ref{cauchy_ode} on fitting an ODE with Cauchy noise, the middle error function might be another loss function besides least squares $(L_2)$ error such as the sum of absolute errors. As before, the value of $\theta$ that optimises $H(\cdot)$ holding $\lambda$ constant, which is defined by $\hat{\theta}(\lambda),$ is computed. \\
 
-And finally, the outer problem attempts to determine the value of $\lambda$ that minimises the prediction error (generalisation error) by minimising another function  defined by:
+\noindent Finally, the outer problem attempts to determine the value of $\lambda$ that minimises the prediction error (generalisation error) by minimising another function that is defined by:
 
 \begin{equation} \label{eqn:outer_objective_function}
     F(\lambda, \hat{\theta}(\lambda),\hat{f}(t|\hat{\theta}, \lambda)) = F(\lambda).
 \end{equation}
 
-There are several plausible choices for $F(\cdot),$ one could use leave-one-out cross-validation, one could partition the data set into a training set and a validation one, and let $F(\lambda)$ be the associated error for the validation set, one could use Generalised Cross-Validation. This criterion is in turn optimised to find the optimal $\lambda.$
+\noindent There are several plausible choices for $F(\cdot).$ One could use leave-one-out cross-validation, one could partition the data set into a training set and a validation one and let $F(\lambda)$ be the associated error for the validation set, one could use generalised cross-validation. The chosen criterion is in turn optimised to find the optimal $\lambda.$ \\
 
-Note that the three levels are somewhat isolated from  each other and only interact by  exchanging parameters downwards and optimal values upwards. The middle function $H(\cdot$) for example only requires the value of the optimal $f(\cdot)$ evaluated at the choosen points $t_i,$  and does not care about how these values were found or how $f(\cdot)$ is represented. 
+\noindent Note that the three levels are somewhat isolated from each other and only interact by  exchanging parameters downwards and optimal values upwards. The middle function $H(\cdot$) for example, only requires the value of the optimal $f(\cdot)$ evaluated at the chosen points $t_i,$  and does not care about how these values were found or how $f(\cdot)$ is represented. \\
 
+\noindent The inner problem consists of finding a function that minimises a chosen optimisation criterion for a given set of parameters. As previously discussed, the complexity of such problems can increase rapidly, requiring a considerable degree of expert knowledge and often must be developed from scratch if the differential penalty changes too much. It is thus desirable that the inner problem can be solved with already existing methods and tools such the FDA package or Data2LD package, as the effort associated with developing these tools from scratch is extensive. Ideally, it should be possible to utilise existing code that can compute $H(\cdot)$ and the optimal function as required. \\
 
-The inner problem consists of finding a function that minimises a certain criterion for a given set of parameters.  As previously discussed, the complexity of such problems can increase fairly rapidly and require a considerable degree of expert knowledge and often must be  developed from scratch if the differential penalty changes too much. It is thus desirable that the inner problem can be solved with already existing methods and tools such as the FDA package or Data2LD  to avoid the effort of having to develop one's own. Ideally, it should be possible for one to plug in existing code that can compute $H(\cdot)$ and the optimal function as required. 
-
-There is thus a considerable degree of potential modularity present in the Parameter Cascade that is not fully investigated in Ramsay and Cao's paper \cite{cao2007parameter}, and research that inherits that framework. The Parameter Cascade can be adapted to heavy-tailed errors for example, by using appropriate loss functions for the various levels of the problem.
-
-Not only is it good research practice to have mostly independent components that can be tackled and verified separately before being combined, it is also good practice from a software engineering perspective because the potential for complex interactions between different parts of code is reduced. This tends to save on debugging and testing requirements, which can be quite high when implementing codes for FDA.
-
-The Data2LD package is fairly tightly coupled. Rather than use R's built-in routines for example to optimise the associated middle problem, the authors wrote their own code. With Brent's method however, there is more separation, which makes it very easy to build optimisation routines on top of other code. This substantially elides the cost and effort of tackling the inner problem and allows one to concentrate on the statistical questions such as fitting the model to data.
+\noindent There is thus a considerable degree of modularity present in the Parameter Cascade that is not fully investigated or exploited in Ramsay and Cao's paper \cite{cao2007parameter}, and research that inherits that framework. The Parameter Cascade can be adapted to solve problems for data exhibiting heavy-tailed noise for example, by using alternative loss functions for the various levels of the cascade. Not only is it good research practice to have mostly independent components that can be tackled and verified separately before being combined, it is also good practice from a software engineering perspective because the potential for complex interactions between different parts of the algorithm is reduced. This saves on debugging and testing requirements, which can be excessively high when implementing algorithms for FDA. In contrast, the Data2LD package is fairly tightly coupled. Rather than use R's built-in routines for example to optimise the associated middle problem, the authors wrote their own code. With the use of Brent's method as proposed in this thesis however, there is more separation between the levels of the cascade, which makes it very easy to build optimisation routines using already existing code. This substantially elides the cost and effort of tackling the inner problem and allows one to concentrate on the statistical questions such as fitting the model to data.
 
 \subsubsection{Melanoma Data}
-This derivative free optimisation strategy  was applied to fitting the melanoma dataset with a parameterised linear differential operator:
+
+This derivative free optimisation strategy was applied to the melanoma dataset with a parameterised linear differential operator of the form:
 
 \begin{equation} \label{eqn:param_operator}
 L_\omega = D^2 - \omega^2D^4.
 \end{equation}
 
-Both $\omega$ and $\lambda$ will be estimated, so this is a full three-level Parameter Cascade without derivatives. As already noted, the  \texttt{Data2LD} package can only implement a two-level Parameter Cascade. The inner problem consists of finding the function $f(t)$ that minimises a penalised regression problem of the form:
+\noindent Both $\omega$ and $\lambda$ will be estimated, so this is a three-level Parameter Cascade estimated without the need for calculating derivatives. As already noted, the \texttt{Data2LD} package can only implement a two-level Parameter Cascade, hence the proposed approach is an extension of the current state-of-the-art. The inner problem consists of finding the function $f(t)$ that minimises a penalised regression problem of the form:
 
 
 \[
-PENSSE(f; \omega, \lambda) =   \sum (x_i - f(t_i))^2 + \lambda \int |L_\omega f(t)|^2 dt
+PENSSE(f; \omega, \lambda) =   \sum (x_i - f(t_i))^2 + \lambda \int |L_\omega f(t)|^2 dt.
 \]
 
-The penalty term measures the extent to which a function lies outside of the span of the  functions $\{1, t, \cos(\omega t), \sin(\omega t)\}.$ 
+\noindent The penalty term measures the extent to which a function lies outside of the span of the  functions $\{1, t, \cos(\omega t), \sin(\omega t)\}.$ The \verb|FDA| package has optimisation routines that do the numerical work of fitting the data with the differential penalty given in Equation \eqref{eqn:param_operator} for given choices of $\lambda$ and $\omega,$ and then reporting the associated mean square error. Using Brent's method for the middle problem, the function $H(\omega; \mathbf{x}, \lambda)$ can be optimised with respect to $\omega$ for a given fixed $\lambda.$ In the spirit of Equation (\ref{eqn:outer_objective_function}), this defines a profiled objective function $F(\lambda, \hat{\omega}(\lambda),\hat{f}(t|\hat{\omega}, \lambda)) = F(\lambda).$ The outer objective function $F(\lambda)$ can be in turn optimised a second time using Brent's Method to estimate the optimal value of $\lambda.$ Figure \ref{fig:mela_omega} plots $H(\omega; \mathbf{x}, \lambda)$ for a fixed value of $\lambda,$ and plots $F(\lambda).$ \\
+
+\noindent For $\omega,$ the top panel of Figure \ref{fig:mela_omega} shows that the SSE in this example is not particularly sensitive to small deviations from the optimal value even for fairly high values of $\lambda$. This suggests that the fitted curve will be adjusted to ensure no substantial increase in the error so long as $\omega$ isn't altered too much from the optimal value. Heuristically speaking, a flat objective function in the neighbourhood of the optimal point as can be seen in in this figure, increases the uncertainty in estimation because it is more difficult to argue that the optimal value is definitively better than adjacent ones. The loss function associated with a given fitting problem only approximates the 'true' loss function as the sample size goes to infinity. The bottom panel of Figure \ref{fig:mela_omega} shows that GCV curve has two critical points, with an asymptote as $\lambda$ tends to infinity. The optimum value of $\lambda$ is approximately $10^{-1}$. When $\omega$ is optimised for the value of $\lambda$ that minimises the GCV, Brent's method reports zero as the optimal value to within its default tolerance. Thus if $\lambda$ is set too low, the optimal value of $\omega$ is numerically indistinguishable from zero. \\
+
+\noindent A huge advantage of the proposed approach compared to Data2LD's use of derivative-based methods is that it allows for the use of more robust loss functions to be used at the various levels of the parameter cascade since no use at all is made of derivatives. As an example, suppose one wanted to choose $\omega$ to minimise the Median Absolute Deviation - $\operatorname{median}(|y_i - \hat{f}(t_i|\omega, \lambda)|)$ - instead of the least squares ($L_2$) error. This loss function is chosen instead of the $L_1$ error for the sake of demonstration because the $L_1$ error might sometimes be tackled using a generalised version of gradient descent known as the sub-gradient method,\cite{shor2012minimization} while getting any kind of a derivative for MAD is extremely difficult. To do the estimation with the MAD loss function becomes quite simple using Brent's method. One replaces the code that computes the $L_2$ error with a few lines of R code that computes the MAD and the optimisation routine is run again. The result of using Brent's method and the MAD loss function when fitting the melanoma data is seen in Figures \ref{fig:mela_mad_omega} and \ref{fig:mela_l2_mad_omega}. In this example, the MAD gives similar results to the usual least squares criterion, which suggests that both estimators are mutually consistent with each other. 
 
 
-The \verb|FDA| package has routines that can do the numerical work of fitting the data with differential penalty given in \eqref{eqn:param_operator} for  given choices of $\lambda$ and $\omega,$ and then report the associated mean square error.
-
-Using Brent's method, the function $H(\omega; \mathbf{x}, \lambda)$ can be optimised with respect to $\omega$ for a given fixed $\lambda.$ In the spirit of (\ref{eqn:outer_objective_function}), this  defines a profiled objective function $F(\lambda, \hat{\omega}(\lambda),\hat{f}(t|\hat{\omega}, \lambda)) = F(\lambda).$
-
-The outer objective function $F(\lambda)$ can be in turn optimised a second time using Brent's Method to estimate the optimal value of $\lambda.$ Figure \ref{fig:mela_omega} plots $H(\omega; \mathbf{x}, \lambda)$ for a fixed value of $\lambda,$ and plots $F(\lambda).$
-
-For $\omega,$ Figure \ref{fig:mela_omega} shows tht the  error is not particularly sensitive to small deviations from the optimal value even for fairly high values of $\lambda$. This suggests that the fitted curve will be adjusted to ensure no substantial increase in the error so long as $\omega$ isn't altered too much from the optimal value.
-
-Heuristically speaking, a flat objective function in the neighbourhood of the optimal point as can be seen in Figure \ref{fig:mela_omega} increases the uncertainty in estimation because it is more difficult to argue that the optimal value is definitively better than adjacent ones. The loss function associated with a given fitting problem only approximates the 'true' loss function as the sample size goes to infinity.
-
-If $\lambda$ is set too low, the optimal value of $\omega$ is numerically indistinguishable from zero. This is the case when $\omega$ is optimised for  the value of $\lambda$ that minimises the GCV, Brent's method reports zero as the optimal value to within its default tolerance.
-
-
-For $\lambda,$ the curve has two critical points, with an asymptote as $\lambda$ tends to infinity.
-
-A huge advantage of this approach compared to Data2LD's use of derivative-based methods is that it allows for the use of more robust loss functions since no use at all is made of derivatives.
-
-Suppose one wanted to choose $\omega$ to minimise the Median Absolute Deviation - $\operatorname{median}(|y_i - \hat{f}(t_i|\omega, \lambda)|)$ - instead of the least squares error. This loss function is chosen instead of the usual $L_1$ error for the sake of demonstration because the $L_1$ error might sometimes be tackled using a generalised version of gradient descent known as the subgradient method,\cite{shor2012minimization} while getting any kind of a derivative for MAD is difficult. It is quite simple, one just replaces the code that computes the least squares error with a few lines of R code that computes the MAD and run the optimisation routine again. It can be seen in Figures \ref{fig:mela_mad_omega} and \ref{fig:mela_l2_mad_omega} that the MAD gives similar results to the usual least squares criterion, which suggests that both estimators are mutually consistent with each other.
-
-
-\begin{figure} 
+\begin{figure}
  \centering
     \includegraphics[height=9cm]{mela_omega_plot.pdf}
     \includegraphics[height=9cm]{mela_lambda_plot.pdf}

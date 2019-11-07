@@ -1,14 +1,12 @@
-\chapter{Hierarchical Estimation and the  Parameter Cascade}
+\chapter{Hierarchical Estimation and the Parameter Cascade} \label{chap:paramcascade}
 
-This chapter opens with a discussion on fitting a semi-parameteric generalisation of the ODE used to model the Reflux data in Section \ref{sec:reflux_parametric_approach}. It is shown that a hierarchial method is needed, where the \emph{inner problem} consists of fitting the ODE to the data given the paremeters, and the \emph{middle problem} in turn entails finding the best choice of parameters. The Parameter Cascade method for fitting penalised smoothing problems with unknown parameters is then introduced. 
+This chapter opens with a discussion on fitting a semi-parameteric generalisation of the ODE used to model the reflux data in Section \ref{sec:reflux_parametric_approach}. It is shown that a hierarchical method is needed, where an \emph{inner problem} consists of fitting the ODE to the data given the parameters, and a \emph{middle problem} in turn entails finding the best choice of parameters. The Parameter Cascade method for fitting penalised smoothing problems with unknown parameters is then introduced.  A familiarity with numerical optimisation methods such as Gradient Descent, the Newton-Raphson Mathod, and Line Searches is assumed. Details are provided in Appendix \ref{chap:optimisation_methods}.
 
-A familiarity with numerical optimisation methods such as Gradient Descent, the Newton-Raphson Mathod, and Line Searches is assumed. Details are provided in Appendix \ref{chap:optimisation_methods}.
+\section{Fitting the Reflux Data Using a Semi-Parametric ODE Model}
 
-\section{Fitting the Reflux Data Using a  Semi-Parametric ODE Model}
+In Section \ref{sec:reflux_parametric_vs_data2ld} the reflux data was discussed. An ODE model  $y' = \beta y + u_0$ as described in Equation \ref{eqn:reflux_ode} was fitted to the data. After performing a parametric fit by approximating $y(t)$ by basis functions, \texttt{Data2LD} was then used to fit a sophisticated semi-parametric model where the ODE $y'(t) = \beta(t) + u(t)$ holds approximately. While the parametric approach was explored in detail, the discussion of \texttt{Data2LD} was deferred to this chapter. \\
 
-In Section \ref{sec:reflux_parametric_vs_data2ld} the Reflux data was discussed. An ODE model along the lines of $y' = \beta y + u_0$ as described in Equation \ref{eqn:reflux_ode} was fitted to the data. After pausing to discuss performing a parametric fit by approximating $y(t)$ by basis functions, \texttt{Data2LD} was then used to fit a sophisticated semi-parameteric model where the ODE $y'(t) = \beta(t) + u(t)$ only holds approximately. While the parametric approach was explored in detail, serious discussion of \texttt{Data2LD} was deferred to this chapter.
-
-To introduce some of the ideas behind \texttt{Data2LD,} a semi-parametric ODE model that lies in between the purely parameteric approach discussed in Sections \ref{sec:reflux_parametric_approach} and \ref{sec:reflux_collocation_fit}, and the relatively non-parameteric employed by \texttt{Data2LD} will be briefly examined in this section. This ODE model takes the form:
+\noindent To introduce some of the ideas behind \texttt{Data2LD,} a semi-parametric ODE model that lies in between the purely parameteric approach discussed in Sections \ref{sec:reflux_parametric_approach} and \ref{sec:reflux_collocation_fit}, and the relatively non-parameteric employed by \texttt{Data2LD} will be briefly examined in this section. This ODE model takes the form:
 
 \[\begin{cases}
    y'(t) &= \begin{cases}
@@ -20,10 +18,9 @@ To introduce some of the ideas behind \texttt{Data2LD,} a semi-parametric ODE mo
 \end{cases}\]
 
 
-The  forcing function $u(t)$ is unknown and must be estimated alongside $\beta,$ so this is a semi-parametric model. As in Section \ref{sec:reflux_parametric_vs_data2ld}, the breakpoint at $t_0$ will be assumed to be known in advance.
+\noindent The forcing function $u(t)$ is unknown and must be estimated alongside $\beta,$ therefore this is a semi-parametric model. As in Section \ref{sec:reflux_parametric_vs_data2ld}, the breakpoint at $t_0$ will be assumed to be known in advance.  \\
 
-
-\paragraph{Explicit Solution:}The solution to the  homogeneous ODE $y'(t) = \beta y(t)$ is given by $y(t) = Ce^{\beta t}$ where $C$ is an unknown constant. Since $y(0) = 0$, this implies that $y(t) = 0$ if $t < t_0.$ To take into account the forcing function that is turned on for $t \geq t_0,$ variation of parameters will be employed. Assume that the solution for the case with the forcing function can be written as  $y(t) = e^{\beta t} v(t),$ with the time-varying coefficient $v(t)$ to be determined. Substitute this ansatz into the case  for $t \geq t_0\colon$
+\noindent The solution to the homogeneous ODE $y'(t) = \beta y(t)$ is given by $y(t) = Ce^{\beta t}$ where $C$ is an unknown constant. Since $y(0) = 0$, this implies that $y(t) = 0$ if $t < t_0.$ To take into account the forcing function that is turned on for $t \geq t_0,$ variation of parameters will be employed. Assume that the solution for the case with the forcing function can be written as  $y(t) = e^{\beta t} v(t),$ with the time-varying coefficient $v(t)$ to be determined. Substitute this into the case  for $t \geq t_0\colon$
 \begin{align*}
    e^{\beta t}v'(t) + \beta e^{\beta t}v(t)  &= \beta e^{\beta t}v(t) + u(t)\\
                              \therefore \qquad  v'(t) &= e^{-\beta t}u(t) \\
@@ -31,16 +28,15 @@ The  forcing function $u(t)$ is unknown and must be estimated alongside $\beta,$
 \end{align*}
 
 
-Setting the limits of integration from $t_0$ to $t$ ensures that $v(t_0) = 0$ so that the solution for $t \geq t_0$ is matched continously with the solution for $t < t_0.$ The solution will not  be differentiable at $t_0$ however unless\footnote{The left derivative at $t_0$ is identically zero. The right derivative at $t_0$ is found by substituting  $y'(t_0) = \beta y(t_0) 
-+ u(t_0) =u(t_0),$ recall that  $v(t)$ is choosen so that $y(t_0) = 0.$ The left and right derivatives will not match unless $u(t_0) = 0.$} $u(t_0) = 0,$ so there will generally be a kink at the breakpoint in a similar fashion as in Figures \ref{fig:constituentMaxFunctions} and \ref{fig:reflux_ode_fit}.
+\noindent Setting the limits of integration from $t_0$ to $t$ ensures that $v(t_0) = 0$ so that the solution for $t \geq t_0$ is matched continuously with the solution for $t < t_0.$ The solution will not be differentiable at $t_0$ however unless\footnote{The left derivative at $t_0$ is identically zero. The right derivative at $t_0$ is found by substituting  $y'(t_0) = \beta y(t_0) + u(t_0) =u(t_0),$ recall that $v(t)$ is chosen so that $y(t_0) = 0.$ The left and right derivatives will not match unless $u(t_0) = 0.$} $u(t_0) = 0,$ so there will generally be a kink at the breakpoint in a similar fashion as in Figures \ref{fig:constituentMaxFunctions} and \ref{fig:reflux_ode_fit}. \\
 
-The general solution can be conveniently written as:\footnote{One couldn't write the solution as $\tilde{y}(t) = \max[0, e^{\beta t}v(t)]$ as was done in Section \ref{sec:reflux_parametric_approach} because it might be the case that $v(t) >0$ for a substantial proportion of the interval $0 \leq t<t_0,$ so that the breakpoint would be substantially shifted and the fitted model would be plain wrong. As noted in Section \ref{sec:reflux_data2ld_fit}, the FDA methodology is generally employed because it allows one to avoid relatively `low level' considerations such as which matching strategy to use. In any case,  the maximum operator was only ever used for matching because the \texttt{nls} command was behaving erroneously for the exact solution.}
+\noindent The general solution can be written as:
 
 \[
-   y(t) =   e^{\beta t}v(t)\mathbf{1}(t-t_0)
+   y(t) =   e^{\beta t}v(t)\mathbf{1}(t-t_0).
 \]
 
-Here $\mathbf{1}(t)$ denotes the Heaviside step function:
+\noindent Here $\mathbf{1}(t)$ denotes the Heavyside step function:
 
 \[
     \mathbf{1}(t) = \begin{cases}
@@ -49,65 +45,55 @@ Here $\mathbf{1}(t)$ denotes the Heaviside step function:
            \end{cases}
 \]
 
+\noindent The ODE model can thus be equivalently formulated as a functional linear model as in \cite{ramsay2005functional} of the form:
 
+\[
+    y(t) = L_\beta u(t),
+\]
 
-For the special case discussed in Section \ref{sec:reflux_parametric_vs_data2ld} where $u(t) = u_0$ for all $t,$ we find that:
+\noindent where the parameterised linear operator $L_\beta$ is defined by:
+
+\[
+   L_\beta f(t) = \mathbf{1}(t-t_0)e^{\beta t} \int_{t_0}^t e^{-\beta t}f(t) dt,
+\]
+
+\noindent where $L_\beta$ is an operator that takes a function as an argument and returns another function. The parameter $\beta$ and function $u(t)$ are unknown and must be estimated. For the special case discussed in Section \ref{sec:reflux_parametric_vs_data2ld} where $u(t) = u_0$ for all $t,$ we find that:
 
 \[
 v(t) = -\frac{u_0}{\beta}(e^{-\beta t} - e^{-\beta t_0})
 \]
 
-The solution can then be straightforwardly found:
+\noindent The solution can then be straightforwardly found:
 \[
 y(t) = \frac{u_0}{\beta}\left(1 - e^{\beta(t - t_0)}\right)\mathbf{1}(t-t_0)
 \]
 
-This is the same solution as was found at the start of Section \ref{sec:reflux_parametric_vs_data2ld}, except that the ODE is of the form $y' = \beta y + u_0$ for $t \geq t_0$ here instead of being of the form $y' = -\beta y + u_0$ as in Section \ref{sec:reflux_parametric_vs_data2ld}.
+\noindent This is the same solution as was found at the start of Section \ref{sec:reflux_parametric_vs_data2ld}, except that the ODE is of the form $y' = \beta y + u_0$ for $t \geq t_0$ here instead of being of the form $y' = -\beta y + u_0$ as in Section \ref{sec:reflux_parametric_vs_data2ld}. \\
 
-Figure \ref{fig:reflux_ode_arbitary} plots a solution with $\beta = -1, t_0 = 4,$ and $u(t) = 1 + 0.2\sin(10t).$ In this situation, the constant forcing term is perturbed by high frequency, low amplitude noise. It can be seen that the solution resembles the constant case where $u(t) = u_0$ except that $y(t)$ converges to a sinusoidal function instead of a constant.
-\begin{figure}
-\centering
-\includegraphics[height = 12cm]{/home/padraig/latex/high_frequency_perturbation.pdf}
-\caption{A solution to the general Reflux ODE with a constant plus sinusoidal  forcing function.}
-\label{fig:reflux_ode_arbitary}
-\end{figure}
+\noindent Figure \ref{fig:reflux_ode_arbitary} plots a solution with $\beta = -1, t_0 = 4,$ and $u(t) = 1 + 0.2\sin(10t).$ In this situation, the constant forcing term is perturbed by high frequency, low amplitude noise. It can be seen that the solution resembles the constant case where $u(t) = u_0$ except that $y(t)$ converges to a sinusoidal function instead of a constant. \\
 
-\paragraph{Formulation as a Functional Linear Model:}The ODE model can  be equivalently formulated as a functional linear model\cite{ramsay2005functional} of the form:
+\noindent Let $I$ denote the set of indices for which $t_i > t_0.$ If $\beta$ were known, $v(t)$ could estimated by non-parameterically regressing the values $y_i/e^{\beta t_i}$ against $t_i$ where $i \in I.$ The forcing function $u(t)$ could then be estimated by differentiating the estimate for $v(t)$ and multiplying it by $e^{\beta t}.$ If $v(t)$ were known on the other hand, $\beta$ could be estimated by minimising the following non-linear least squares criterion:
 
 \[
-    y(t) = L_\beta u(t)
+   SSE[ \beta ;v(t)] =  \sum_{i \in I} [y_i   -  e^{\beta t_i}v(t_i)]^2.
 \]
 
-Where the parameterised linear operator $L_\beta$ is defined by:\footnote{In case the notation is unclear, $L_\beta$ is an operator that takes a function as an argument and returns another function.}
-
-\[
-   L_\beta f(t) = \mathbf{1}(t-t_0)e^{\beta t} \int_{t_0}^t e^{-\beta t}f(t) dt
-\]
-
-As previously stated, the  parameter $\beta$ and function $u(t)$ are unknown and must be estimated from observations of $y(t).$
-
-\paragraph{A Hierarchical Approach to Fitting the ODE Model:} Let $I$ denote the set of indices for which $t_i > t_0.$
-If $\beta$ were known, $v(t)$ could estimated by non-parameterically\footnote{There is nothing in principle stopping one from attempting to fit $v(t)$ to $y/e^{\beta t}$ using a more basic methodology such as polynomial regression, but it is difficult to concieve of circumstances where this would be a good idea. Even if $u(t)$ were assumed to be some unknown polynomial, the same would not be true of $v(t).$ } regressing 
-the values $y_i/e^{\beta t_i}$ against  $t_i$ where $i \in I.$ The forcing function $u(t)$ could then be estimated by differentiating the estimate for $v(t)$ and multiplying it by $e^{\beta t}.$
-
-If $v(t)$ were known on the other hand, $\beta$ could be estimated by minimising the following non-linear least squares criterion:
-
-\[
-   SSE[ \beta ;v(t)] =  \sum_{i \in I} [y_i   -  e^{\beta t_i}v(t_i)]^2
-\]
-
-A hierarchical estimation strategy thus seems natural. For a given choice of $\beta,$ let $v(t| \beta)$ denote the estimate of $v(t)$ produced by regressing $y_i/e^{\beta t_i}$ against $t_i$ for $i \in I.$ Define the associated least squares error by:
+\noindent A hierarchical estimation strategy thus seems natural. For a given choice of $\beta,$ let $v(t| \beta)$ denote the estimate of $v(t)$ produced by regressing $y_i/e^{\beta t_i}$ against $t_i$ for $i \in I.$ Define the associated least squares error by:
 
 \begin{align*}
    H( \beta) &= SSE[\beta; v(t|  \beta)] \\
             &=  \sum_{i\in I} [y_i  - e^{\beta t_i}v(t_i|  \beta)]^2
 \end{align*}
 
-The sketch presented here fails to address two important questions: how to  to estimate $v(t)$ given  $\beta,$ and how to optimise $H(\beta).$ Using the nomenclature of the field, the \emph{inner problem} entails estimating $v(t)$ given the parameters and $\beta,$ and the \emph{middle problem} entails minimising $H( \beta).$
-
-\texttt{Data2LD} similarly employs a powerful hierarchical fitting methodology for FDA problems known as the Parameter Cascade, which will be introduced in the next section.
+\noindent The sketch presented here fails to address two important questions: how to estimate $v(t)$ given  $\beta,$ and how to optimise $H(\beta).$ In this case the \emph{inner problem} entails estimating $v(t)$ given the parameters and $\beta,$ and the \emph{middle problem} entails minimising $H( \beta).$ \texttt{Data2LD} similarly employs a powerful hierarchical fitting methodology for FDA problems known as the Parameter Cascade, which will be introduced in the next section.
 
 
+\begin{figure}[h]
+\centering
+\includegraphics[height = 12cm]{high_frequency_perturbation.pdf}
+\caption{A solution to the general Reflux ODE with a constant plus sinusoidal forcing function.}
+\label{fig:reflux_ode_arbitary}
+\end{figure}
 
 \section{The Two-Stage Parameter Cascade}
 
@@ -118,31 +104,23 @@ Consider the following  penalised regression problem:
    PENSSE(f, \theta) = \sum_{i = 1}^N (y_i - f(t_i))^2 + \lambda \int_0^1 |T_\theta f|^2 dt.
 \]
 
-Here $T_\theta$ is some differential operator, that is parameterised by an unknown $\theta$ that is to be estimated. 
-
-$T_\theta$ can be  an ordinary differntial operator or a partial differential operator; linear, quasi-linear, or nonlinear.
-
-There are two statistical objects to be estimated here: the parameter $\theta,$ and the function $f(t).$ 
-
-Ramsay and Cao propose the following hierarchial approach to estimation\cite{cao2007parameter}: Given a fixed value of $\theta,$ let $f(t|\theta)$ denote the function that minimises $PENSSE(f, \theta)$ For a given value of $\theta,$ its associated mean square error is then  defined by:
+\noindent Here $T_\theta$ is a differential operator that is parameterised by an unknown $\theta$ that is to be estimated. $T_\theta$ can be an ordinary differential operator or a partial differential operator; linear, quasi-linear, or nonlinear. There are two statistical objects to be estimated: the parameter $\theta,$ and the function $f(t).$ Ramsay and Cao \cite{cao2007parameter}, propose the following hierarchical approach to estimation: 
+\begin{itemize}
+\item Given a fixed value of $\theta,$ let $f(t|\theta)$ denote the function that minimises $PENSSE(f, \theta)$.
+\item For a given value of $\theta,$ its associated mean square error is then defined by:
 
 \[
    MSE(\theta) = \frac{1}{N}\sum_{i=1}^N[y_i - f(t_i|\theta)]^2
 \]
+\end{itemize}
 
-By making $f(t)$ dependent on $\theta$, the fitting problem has been reduced to a  non-linear least squares problem.
+\noindent By making $f(t)$ dependent on $\theta$, the fitting problem has been reduced to a non-linear least squares problem. This leaves the issue of estimating the optimal value of $\theta$ - Ramsay and Cao propose the use of Gradient Descent. For a given value of $\theta,$ $f(t|\theta)$ is found. These two values are then used to compute $MSE(\theta)$ and $\nabla MSE(\theta).$ Finally, a new value of $\theta$ is computed by perturbing $\theta$ in the direction of the gradient. This scheme is sketched out in Figure ~\ref{fig:twoStageParamSimplified}. \\
 
-This leaves the issue of estimating the optimal value of $\theta$ - Ramsay and Cao propose the use of Gradient Descent.
+\noindent It is assumed that $f(t)$ can be represented by a finite vector $\mathbf{c}$ associated with an appropriate basis. This leads to a pair of nested optimisation problems: the \emph{inner optimisation} involves finding the value of $\mathbf{c}$ that minimises the penalised least squares criterion given $\theta,$ and the \emph{middle optimisation} entails finding the value of $\theta$ that minimises $MSE(\theta).$ There is thus a `cascade' of estimation problems, where the results of the lower level estimation problem feed back in to the higher level ones. \\
 
-For a given value of $\theta,$ $f(t|\theta)$ is found. These two values together are then used to compute $MSE(\theta)$ and $\nabla MSE(\theta).$ Finally, a new value of $\theta$ is computed by perturbing $\theta$ in the direction of the gradient.This scheme is sketched out in Figure ~\ref{fig:twoStageParamSimplified}.
+\noindent Note that every time a new value of $\theta$ is introduced, the associated function $f(t|\theta)$ must be computed from scratch. The middle optimisation can thus generate many inner optimisation subproblems as the parameter space is explored, and these in turn could require multiple iterations to complete if no explicit formula for $\mathbf{c}$ given $\theta$ is available. \\
 
-It is assumed that $f(t)$ can be represented by a finite vector $\mathbf{c}$ associated with an appropriate basis. This leads to a pair of nested optimisation problems: the \emph{Inner Optimisation} involves finding the value of $\mathbf{c}$ that minimises the penalised least squares criterion given $\theta,$ and the \emph{Middle Optimisation} entails finding the  value of $\theta$ that minimises $MSE(\theta).$ 
-
-There is thus a `cascade' of estimation problems, where the results of the lower level estimation problems feed back in to the higher level ones.
-
-Note that every time a new value of $\theta$ is introduced, the associated function $f(t|\theta)$ must be computed from scratch. The middle optimisation can thus generate many inner optimisation subproblems as the parameter space is explored, and these in turn could require multiple iterations to complete if no explicit formula for $\mathbf{c}$ given $\theta$ is available. 
-
-Figure \ref{fig:twoStageParamSimplified} is a highly idealised sketch of the Parameter Cascade. The main abstraction is that the step of computing $f(t|\theta)$ is presented as a single atomic and organic step, even though it could be a complex process in its own right. This risks masking some of the comptuational work that is happening. A more realistic  description is provided  in Figure ~\ref{fig:twoStageParam}. In this thesis, Parameter Cascade problems that cannot be differentiated easily or at all are considered.
+\noindent Figure \ref{fig:twoStageParamSimplified} is a highly idealised sketch of the Parameter Cascade. The main abstraction is that the step of computing $f(t|\theta)$ is presented as a single atomic and organic step, even though it could in fact be a complex process. This risks masking some of the computational work that is occurring within the algorithm. A more detailed description is provided  in Figure ~\ref{fig:twoStageParam}. In this thesis, Parameter Cascade problems that cannot be differentiated easily or at all are considered.
 
 \begin{figure}
    \centering
@@ -161,33 +139,21 @@ Figure \ref{fig:twoStageParamSimplified} is a highly idealised sketch of the Par
 
 \section{The Three-Stage Parameter Cascade}
 
-Up to this point, the structural parameter $\lambda$ has been treated as fixed. But it is possible to extend the Parameter Cascade to estimate $\lambda.$
+The two-stage parameter cascade assumes that the structural parameter $\lambda$ is treated as fixed. However it is possible to extend the Parameter Cascade to also estimate $\lambda.$ In this case it is necessary to introduce an \emph{outer criterion}, $F(\lambda)$, that determines how good a given choice of $\lambda$ is. A common choice for the outer criterion is Generalised Cross Validation \cite{cao2007parameter, ramsay2007parameter}. \\
 
-It is necessary to introduce an \emph{outer criterion} $F(\lambda)$ that determines how good a given choice of $\lambda$ is.
+\noindent Just as the problem of fitting a function $f(\cdot|\theta)$ can generate an optimisation subproblem, that of fitting a third level in the cascade can generate a series of subproblems to find the best parameter choice associated with a given value of $\lambda.$ This in turn generates a series of subproblems to find the fitted function as the parameter space is explored. \\
 
-A common choice for the outer criterion is  Generalised Cross Validation.\cite{cao2007parameter, ramsay2007parameter}
-
-Just as the problem of fitting a function $f(\cdot|\theta)$ can generate an optimisation subproblem, that of fitting a third level in the cascade can generate a series of subproblems to find the best parameter choice associated with a given value of $\lambda,$ which in turn generates a series of subproblems to find the fitted function as the parameter space is explored.
-
-As stated in Chapter 1, neither the \texttt{FDA} nor \texttt{Data2LD} packages  implement the three stage parameter cascade. They instead require practioners to find the best choice of $\lambda$ by cycling through a set of predetermined values or even just employing manual adjustment. There is no guarantee that the optimal choice of $\lambda$ would lie in a finite set of predetermined values. Manual adjustment is slow and cumbersome compared to an automated optimisation routine.
+\noindent Neither the \texttt{FDA} nor \texttt{Data2LD} packages implement the three stage parameter cascade. They instead require practitioners to determine the best choice of $\lambda$ by cycling through a set of predetermined values and/or using manual adjustment. However, there is no guarantee that the optimal choice of $\lambda$ will lie in a finite set of predetermined values and manual adjustment is slow and cumbersome compared to an automated optimisation routine.
 
 \section{Investigating the \texttt{Data2LD} Package} \label{sec:data2ld_investigation}
 
-\texttt{Data2LD} uses a sophisticated two-level parameter cascade algorithm to fit parameters to the data, which is briefly described here.
+\texttt{Data2LD} uses a sophisticated two-level parameter cascade algorithm to fit parameters to the data, which is briefly described here. The inner level of the parameter cascade is implemented by the eponymous \texttt{Data2LD} routine. The middle level is implemented by the \texttt{Data2LD.opt} command \cite{data2ld}. The outer level of optimisation for choosing the trade-off parameter $\lambda$ is not implemented. \\
 
-The inner level of the parameter cascade is implemented by the eponymous \texttt{Data2LD} routine. The middle level is implemented by the \texttt{Data2LD.opt} command.\cite{data2ld} The outer level of optimisation for choosing the trade-off parameter $\lambda$ is not implemented.\footnote{For \texttt{Data2LD}, the smoothing parameter is written in terms of $\rho = \lambda/(1 + \lambda).$ The term $\lambda$ is retained for the sake of simplifying the exposition.}
-
-The \texttt{Data2LD} function is written in what might be called `R Style' -  upon calling the method, it returns a list with a of number computed quantites and statistics. The associated Mean Square Error (MSE),\footnote{To be clear here, the MSE returned is the MSE associated with the choice of paremeters.  The command \texttt{Data2LD} fits a function using the  choice of parameters passed to it, and then reports the associated MSE alongside other related values.} the gradient of MSE and the Hessian of MSE will always be computed and returned whether one needs them or not.
-
-Only the \texttt{Data2LD.opt} command is  investigated in detail here. The middle level of the Parameter Cascade is generally easier to implement than the inner level. When implementing the middle level,  one can generally treat the lower level as a `black box' that accepts a given choice of parameters as inputs, and then returns the value of the objective function and sometimes derivatives as outputs. There is plenty of existing methods for tackling such optimisation problems.
+\noindent The \texttt{Data2LD} function is written such that upon calling the method, it returns a list with a of number computed quantities and statistics. For example, the associated Mean Square Error (MSE),\footnote{The MSE returned is the MSE associated with the choice of parameters. The command \texttt{Data2LD} fits a function using the choice of parameters passed to it, and then reports the associated MSE alongside other related values.} the gradient of MSE and the Hessian of MSE will always be computed and returned whether one needs them or not. Only the \texttt{Data2LD.opt} command is  investigated in detail here. The middle level of the Parameter Cascade is generally easier to implement than the inner level. When implementing the middle level, one can generally treat the lower level as a `black box' that accepts a given choice of parameters as inputs, and then returns the value of the objective function (and sometimes derivatives) as outputs. 
 
 \subsection{How \texttt{Data2LD} Estimates Parameters}
 
-The code for\texttt{Data2LD} can be difficult to understand. While software with such powerful features was  inevitably going to be complex, the authors compounded the issue by not heeding best practices recommended for making code easy to read and maintain. For example, \texttt{Data2LD} hardcodes unnamed constants into the code. Such `Magic Numbers' are strongly discouraged because it makes code more error prone and difficult to understand.\cite{mcconnell2004code}
-
-The documentation somewhat incorrectly claims that \texttt{Data2LD.opt} is a `quasi-Newton\footnote{Quasi-Newton methods are discussed in more detail in Section \ref{sec:higher_order_methods}.} type optimization algorithm'.\cite{data2ld} As shall be seen below, \texttt{Data2LD.opt} actually uses Newton's Method\footnote{Newton's Method is discussed in more detail in Section \ref{sec:newton_gradient}.} by default unless it fails to reduce the objective function.
-
-For brevity, let $\mathbf{g}_n$ and $\mathbf{H}_n$ respectively denote the gradient vector and Hessian matrix of the objective function $f(\theta)$ at $\theta_n.$ The search directions used by the  \texttt{Data2LD.opt} command are the Gradient Descent direction:
+\noindent Let $\mathbf{g}_n$ and $\mathbf{H}_n$ respectively denote the gradient vector and Hessian matrix of the objective function $f(\theta)$ at $\theta_n.$ The search directions used by the  \texttt{Data2LD.opt} command are the Gradient Descent direction:
 
 \begin{equation} \label{eqn:grad_descent}
     \mathbf{p}_n = -\mathbf{g}_n \tag{\textbf{S1}}
@@ -198,12 +164,10 @@ and the Newton Direction:
     \mathbf{p}_n = - \mathbf{H}_n^{-1}\mathbf{g}_n \tag{\textbf{S2}}
 \end{equation}
 
-\texttt{Data2LD.opt} makes use of  Line Search methods, which are discussed in more detail in Section \ref{sec:line_search_methods}. For line search methods, the algorithm takes a variable step $\alpha_n$ in the direction $\mathbf{p}_n$ on each iteration. Simpler algorithms such as Gradient Descent set $\alpha_n$ to a constant. Choosing the value of  $\alpha_n$ is a subproblem that must be tackled on each iteration.
+\noindent \texttt{Data2LD.opt} makes use of line search methods, which are discussed in more detail in Section \ref{sec:line_search_methods}. For line search methods, the algorithm takes a variable step $\alpha_n$ in the direction $\mathbf{p}_n$ on each iteration. Simpler algorithms such as Gradient Descent set $\alpha_n$ to a constant. Choosing the value of  $\alpha_n$ is a subproblem that must be tackled on each iteration. \\
 
-\texttt{Data2LD} uses four tests to determine how good a step is:\footnote{\texttt{Data2LD} actually tests for the negation of \ref{eqn:t3} and \ref{eqn:t4}. For the sake of consistency the logical negations of the two tests used by \texttt{Data2LD} are presented  here so that passing a test is consistently a good thing and failing consistently represents unsatisfactory or pathalogical behaviour.}
+\noindent \texttt{Data2LD} uses four tests to determine how good a step is:\footnote{\texttt{Data2LD} actually tests for the negation of \ref{eqn:t3} and \ref{eqn:t4}. For the sake of consistency the logical negations of the two tests used by \texttt{Data2LD} are presented here so that passing a test is consistently a good thing and failing consistently represents unsatisfactory or pathological behaviour.}
 
-\begin{align*}
-\end{align*}
 \begin{itemize}
 
 \item First Wolfe Condition (checks for sufficient decrease in the objective function): 
@@ -232,9 +196,7 @@ and the Newton Direction:
 
 \end{itemize}
 
-The constants $c_1$ and $c_2$ are required to satisfy $0 < c_1 < c_2 < 1.$\cite{nocedalnumerical} 
-
-These four tests are illustrated in Figure \ref{fig:data2ld_line_search_tests}. Written in terms of $\phi(\alpha) = f(\mathbf{\theta}+ \alpha \mathbf{p}_n)$ the tests are:
+\noindent The constants $c_1$ and $c_2$ are required to satisfy $0 < c_1 < c_2 < 1$\cite{nocedalnumerical}. These four tests are illustrated in Figure \ref{fig:data2ld_line_search_tests}. Written in terms of $\phi(\alpha) = f(\mathbf{\theta}+ \alpha \mathbf{p}_n)$ the tests are:
 
 \begin{align*}
    \phi(\alpha_n)     &\leq \phi(0) + c_1\alpha_n \phi'(0) \tag{\textbf{T1\textquotesingle}}\\
@@ -247,67 +209,63 @@ These four tests are illustrated in Figure \ref{fig:data2ld_line_search_tests}. 
 \end{align*}
      
 
-If \ref{eqn:t1} and \ref{eqn:t2} are satisfied, then the line search has converged completely. If \ref{eqn:t3} has failed, this represents a total failure because it means the line search has failed to  produce any improvement in the objective function. A failure in \ref{eqn:t4} means the function has overshot a critical point.\footnote{If \ref{eqn:t4} fails, this implies that $\mathbf{p}_n^\top\nabla  f(\mathbf{\theta}_n+ \alpha_n\mathbf{p}_n)$ and $\mathbf{p}_n^\top\nabla  f(\mathbf{\theta}_n)$ are of opposite sign since $\mathbf{p}_n$ is choosen so that $\mathbf{p}_n^\top\mathbf{g}_n <0.$ The Intermediate Value Theorem means there is an $\bar{\alpha}$ between $0$ and $\alpha_n$ such that $\mathbf{p}_n^\top\nabla f(\mathbf{\theta}_n+ \bar{\alpha}\mathbf{p}_n) = 0,$ so that there is a critical point on the line segment between $\mathbf{\theta}_n$ and $\mathbf{\theta}_n+ \alpha_n\mathbf{p}_n.$}
+\noindent If \ref{eqn:t1} and \ref{eqn:t2} are satisfied, then the line search has converged completely. If \ref{eqn:t3} has failed, this represents a total failure because it means the line search has failed to  produce any improvement in the objective function. A failure in \ref{eqn:t4} means the function has overshot a critical point. The use of four tests is a little unusual here. The literature suggests that only the Wolfe Conditions \ref{eqn:t1} and \ref{eqn:t2} are needed as discussed in Section \ref{sec:line_search_methods}. \texttt{Data2LD.opt} is designed to be robust against the possibility that the objective function might not behave as predicted by the computed gradient and Hessian. \\
 
-The use of four tests is a little unusual here. The literature suggests that only the Wolfe Conditions \ref{eqn:t1} and \ref{eqn:t2} are needed as discussed in Section \ref{sec:line_search_methods}.  \texttt{Data2LD.opt} is designed to be  robust against the possibility that the objective function mightn't behave as predicted by the computed gradient and Hessian.
-
-
-Depending on the outcome of the tests, \texttt{Data2LD} chooses the stepsize as follows:
+\noindent Depending on the outcome of the tests, \texttt{Data2LD} chooses the stepsize as follows:
 
 \begin{itemize}
 
 \item If \ref{eqn:t1}, \ref{eqn:t2}, and \ref{eqn:t3} are passed, the algorithm terminates.
 
-\item If \ref{eqn:t1} and \ref{eqn:t1} are passed, or  \ref{eqn:t4} is passed; but  \ref{eqn:t3} is failed, it means that the slope is satisfactory, but the function has increased rather than decreased. \texttt{Data2LD} reduces the step size.
+\item If \ref{eqn:t1} and \ref{eqn:t1} are passed, or \ref{eqn:t4} is passed but \ref{eqn:t3} is failed, it means that the slope is satisfactory, but the function has increased rather than decreased. Here, \texttt{Data2LD} reduces the step size.
 
-\item If all four tests are failed, then the newest point is unsuitable entirely .\texttt{Data2LD} falls back on interpolation to try to find a critical point of $\phi(\alpha),$ falling back on  quadratic interpolation methods if necessary.\footnote{The line search code for the \texttt{Data2LD} is lightly commented and dense, all that one can be strictly certain of is that the method uses radicals to compute the next value of $\alpha,$ falling back on solving a linear equation if necessary. Getting the root of a quadratic is equivalent to finding a critical point of a cubic, and solving a linear equation is equivalent to finding the critical points of a quadratic.}
+\item If all four tests are failed, then the newest point is entirely unsuitable and \texttt{Data2LD} falls back on interpolation to try to find a critical point of $\phi(\alpha),$ or quadratic interpolation methods if necessary.
 
 \end{itemize}
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 \includegraphics[height = 10cm]{data2ld_tests.pdf}
 \caption{Point A is the initial point. Point B passes  \ref{eqn:t1} with $c_1 = 0.5$ and passes \ref{eqn:t2} with  $c_2 = 0.9.$  Point C fails \ref{eqn:t1} with $c_1 = 0.5$  and also fails \ref{eqn:t3}, but  passes \ref{eqn:t4}, and passes \ref{eqn:t2} with  $c_2 = 0.9.$ Point D fails all four tests.}
 \label{fig:data2ld_line_search_tests}
 \end{figure}
 
-If the line search succeeds in reducing the objective function, or at least doesn't make it worse, \texttt{Data2LD} uses the Newton search direction for the next iteration. If the line search makes the objective function worse, the Gradient Descent direction is used. In the event of the line search making the objective function worse twice in a row, \texttt{Data2LD} returns an error.
+\noindent If the line search succeeds in reducing the objective function, \texttt{Data2LD} uses the Newton search direction for the next iteration. If the line search makes the objective function worse, the Gradient Descent direction is used. In the event of the line search making the objective function worse twice in a row, \texttt{Data2LD} returns an error. \\
 
-Somewhat peculiarly, \texttt{Data2LD} does not make use of $\phi''(\alpha)$ despite being able to compute it easily.\footnote{Differentiating the expression $\phi'(\alpha) =\mathbf{p}_n^\top\nabla f(\mathbf{x}_n + \alpha \mathbf{p}_n)$ with respect to $\alpha$ yields that $\phi''(\alpha) = \mathbf{p}_n^\top \mathbf{H}(\alpha) \mathbf{p}_n,$ where $\mathbf{H}(\alpha)$ denotes the Hessian of $f$ evaluated at $\mathbf{x}_n + \alpha \mathbf{p}_n.$}  One would think that the Newton-Raphson Method would  be the first approach  to perform the line search attempted before resorting to interpolation-based methods since it's both simpler to implement and faster to converge. The effort required to  compute $\phi''(\alpha)$ is mostly a sunk cost because  \texttt{Data2LD} will return the Hessian matrix on each iteration whether it is wanted or not.
+\noindent Somewhat peculiarly, \texttt{Data2LD} does not make use of $\phi''(\alpha)$ despite being able to compute it easily.\footnote{Differentiating the expression $\phi'(\alpha) =\mathbf{p}_n^\top\nabla f(\mathbf{x}_n + \alpha \mathbf{p}_n)$ with respect to $\alpha$ yields that $\phi''(\alpha) = \mathbf{p}_n^\top \mathbf{H}(\alpha) \mathbf{p}_n,$ where $\mathbf{H}(\alpha)$ denotes the Hessian of $f$ evaluated at $\mathbf{x}_n + \alpha \mathbf{p}_n.$}  One would think that the Newton-Raphson Method would be the first approach to perform the line search attempted before resorting to interpolation-based methods since it's both simpler to implement and faster to converge. The effort required to compute $\phi''(\alpha)$ is mostly a sunk cost because \texttt{Data2LD} will return the Hessian matrix on each iteration whether it is needed or not. \\
+
+\noindent The code for\texttt{Data2LD} can be difficult to understand. While software with such powerful features was inevitably going to be complex, the complexity is compounded by not heeding best practices recommended for making code readable and easy to maintain. For example, \texttt{Data2LD} hardcodes unnamed constants into the code. Allowing such 'Magic Numbers' is strongly discouraged because it makes code more error prone and difficult to understand \cite{mcconnell2004code}. 
+
 
 
 \section{Hierarchical fitting of a Partial Differential Equation} \label{sec:pde_fitting_strategy}
 
-A linear PDE that is analogous to the linear ODE used to model the Reflux data in Section \ref{sec:reflux_parametric_vs_data2ld} is the Transport Equation:
+A linear PDE that is analogous to the linear ODE used to model the reflux data in Section \ref{sec:reflux_parametric_vs_data2ld} is the Transport Equation:
 
 \[
     \frac{\partial u(x,t)}{\partial t} + \beta \frac{\partial u(x,t)}{\partial x} = 0
 \]
 
-
-A general solution to the Transport Equation is given by \cite{strauss2007partial}:
+\noindent A general solution to the Transport Equation is given by \cite{strauss2007partial}:
 
 \[
    u(x,t) = f(x - \beta t)
 \]
 
-The function $f(\cdot)$ is unspecified. The solution $u(x,t)$ is constant along the rays $x = \beta t + C.$ The solution is an animation of the shape $f(x)$ moving to the right at fixed speed $\beta.$
+\noindent The function $f(\cdot)$ is unspecified. The solution $u(x,t)$ is constant along the rays $x = \beta t + C.$ The solution is an animation of the shape $f(x)$ moving to the right at fixed speed $\beta.$
+The ODE $y'(t) + \beta y(t) = 0$ can be thought of as a simplification of the Transport Equation, where it is assumed that $u(x,t)$ only varies with time, and not with space. It is apparent that this PDE has a much richer solution structure than is the case for the ODE, which only has solutions of the form $Ae^{-\beta t}.$  Statistically speaking, fitting the Transport Equation to observed data is a semi-parametric problem because one of the parameters to be estimated is a function. \\
 
-The ODE $y'(t) + \beta y(t) = 0$ can be thought of as a simplifcation of the Transport Equation, where it is assumed that $u(x,t)$ only varies with time, and not with space. It is apparent that this PDE has a much richer solution structure than is the case for the ODE, which only has solutions of the form $Ae^{-\beta t}.$  Statistically speaking, fitting the Transport Equation to observed data is a semi-parametric problem because one of the parameters to be estimated is a function. The problem of fitting the Transport Equation is also a transformation model such as that used for the Box-Cox transformation, since the plot of $u(x,t)$ with respect to $x$ at a fixed time $t$ is a transformed version of $f(x),$ the curve at $t = 0.$
+\noindent The problem of fitting the Transport Equation is also a transformation model such as that used for the Box-Cox transformation, since the plot of $u(x,t)$ with respect to $x$ at a fixed time $t$ is a transformed version of $f(x),$ the curve at $t = 0.$ If the parameter governing the transformation process - $\beta$ - is known, $f(\cdot)$ is  reasonably easy to estimate. Suppose there were $n$ observed values $y_i$ at time $t_i$ and location $x_i.$  It has already been established that the value observed at a point $x$ at time $t$ depends only on $x - \beta t.$ The function $f(\cdot)$ could thus be estimated by non-parametrically regressing the observed values at $y_i$ against $x_i - \beta t_i$ \\
 
-If the parameter governing the transformation process - $\beta$ - is known, $f(\cdot)$ is  reasonably easy to estimate. Suppose there were $n$ observed values $y_i$ at time $t_i$ and location $x_i.$  It has already been established that the value observed at a point $x$ at time $t$ depends only on $x - \beta t.$ The function $f(\cdot)$ could thus be estimated by non-parametrically regressing the observed values at $y_i$ against $x_i - \beta t_i$
-
-What if $\beta$ were unknown? The above discussion suggests a hierarchial approach to estimation: for a given choice of $\beta,$ to fit an associated function $f(\cdot|\beta)$ using an appropriate non-parametric estimation method, and compute the associated least squares error. Let $H(\beta)$ be the  function that associates each $\beta$ with its sum of squared error:\footnote{In case the lefthand side might be slightly unclear - for the $i$th observation, the associated function $f(\cdot|\beta)$ is evaluated at $x_i - \beta t_i.$}
-
+\noindent What if $\beta$ is unknown? The above discussion suggests a hierarchical approach to estimation: for a given choice of $\beta,$ to fit an associated function $f(\cdot|\beta)$ using an appropriate non-parametric estimation method, and compute the associated least squares error. Let $H(\beta)$ be the function that associates each $\beta$ with its sum of squared error:
 \[
    H(\beta) = \sum_{i = 1}^n [y_i - f(x_i - \beta t_i |\beta)]^2
 \]
 
 
+\noindent The problem of minimising $H(\beta)$ is a non-linear least squares problem that is also a two level hierarchical estimation problem such as the two level parameter cascade discussed above. The  inner level consists of non-parametrically fitting a function to the set of points $\{(y_i, x_i -\beta_i)\}$ given $\beta.$ The associated sum of squared errors is then returned as $H(\beta)$. The outer level entails optimising the profiled objective function $H(\beta).$ \\
 
-The problem of minimising $H(\beta)$ is a non-linear least squares problem that is also a two level hierachial estimation problem. The  inner level consists of non-parametrically fitting a function to the set of points $\{(y_i, x_i -\beta_i)\}$ given $\beta.$ The associated sum of squared errors is then returned as $H(\beta)$. The outer level entails optimising the profiled objective function $H(\beta).$
-
-This is a broad fitting strategy where different statistical and optimisation approaches can be swapped in and out as needed. There are several ways to tackle the inner function - LOESS; Kernel Regression; Penalised Splines, etc. The least squares loss function could be replaced with another one as suits the problem. There are many methods for optimising $H(\beta)$ that might be attempted - subgradient methods  if $H(\beta)$ is convex, Gradient Descent, Gauss-Newton Method, derivative-free methods and so on.
+\noindent This is a broad fitting strategy where different statistical and optimisation approaches can be swapped in and out as needed. There are several ways to tackle the inner function - LOESS; Kernel Regression; Penalised Splines, etc. The least squares loss function could be replaced with another one as suits the problem. There are many methods for optimising $H(\beta)$ that might be attempted - subgradient methods  if $H(\beta)$ is convex, Gradient Descent, Gauss-Newton Method, derivative-free methods and so on.
 
 
 

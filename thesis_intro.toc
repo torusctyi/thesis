@@ -92,4 +92,3 @@
 \contentsline {chapter}{\numberline {B}Implicit Filtering}{109}
 \contentsline {section}{\numberline {B.1}Description of the Algorithm}{109}
 \contentsline {section}{\numberline {B.2}Using Implicit Filtering to Fit an ODE to the Melanoma Data}{111}
-\contentsline {chapter}{Bibliography}{115}
